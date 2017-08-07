@@ -1,0 +1,320 @@
+@import url('locations.css');
+ul{
+	list-style-type:none;	
+}
+
+.wrapper{
+	width:92%;
+	margin:0px 4%;
+	overflow:auto;
+}
+
+.wrapper header.actions{
+	text-align:center;	
+	padding-bottom:2em;
+	width:78%;
+	margin:0px 4% 0px 0px;
+	float:left;
+}
+
+.wrapper header.adminMode{
+	float:left;
+	width: 15%;
+	padding:1% 0px;
+	text-align:center;
+}
+
+.wrapper header.adminMode a{
+	display:block;
+	padding:10px 5px;
+	background:rgb(85, 26, 139);
+}
+
+.wrapper header.adminMode a.active{
+	background:#d7a91f;	
+}
+
+/**************
+Heading
+**************/
+
+ul.primary-actions{
+	list-style-type:none;
+	margin:0px;
+	padding:0px;	
+}
+
+ul.primary-actions li{
+	display:inline;
+	font-size:1.3em;
+	font-weight:bold;
+}
+
+ul.primary-actions li.spacer{
+	margin:0px 10px;
+}
+
+ul.primary-actions a{
+	text-decoration:none;
+	padding:.5em 1em;
+	border:2px solid #444;
+	background:#7d7d7f;
+	
+}
+
+ul.primary-actions a.selected, ul.primary-actions a:hover{
+	background:#DBD5B7;
+}
+
+
+ul.primary-actions a.disabled, ul.primary-actions a.disabled:hover {
+	cursor:	default;
+	background:inherit;
+}
+
+.content{
+	width:78%;
+	margin-right:2%;
+	padding:1%;
+	
+}
+
+/****************
+Widget Bar
+*****************/
+
+#sidebar{
+	width:15%;
+	padding:1% 0px;	
+}
+
+.content, #sidebar{
+	border:2px solid #999;
+	border-radius:15px;
+	float:left;
+}
+
+.content h1, #sidebar h2{
+	margin-top:0px;	
+}
+
+#sidebar #contact-info{
+	border-bottom:2px solid #333;
+	padding:0px 10px;
+}
+
+#sidebar #widgets{
+	list-style-type:none;
+	margin:0px;
+	padding:0px;
+	text-align:center;
+}	
+
+#sidebar #widgets li{
+	border-top:1px solid #333;
+	border-bottom:1px solid #333;
+
+}
+
+#sidebar #widgets li a{
+	text-decoration:none;
+	color:inherit;
+	padding:5px 10px;
+	display:block;
+}
+
+/***************
+Search Widget
+***************/
+#search fieldset{
+	float:left;	
+}
+
+#search ul{
+	list-style-type:none;
+	margin:0px;
+	padding:0px;	
+}
+
+#search label{
+	cursor:pointer;	
+}
+
+li.label{
+	font-weight:bold;	
+}
+
+fieldset.additional-filters{
+	width:150px;
+}
+
+fieldset.primary-filters li{
+	display:inline-block;
+}
+
+
+
+/***************
+Application Details
+***************/
+
+#application-details{
+	/*padding:5px 25px;
+	width:900px;
+	min-height:200px;
+	border-radius:5px;
+	background:#fff;	*/
+	
+}
+
+#application-details h4{
+	margin:0px;	
+	font-size:110%;
+}
+
+#application-details h2{
+	margin-bottom:10px;
+}
+
+#application-details > h1, #application-details > h3{
+	text-align:center;
+	margin:0px;
+}
+
+.close-dialog{
+	margin:0px;
+	padding:0px;
+	position:relative;
+	top: -13px;
+	left:865px;
+}
+
+.close-dialog span{
+	border-radius: 100px;
+	background: #0F79A3;
+	color: #fff;
+	padding: 4px 9px;
+	cursor: pointer;
+	font: bold 120% sans-serif;	
+}
+
+.close-dialog span:hover{
+	background:#111;		
+}
+
+.row#event-locations{
+	max-height:400px;
+	overflow:scroll;	
+}
+
+.sub-details ol{
+	padding:0px;
+	margin:0px;
+	overflow:auto;
+}
+
+.row.instance-details{
+	border:1px solid #999;
+	margin:5px 0px;
+	padding:10px 10px 0px 10px;
+}
+
+
+.instance-details .actions{
+	text-align:right;	
+}
+
+.instance-details .actions li{
+	padding:5px 0px;	
+}
+
+.instance-details .actions button{
+	padding:10px;
+	font-weight:bold;
+	font-size:100%;
+}
+
+.instance-details.edit h4{
+	margin-top:0px;	
+}
+
+.instance-details.edit input{
+	display:inline;	
+}
+
+.instance-details.edit label > span{
+	width:105px;
+	padding-right:10px;
+	display:inline-block;
+	font-weight:bold;	
+}
+
+.instance-details.edit input.attendees{
+	width:40px;	
+}
+
+.instance-details.edit input{
+	width:180px;
+}
+
+.instance-details.edit textarea{
+	width: 350px;
+	height: 80px;
+	margin-left:0px;
+}
+
+.locations-list{
+	height:100px;
+	overflow:auto;
+	border:0px solid #999;
+	border-width: 1px 1px 0px 0px;	
+}
+
+.locations-list li{
+	border:0px solid #999;
+	border-width:0px 0px 1px 1px;
+	padding:2px 4px;
+	font-size:120%;	
+}
+
+.locations-list li.parent-loc{
+	background:#39275B;
+	color:#fff;
+	font-weight:bold;
+}
+
+.locations-list li.sub-loc{
+	cursor:pointer;
+}
+
+.locations-list li.sub-loc:hover, .locations-list li.sub-loc.active{
+	background:url("../images/checkmark.png") right top no-repeat;
+}
+
+textarea[name=deny-description]{
+	width:250px;
+	height:80px;	
+}
+
+/************************************
+DIALOGS
+************************************/
+
+.helper-dialog{
+	min-width:350px;
+	padding:15px;
+	background:#fff;
+	border-radius:8px;	
+}
+
+.helper-dialog select{
+	width:50%;	
+}
+
+/************************************
+Email Records
+************************************/
+.message-body{
+	padding:10px;
+	background:#f0f0f0;
+}

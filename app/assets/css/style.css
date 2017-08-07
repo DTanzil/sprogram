@@ -1,0 +1,430 @@
+/*
+UUF & Alcohol Services Administration Primary Stylesheet
+By: Graeme Britz
+COLORS:
+	body- #F5F3ED
+	gold- #D7A900
+	gold:hover - #A5790A
+	purple- #39275B
+	gray- #4B4B4B
+	
+	blue-box: #005580
+	blue-box:hover: #034863
+	
+	gray-border: #E5E5E5
+	
+	Buttons:
+	green: #81A037
+	red: #C43E3B
+	blue: #4162A3
+
+*/
+@import url('locations.css');
+
+html, body{
+	height:100%;
+	background:#F5F3ED;
+	color:#4b4b4b;
+	font-weight:300;
+}
+
+.row{
+	max-width:1200px;
+ 	width:100%;	
+}
+
+.row .row{
+	margin-left: auto;
+	margin-right:auto;	
+}
+
+h1, h2, h3, h4, h5, h6{
+	color:#4b4b4b;
+	font-weight:300;	
+	margin-bottom:.25em;
+	font-family:"Open Sans", "Helvetica", "Arial", sans-serif;	
+}
+
+h2{
+	color:#005580;
+	font-size:2em;
+}
+
+h4{
+	font-weight:400;	
+}
+
+address{
+	font-style:normal;	
+	line-height:1.3em;
+}
+
+#main-wrapper{
+	width:90%;
+	margin:0px auto;	
+}
+
+#content-wrapper{
+	padding-bottom:50px;	
+}
+
+textarea{
+	min-height:150px;	
+}
+
+table{
+	font-size:85%;	
+	table-layout: fixed;
+}
+
+.tablesorter-default tr.odd td.special, .tablesorter-default tr.even td.special{
+	background:#D7A900;	
+}
+
+dl dt{
+	margin-bottom:.1em;	
+	line-height:1.2em;	
+	font-weight:400;
+}
+
+dl dd{
+	line-height:1.2em;
+}
+
+dl dd.indent{
+	margin-bottom:0px;
+}
+
+a:hover{
+	color:#D7A900
+}
+
+.indent{
+	padding-left:1.75em;
+}
+
+.button{
+	-webkit-box-shadow:none;
+	box-shadow:none;
+	-webkit-transition:none;
+	-moz-transition:none;
+	transition:none;
+	background:	#4162A3;
+	border:none;
+}
+
+.button:hover{
+	background:	#005580;
+}
+
+.button.success{
+	background:	#81A037;
+	border:none;
+}
+
+.button.alert{
+	background: #C43E3B;
+	border:none;
+}
+
+.centered{
+	text-align:center;	
+}
+
+
+/* HEADER */
+#admin-banner{
+	background:url('../images/uw-logo.png');
+	background-position:left 9px;	
+	background-repeat:no-repeat;
+}
+
+#admin-banner > h1{
+	padding-left:120px;
+	color:#39275B;
+	font-size:38pt;	
+}
+
+#action-flow ul{
+	float:left;
+	margin:0px;
+	padding:0px;
+	list-style:none;	
+}
+
+#action-flow ul li{
+ 	float:left;	
+	margin:0px;
+	padding:0px;
+}
+
+#action-flow ul li a{
+	padding:15px 40px;	
+}
+
+#action-flow ul li a, #admin-mode a{
+	color:#fff;
+	font-size:110%;
+	font-weight:500;
+	text-align:center;
+}
+
+#action-flow a{
+	position:relative;	
+}
+
+#action-flow .arrow{
+	background:url('../images/nav-arrow.png') no-repeat;
+	position:absolute;
+	z-index:10;
+	height:59px;
+	width:40px;
+}
+
+#action-flow ul li a.disabled{
+	background:#D8C588;
+	cursor:default;	
+}
+
+#admin-mode .large-11{
+	padding:0px;	
+}
+
+#admin-mode a{
+	float:left;
+	display:block;
+	background:#005580;	
+	padding:20px;
+}
+
+#admin-mode a:hover, #admin-mode a.active{
+	background:	#034863;
+}
+
+.gold-box-link{
+	background:#D7A900;
+	display:block;
+	color:#fff;
+}
+
+.gold-box-link:hover, .gold-box-link.active{
+	background:#A5790A;
+	color:#fff;
+}
+
+/* MAIN CONTENT */
+
+#content-wrapper{
+	margin-top:30px;	
+}
+
+#content, #sidebar{
+	background:#fff;	
+}
+
+#content{
+	padding:20px;	
+}
+
+#header-box{
+	background:#4B4B4B;
+	padding:10px 35px;
+}
+
+#header-box > h1{
+	margin:0px;	
+	font-size:2.5em;
+	font-weight:300;
+}
+
+#header-box > h1, #header-box .subheading{
+	color:#fff;
+}
+
+#header-box .subheading{
+	margin-bottom:0px;	
+	font-size:90%;
+	font-weight:300;
+}
+
+#sidebar{
+	padding:0px;
+}
+
+#user-info{
+	padding:10px 25px 0px 25px	
+}
+
+#user-info h3{
+	margin-bottom: 0px;
+}
+
+#user-info p{
+	font-weight:300;
+}
+
+#user-info dl.links dd{
+	margin-bottom:0px;
+}
+
+#user-info dl.links a{
+	font-size:80%;
+}
+
+#widgets{
+ 	list-style:none;	
+	margin:0px;
+	padding:0px;
+}
+
+#widgets li{
+	padding:0px;
+	margin:0px;
+}
+
+#widgets a{
+	border-top:2px solid #fff;
+	text-align:left;
+	padding:5px 25px;	
+}
+
+/* APPLICATION DETAILS VIEW */
+
+.inner-content, #approval-information > .large-12{
+	padding:20px;
+	border:1px solid #E5E5E5;	
+	background:#FCFCFC;
+}
+
+#application-details .alc .inner-content{
+	min-height:400px;
+}
+
+#application-details .uuf .inner-content{
+	min-height:575px;
+}	
+
+.page, .page.row{
+	border:1px solid #e5e5e5;
+	background:#FCFCFC;
+	margin:15px 0px;		
+}
+
+.page.inactive .head{
+	background:url('../images/right-arrow.png');
+	background-position:10px 25px;
+	background-repeat:no-repeat;	
+	
+}
+
+.page.active .head{
+	background:url('../images/down-arrow.png');
+	background-position:10px 25px;
+	background-repeat:no-repeat;	
+}
+
+.page .head{
+	padding:5px 0px 15px 34px;	
+	display:block;
+	cursor:pointer;
+}
+
+#events-accordion{
+	max-height: 400px;
+	overflow:scroll;
+}
+
+#events-accordion .page .head .controls{
+	cursor:default;	
+}
+
+.page .head p{
+	font-size: 85%;
+	margin-top: -10px;
+	margin-bottom:0px;	
+}
+
+.page .head .controls .button{
+	float: right;
+	margin-top: 15px;
+	margin-bottom: 0px;
+	margin-left: 1em;
+}
+
+.page .content{
+	padding-left:34px;	
+}
+
+dd div.column, dd div.columns{
+	padding-left:0px;
+}
+
+
+.page a.head{
+	padding: 20px 0px 20px 50px;
+}
+
+.columns .controls{
+	padding-left:0px;
+}
+
+.controls .button{
+	margin-right:10px;	
+}
+
+#inactive-desc{
+	width: 95%;	
+}
+
+/* Email Templates */
+#variables dt{
+	margin-bottom:10px;
+}
+
+#variables dd{
+	margin-bottom:5px;	
+}
+
+#template-body{
+	min-height:250px;	
+}
+
+textarea#variables{
+	min-height:250px;	
+}
+
+/* Search controls */
+#search-controls ul{
+	list-style-type:none;
+	margin-bottom:5px;
+}
+
+#search-controls fieldset{
+	padding:.2em 1.25em;
+}
+
+#search-controls h2{
+	margin-top:0px;	
+}
+
+#search-controls #filters{
+	padding-left:0px;
+	padding-top:10px;
+}
+
+.result-range{
+	background-color: #e9e9e9;
+	border-color: #d0d0d0;
+	color: #333333;	
+	padding: 0.72em 1.5em 0.70em;
+	margin: 0px -5px;
+
+}
+
+#pager{
+	text-align:center;	
+}
+
+#new-ticket textarea{
+	min-height:150px;	
+}

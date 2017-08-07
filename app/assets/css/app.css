@@ -1,0 +1,20 @@
+@import url('locations.css');
+@import url('admin.css');
+@import url('form.css');
+/* -----------------------------------------
+   Shared Styles
+----------------------------------------- */
+.home_panel{
+	height:300px;
+	-webkit-border-radius:10px;
+	border:1px solid #dedede;
+	border-top:3px solid;
+	border-top-width:5px;
+	border-top-color:red;
+	padding:15px;
+	padding-top:60px;
+	text-align:center;
+}
+.variable{
+	float: left !important;
+}

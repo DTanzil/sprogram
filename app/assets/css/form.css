@@ -1,0 +1,46 @@
+/* FORM */
+#formWrapper{
+	backgroud-color:#F2F8FF;
+	padding: 20px;
+	border-radius: 5px;
+}
+#form{
+	margin: 0;
+	padding: 0;
+}
+#form h1{
+	font-size: 14pt;
+	font-weight: bold;
+}
+input[type="text"], #form textarea{
+	min-height:30px;
+}
+form section p{
+	line-height: 1.6em;
+}
+form section div label:first-child{
+	font-weight: bold;
+	display: block;
+	margin-bottom: 0.4em;
+	line-height: 1.4em;
+}
+form section p input, #form textarea{
+	padding: 1px;
+	line-height: 1.2em;
+}
+form section p.radio input[type="radio"]{
+	padding: 1px;
+	line-height: 1em;
+	display: block;
+	float: left;
+}
+form section p.radio label{
+	display: block;
+}
+label.error{
+	color:red;
+}
+.label_group{
+	display:inline-block;
+	width:5em;
+}

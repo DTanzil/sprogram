@@ -1,0 +1,29 @@
+.info-box {
+	background-color: #f1f1f1;
+	padding: 10px;
+	margin-bottom: 10px;
+}
+
+.info-box button {
+	width: 90px;
+}
+
+.info-box h4, .info-box dt {
+	font-weight: bold;
+}
+
+.info-box dd {
+	margin-bottom: 0.5em;
+}
+
+.align-bottom {
+	vertical-align: bottom;
+}
+
+.expand {
+	display: '';
+}
+
+.collapse {
+	display: 'none';
+}

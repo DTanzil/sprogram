@@ -1,0 +1,52 @@
+@import url('locations.css');
+@import url('admin.css');
+@import url('form.css');
+.wrapper{
+	width:830px;
+	margin:0 auto;
+	padding: 0 30px;
+	min-height:100%;
+	height: auto;
+}
+tr:hover{
+	background-color: #fff;
+}
+h1{
+	color:#39275B;
+}
+
+h2, h3, h4, h5{
+	color: #333;
+}
+
+a{
+	text-decoration:none;
+	color:#0F79A3;	
+}
+
+a:hover{
+	color:#0e5f7f;
+}
+
+ul.flat{
+	margin:0px;
+	padding:0px;	
+}
+
+ul.flat li{
+	list-style-type:none;	
+	display:inline-block;	
+}
+
+img.loading{
+	display:block;
+	margin:100px auto;	
+}
+.right{
+	float:right;
+}
+
+.left{
+	float:left;	
+}
+

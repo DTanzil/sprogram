@@ -1,0 +1,22 @@
+div.pager {
+    text-align: center;
+    margin: 1em 0;
+}
+
+div.pager span {
+    display: inline-block;
+    width: 1.8em;
+    height: 1.8em;
+    line-height: 1.8;
+    text-align: center;
+    cursor: pointer;
+    background: #D7A900;
+    color: #fff;
+    margin-right: 0.5em;
+    margin-bottom: 1em;
+}
+
+div.pager span.active {
+    background: #A5790A;
+}
+

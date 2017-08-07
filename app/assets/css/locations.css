@@ -1,0 +1,143 @@
+/* Locations Widget */
+
+
+.accordion h1, .accordion h2, .accordion h3, .accordion h4, .accordion h5{
+	margin:0px;
+	border:1px solid #666;
+}
+
+a.trigger{
+	
+}
+
+.accordion .outer {
+	border:1px solid #dadada; 
+	border-width:0 1px 1px; 
+	background: #fff
+}
+
+.accordion .inner {
+	margin-bottom:0; 
+	padding:.5em 20px; 
+	position:relative; 
+	overflow:hidden;
+}
+
+.accordion .inner .inner {
+	padding-bottom:0px;
+}
+
+.accordion .h {
+	padding:.3em .5em;
+	background:#ccc;
+} /* vertical padding instead of vertical margin (ie8) */
+
+.accordion p {
+	margin:.5em 1px 1em;
+	
+}
+
+.h.selected{
+	background-color:#003;
+}
+
+.accordion .new{
+	padding-bottom:5px;	
+}
+
+.accordion .details{
+	padding:.5em 0em .7em 0em;	
+}
+
+.accordion .details img{
+	border: 1px solid #333;
+	float:left;	
+	margin-right:0.6em;
+}
+
+.accordion .details{
+	overflow:hidden;	
+}
+
+.circle-button{
+	border-radius:100px;
+	padding: 2px 5px;
+	cursor: pointer;
+	font: bold 80% sans-serif;
+	color:#fff;
+
+}
+
+.circle-button.red{
+	background:#c30;
+	color:#fff;
+}
+
+.circle-button:hover{
+	color:#000;	
+}
+
+.circle-button.blue{
+	background: #0F79A3;
+}
+
+
+
+
+a.operator{
+	cursor:pointer;
+}
+
+table.edit-location{
+	display:none;	
+}
+
+.accordion input{
+	min-width:180px;	
+}
+
+.accordion textarea{
+	margin-left:0px;
+	min-width:180px;
+}
+
+/* admin contact dialog */
+
+.admin-contact{
+	padding:5px 25px;
+	width:400px;
+	min-height:200px;
+	border-radius:5px;
+	background:#fff;	
+}
+
+.admin-contact h2, .admin-contact h4{
+	margin-top:0px;	
+	margin-bottom:5px;
+}
+
+.admin-contact dt{
+	margin-top:5px;	
+}
+
+
+.admin-contact .close-dialog{
+	margin:0px;
+	padding:0px;
+	position:relative;
+	top: -13px;
+	left: 360px;
+}
+
+.admin-contact .close-dialog span{
+	border-radius: 100px;
+	background: #0F79A3;
+	color: #fff;
+	padding: 4px 9px;
+	cursor: pointer;
+	font: bold 120% sans-serif;
+}
+
+.admin-contact .close-dialog span:hover{
+	background:#111;	
+}
