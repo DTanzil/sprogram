@@ -17,7 +17,7 @@
 			<h4><?= $openAppr['UserFname'] . ' ' . $openAppr['UserLname'] ?></h4>
 			<p><?= $openAppr['UserEmail'] ?></p>
 			<p>You are a <?= $openAppr['ApprovalType'] ?> for this application. Review the information in the 
-				following sections and select an option below.</p>
+				following sections and select an option below:</p>
 			<button class="btn btn-success">Approve</button>
 			<button class="btn btn-danger">Deny</button>
 
@@ -33,7 +33,7 @@
 
 <div id="app-details">
 	<h2><span class="glyphicon glyphicon-expand"></span>Application Details</h2>
-	<div class="collapse">
+	<div class="expand">
 	<div class="row">
 	<div class="col-md-8">
 	<h3>Event Details</h3>
@@ -153,9 +153,11 @@
 		<p><?= $venue['EventStartDate'] . ' - ' .  $venue['EventEndDate']?></p>
 		<p><?= 'Operated by: ' . $venue['UserFname'] . ' ' . $venue['UserLname'] ?></p>
 
-		<p>You are the Venue Operator for this venue. Choose whether to approve or deny this event at this location:</p>
-		<button class="btn btn-success">Approve</button>
-		<button class="btn btn-danger">Deny</button>
+		<?php if($venue['Descision'] == 'pending' && $venue['NetID'] == $this->authorize->getNetid()) { ?>
+			<p>You are the Venue Operator for this venue. Choose whether to approve or deny this event at this location:</p>
+			<button class="btn btn-success">Approve</button>
+			<button class="btn btn-danger">Deny</button>
+		<?php } ?>
 
 		<h4>Status: <?= $venue['Descision'] ?></h4>
 		<h4>Category: <?= $details['ApplicationTypeName'] ?></h4>
@@ -180,6 +182,12 @@
 		<p><?= $users['Sponsor'][0]['UserEmail'] ?></p>
 		<p><?= $approvals['sponsor'][0]['Descision'] ?></p>
 
+		<?php if($approvals['sponsor'][0]['Descision'] == 'pending' && $users['Sponsor'][0]['NetID'] == $this->authorize->getNetid()) { ?>
+			<p>You are the Sponsor for this application. Choose whether to approve or deny it:</p>
+			<button class="btn btn-success">Approve</button>
+			<button class="btn btn-danger">Deny</button>
+		<?php } ?>
+
 		<h4>Status: <?= $approvals['sponsor'][0]['Descision'] ?></h4>
 		<h4>Category: <?= $details['ApplicationTypeName'] ?></h4>
 		<h4>Approval Process Started <?= $approvals['sponsor'][0]['ApprovalStartDate'] ?></h4>
@@ -201,6 +209,12 @@
 		<h4><?= $users['Committee'][0]['UserFname'] . ' ' . $users['Committee'][0]['UserLname'] ?></h4>
 		<p><?= $users['Committee'][0]['UserEmail'] ?></p>
 		<p><?= $committee ? $approvals['committee'][0]['Descision'] : '' ?></p>
+
+		<?php if(sizeof($approvals['committee']) > 0 && $approvals['committee'][0]['Descision'] == 'pending' && $users['Committee'][0]['NetID'] == $this->authorize->getNetid()) { ?>
+			<p>You are the Committee member assigned to this application. Choose whether to approve or deny it:</p>
+			<button class="btn btn-success">Approve</button>
+			<button class="btn btn-danger">Deny</button>
+		<?php } ?>
 
 		<h4>Status: <?= $committee ? $approvals['committee'][0]['Descision'] : '' ?></h4>
 		<h4>Category: <?= $details['ApplicationTypeName'] ?></h4>
@@ -328,6 +342,9 @@
 </pre>
 <pre>
 <?= print_r($approvals); ?>
+</pre>
+<pre>
+<?= print_r($openApprs); ?>
 </pre>
 
 <?php
