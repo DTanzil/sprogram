@@ -17,7 +17,7 @@
 
 		$netid = $CI->authorize->getNetid();
 
-		redirect('errors/unauthorized');
+		//redirect('errors/unauthorized');
 	}
 
 ?>

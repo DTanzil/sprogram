@@ -166,13 +166,14 @@
 					JOIN ApplicationType at ON at.ApplicationTypeID = ac.ApplicationTypeID
 					JOIN Application a ON at.ApplicationTypeID = a.ApplicationTypeID
 					JOIN Venue v ON v.ApplicationID = a.ApplicationID
-					JOIN Approval appr ON appr.VenueID = v.VenueID
+					JOIN VenueUserRole vur ON vur.VenueID = v.VenueID 
+					JOIN Approval appr ON appr.VenueUserRoleID = vur.VenueUserRoleID
 				WHERE appr.ApprovalID = ?
 					AND ac.Category = ?
 			", $params);
 			echo "<p>Actions attached to this approval of type {$approvalType}</p>";
 			echo '<pre>';
-			var_dump($actions);
+			//var_dump($actions);
 			echo '</pre>';
 			$actions = $actions->result_array();
 

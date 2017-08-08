@@ -1,36 +1,29 @@
 <h1><b><?=$details['EventName']?></b></h1>
 <h2><b><?= ($details['Status'] == 'expired' || $details['Status'] == 'denied' || $details['Status'] == 'approved' || $details['Status'] == 'cancelled') ? $details['Status'] : 'Awaiting ' . $details['Status'] . ' approval'?></b></h2>
+
+<?php if(sizeof($openApprs) > 0) { ?>
 <div class="alert alert-warning">
-
-<!-- TODO: make this look nicer -->
-<!-- <div class="row"> -->
-	<!-- <div class="col-xs-1"> -->
 		<span class="glyphicon glyphicon-exclamation-sign"></span>
-	<!-- </div> -->
-	<!-- <div class="col-xs-11">  -->
-		You are the sponsor for this application which requires one or more approvals. Details regarding this application can be found below.
-	<!-- </div> -->
-<!-- </div> -->
+		You are listed as an approver for this application and you currently have pending approvals.
 </div>
-
+<?php } ?>
 <div id="actionItems">
 
-<?= print_r($this->approval->getOpenApprovalsForUser($details['ApplicationID'], $this->authorize->getNetid())) ?>
-
-	 <?php foreach($this->approval->getOpenApprovalsForUser($details['ApplicationID'], $this->authorize->getNetid()) as $openAppr) { ?>
+	 <?php foreach($openApprs as $openAppr) { ?>
 		<div class="row">
 		<div class="col-md-8">
-		<h3>{Role} Approval</h3>
+		<h3><?= $openAppr['ApprovalType'] ?> Approval</h3>
 		<div class="info-box">
-			<h4>Sponsor Name</h4>
-			<p>email@email.email</p>
-			<p>You are the {role} for this application. Choose whether to approve or deny it:</p>
+			<h4><?= $openAppr['UserFname'] . ' ' . $openAppr['UserLname'] ?></h4>
+			<p><?= $openAppr['UserEmail'] ?></p>
+			<p>You are a <?= $openAppr['ApprovalType'] ?> for this application. Review the information in the 
+				following sections and select an option below.</p>
 			<button class="btn btn-success">Approve</button>
 			<button class="btn btn-danger">Deny</button>
 
-			<h4>Status:</h4>
-			<h4>Category:</h4>
-			<h4>Approval Process Started {date}</h4>
+			<h4>Status: <?= $openAppr['Descision'] ?></h4>
+			<h4>Category: <?= $openAppr['ApplicationTypeName'] ?></h4>
+			<h4>Approval Process Started <?= $openAppr['ApprovalStartDate'] ?></h4>
 		</div> 
 		</div> 
 		</div>

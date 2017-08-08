@@ -66,6 +66,34 @@ class Applications_model extends CI_Model {
 	public function getVenues($appID) {
 		$appID = $this->db->escape($appID);
 
+		// $venues = $this->db->query("
+		// 	SELECT * FROM Venue v
+		// 	JOIN Application a ON a.ApplicationID = v.ApplicationID
+		// 	JOIN Room r ON r.RoomID = v.RoomID
+		// 	JOIN Building b ON b.BuildingID = r.BuildingID
+		// 	JOIN UserRoom uroom ON uroom.RoomID = r.RoomID
+		// 	JOIN UserRole ur ON ur.UserRoleID = uroom.UserRoleID
+		// 	JOIN User u ON u.UserID = ur.UserID
+		// 	JOIN VenueUserRole vur ON vur.VenueID = v.VenueID
+		// 	JOIN Approval appr ON appr.VenueUserRoleID = vur.VenueUserRoleID
+		// 	WHERE a.ApplicationID = {$appID}
+		// 	AND appr.ApprovalType = 'VenueOperator'
+		// ");
+		// 
+		// 
+		# Fairly certain this is going to break stuff on the details end...
+		$venues = $this->db->query("
+			SELECT * FROM Venue v
+			JOIN Application a ON a.ApplicationID = v.ApplicationID
+			WHERE a.ApplicationID = {$appID}
+		");
+
+		return $venues->result_array();
+	}
+
+	public function getVenueDetails($appID) {
+		$appID = $this->db->escape($appID);
+
 		$venues = $this->db->query("
 			SELECT * FROM Venue v
 			JOIN Application a ON a.ApplicationID = v.ApplicationID
@@ -74,10 +102,12 @@ class Applications_model extends CI_Model {
 			JOIN UserRoom uroom ON uroom.RoomID = r.RoomID
 			JOIN UserRole ur ON ur.UserRoleID = uroom.UserRoleID
 			JOIN User u ON u.UserID = ur.UserID
-			JOIN Approval appr ON appr.VenueID = v.VenueID
+			JOIN VenueUserRole vur ON vur.VenueID = v.VenueID
+			JOIN Approval appr ON appr.VenueUserRoleID = vur.VenueUserRoleID
 			WHERE a.ApplicationID = {$appID}
 			AND appr.ApprovalType = 'VenueOperator'
 		");
+
 
 		return $venues->result_array();
 	}
@@ -211,39 +241,61 @@ class Applications_model extends CI_Model {
 			$data['BuildingName']
 		);
 
+		# Get the venue operator(s) assigned to this room
 		$operators = $this->db->query("
-			SELECT ur.UserRoleID, u.NetID FROM UserRole ur
+			SELECT ur.UserRoleID, u.NetID, ut.UserTypeName FROM UserRole ur
 				JOIN User u ON u.UserID = ur.UserID
 				JOIN UserRoom ro ON ro.UserRoleID = ur.UserRoleID
+				JOIN UserType ut ON ut.UserTypeID = ur.UserTypeID
 				JOIN Room r ON r.RoomID = ro.RoomID
 				JOIN Building b ON b.BuildingID = r.BuildingID
-			WHERE r.RoomName = ? AND b.BuildingAbbr = ?", $params);
+			WHERE r.RoomName = ? AND b.BuildingAbbr = ?", $params)->result_array();
 
-		foreach($operators->result_array() AS $operator) {
-			# add the venue operator to the list of admins associated with this app
-			$this->addAdminToApp($appID, array("netid" => $operator['NetID'], "UserTypeName" => 'VenueOperator'));
+		$sponsors = $this->getUsersForApp($appID)['Sponsor'];
+		$committees = $this->getUsersForApp($appID)['Committee'];
+		foreach($sponsors as $sponsor) {
+			$operators[] = $sponsor;
+		}
+		foreach($committees as $committee) {
+			$operators[] = $committee;
+		}
+		// echo '<p>operators</p>';
+		// echo '<pre>';
+		// var_dump($operators);
+		// echo '</pre>';
 
-			$params = array (
+		# create venue
+		 $params = array (
 				$data['BuildingName'],
 				$data["RoomName"],
 				$data['EventStartDate'],
 				$data['EventEndDate']
 			);
-			$insert = $this->db->query("
+		$insert = $this->db->query("
 				INSERT INTO Venue
-					(ApplicationID, RoomID, UserRoleID, EventStartDate, EventEndDate)
+					(ApplicationID, RoomID, EventStartDate, EventEndDate)
 				VALUES
-					({$appID}, (SELECT RoomID FROM Room r JOIN Building b ON b.BuildingID = r.BuildingID WHERE BuildingAbbr = ? AND r.RoomName = ?), {$operator['UserRoleID']}, ?, ?)
+					({$appID}, (SELECT RoomID FROM Room r JOIN Building b ON b.BuildingID = r.BuildingID WHERE BuildingAbbr = ? AND r.RoomName = ?), ?, ?)
 			", $params);
+		if(!$insert) {
+			return $this->db->error();
+		}
+		$venueID = $this->db->query("SELECT LAST_INSERT_ID() AS id")->row()->id;
 
-			if(!$insert) {
-				return $this->db->error();
+		# Connect every user in a userrole to this venue
+		foreach($operators AS $operator) {
+			# add the venue operator to the list of admins associated with this app
+			# 
+			if($operator['UserTypeName'] == 'VenueOperator') {
+				$this->addAdminToApp($appID, array("netid" => $operator['NetID'], "UserTypeName" => $operator['UserTypeName']));
 			}
 
-			$venueID = $this->db->query("SELECT LAST_INSERT_ID() AS id")->row()->id;
-
-			$this->approval->createApproval($venueID, 'Sponsor');
+			$this->db->query("
+				INSERT INTO VenueUserRole (VenueID, UserRoleID)
+				VALUES ({$venueID}, {$operator['UserRoleID']})
+			");
 		}
+		$this->approval->createApproval($venueID, 'Sponsor');
 
 		return $venueID;
 	}
@@ -357,7 +409,8 @@ class Applications_model extends CI_Model {
 			WHERE er.ApplicationID = {$appID}
 				OR er.ApprovalID IN 
 					(SELECT ApprovalID FROM Approval appr
-						JOIN Venue v ON v.VenueID = appr.VenueID
+						JOIN VenueUserRole vur ON vur.VenueUserRoleID = appr.VenueUserRoleID
+						JOIN Venue v ON v.VenueID = vur.VenueID
 						JOIN Application a ON a.ApplicationID = v.ApplicationID
 					 WHERE a.ApplicationID = {$appID})
 		")->result_array();

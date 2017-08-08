@@ -65,7 +65,7 @@ class Applications extends CI_Controller {
 
 		$content['netid'] = $this->authorize->getnetid();
 		$content['details'] = $this->Applications_model->getDetailsForApp($appID);
-		$content['venues'] = $this->Applications_model->getVenues($appID);
+		$content['venues'] = $this->Applications_model->getVenueDetails($appID);
 		$content['users'] = $this->Applications_model->getUsersForapp($appID);
 		$content['approvals']['sponsor'] = $this->approval->getApprovalsByType($appID, 'Sponsor');
 		$content['approvals']['venue'] = $this->approval->getApprovalsByType($appID, 'VenueOperator');
@@ -74,6 +74,7 @@ class Applications extends CI_Controller {
 		$content['notes'] = $this->Applications_model->getNotes($appID);
 		$content['view'] = "manage_applications/view/details.php";
 		$content['description'] = "View Application Details";
+		$content['openApprs'] = $this->approval->getOpenApprovalsForUser($content['details']['ApplicationID'], $this->authorize->getNetid());
 
 		$js = array('views/pagination.js', 'views/manage_applications/details.js');
 		$css = array('views/pagination.css', 'views/manage_applications/details.css');
@@ -243,6 +244,10 @@ class Applications extends CI_Controller {
 		echo "</pre>";
 
 		$venues = $this->Applications_model->getVenues($id);
+
+		echo "<pre> venues: ";
+		print_r($venues);
+		echo "</pre>";
 		foreach($venues as $venue) {
 			$this->approval->createApproval($venue['VenueID'], 'VenueOperator');
 		}

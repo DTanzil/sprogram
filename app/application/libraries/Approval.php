@@ -88,7 +88,8 @@
 			$denials = $this->CI->db->query("
 				SELECT v.VenueID, Descision, DescisionRemark, ApprovalEndDate
 				FROM Approval appr
-					JOIN Venue v ON v.VenueID = appr.VenueID
+					JOIN VenueUserRole vur ON vur.VenueUserRoleID = appr.VenueUserRoleID
+					JOIN Venue v ON v.VenueID = vur.VenueID
 					JOIN Application app ON app.ApplicationID = v.ApplicationID
 				WHERE appr.ApprovalType = '{$currentStatus}'
 					AND app.ApplicationID = {$appID}
@@ -104,37 +105,67 @@
 		public function createApproval($venueID, $type) {
 			//$type = $this->CI->db->escape($type);
 			//get the UserRole with UserType 'type' associated 
-			$userRoleID = $this->CI->db->query("
-				SELECT ur.UserRoleID
+			// $userRoleID = $this->CI->db->query("
+			// 	SELECT ur.UserRoleID
+			// 	FROM UserRole ur
+			// 		JOIN UserType ut ON ur.UserTypeID = ut.UserTypeID
+			// 		JOIN UserRoleApplication ura ON ura.UserRoleID = ur.UserRoleID
+			// 		JOIN Application a ON ura.ApplicationID = a.ApplicationID
+			// 		JOIN Venue v ON v.ApplicationID = a.ApplicationID
+			// 	WHERE v.VenueID = {$venueID} AND UserTypeName = '{$type}'
+			// ")->row()->UserRoleID;
+			
+			# get all user roles for this venue with type $type
+			 $vurs = $this->CI->db->query("
+				SELECT vur.*
 				FROM UserRole ur
 					JOIN UserType ut ON ur.UserTypeID = ut.UserTypeID
-					JOIN UserRoleApplication ura ON ura.UserRoleID = ur.UserRoleID
-					JOIN Application a ON ura.ApplicationID = a.ApplicationID
-					JOIN Venue v ON v.ApplicationID = a.ApplicationID
+					JOIN VenueUserRole vur ON vur.UserRoleID = ur.UserRoleID
+					JOIN Venue v ON v.VenueID = vur.VenueID
 				WHERE v.VenueID = {$venueID} AND UserTypeName = '{$type}'
-			")->row()->UserRoleID;
+			")->result_array();
 
-			//insert new approval
-			$insert = $this->CI->db->query("
-				INSERT INTO Approval
-					(ApprovalType, ApprovalStartDate, VenueID, UserRoleID, Descision)
-				VALUES 
-					((SELECT ut.UserTypeName
-					 FROM UserType ut 
-					 	JOIN UserRole ur ON ur.UserTypeID = ut.UserTypeID 
-				 	 WHERE UserRoleID = {$userRoleID}),
-					NOW(),
-					{$venueID},
-					{$userRoleID},
-					'pending')
-			");
-			if(!$insert) {
-				return $this->CI->db->error();
-			}
-			$approvalID = $this->CI->db->query("SELECT LAST_INSERT_ID() AS id")->row()->id;
-
-			$this->CI->mailer->attachActionsToApproval($approvalID, $type);
+			//insert new approval for each userrole
+			// $insert = $this->CI->db->query("
+			// 	INSERT INTO Approval
+			// 		(ApprovalType, ApprovalStartDate, VenueID, UserRoleID, Descision)
+			// 	VALUES 
+			// 		((SELECT ut.UserTypeName
+			// 		 FROM UserType ut 
+			// 		 	JOIN UserRole ur ON ur.UserTypeID = ut.UserTypeID 
+			// 	 	 WHERE UserRoleID = {$userRoleID}),
+			// 		NOW(),
+			// 		{$venueID},
+			// 		{$userRoleID},
+			// 		'pending')
+			// ");
+			// if(!$insert) {
+			// 	return $this->CI->db->error();
+			// }
+			// $approvalID = $this->CI->db->query("SELECT LAST_INSERT_ID() AS id")->row()->id;
+			// 
+			foreach($vurs as $vur) {
+				//insert new approval for each userrole
+				$insert = $this->CI->db->query("
+					INSERT INTO Approval
+						(ApprovalType, ApprovalStartDate, VenueUserRoleID, Descision)
+					VALUES 
+						((SELECT ut.UserTypeName
+						 FROM UserType ut 
+						 	JOIN UserRole ur ON ur.UserTypeID = ut.UserTypeID 
+					 	 WHERE ur.UserRoleID = {$vur['UserRoleID']}),
+						NOW(),
+						{$vur['VenueUserRoleID']},
+						'pending')
+				");
+				if(!$insert) {
+					return $this->CI->db->error();
+				}
+				$approvalID = $this->CI->db->query("SELECT LAST_INSERT_ID() AS id")->row()->id;
+				$this->CI->mailer->attachActionsToApproval($approvalID, $type);
 			//send email
+			}
+
 		}
 
 		public function updateApproval($userRoleID, $venueID, $type, $signature, $descision, $descisionRemark = '') {
@@ -148,14 +179,28 @@
 			);
 
 			# TODO: 
+			// $this->CI->db->query("
+			// 	UPDATE Approval
+			// 		SET ApprovalEndDate = NOW(),
+			// 		ApprovalSignature = ?,
+			// 		Descision = ?,
+			// 		DescisionRemark = ?
+			// 	WHERE UserRoleID = ?
+			// 		AND VenueID = ?
+			// 		AND ApprovalType = ?
+					
+			// ", $params);
+			// 
 			$this->CI->db->query("
 				UPDATE Approval
 					SET ApprovalEndDate = NOW(),
 					ApprovalSignature = ?,
 					Descision = ?,
 					DescisionRemark = ?
-				WHERE UserRoleID = ?
-					AND VenueID = ?
+				WHERE VenueUserRoleID = 
+						(SELECT VenueUserRoleID 
+						 FROM VenueUserRole 
+						 WHERE UserRoleID = ? AND VenueID = ?)
 					AND ApprovalType = ?
 					
 			", $params);
@@ -165,24 +210,42 @@
 
 		public function getApproval($venueID, $adminRoleID, $type) {
 			// TODO: figure out if ApprovalType table is necessary
+			// $approval = $this->CI->db->query("
+			// 	SELECT * FROM Approval a
+			// 		JOIN Venue v ON v.VenueID = a.VenueID
+			// 		JOIN UserRole ur ON ur.UserRoleID = a.UserRoleID
+			// 		JOIN User u ON u.UserID = ur.UserID
+			// 	WHERE ur.UserRoleID = {$adminRoleID}
+			// 		AND v.VenueID = {$venueID}
+			// 		AND a.ApprovalType = '{$type}'
+			// ");
+
 			$approval = $this->CI->db->query("
 				SELECT * FROM Approval a
-					JOIN Venue v ON v.VenueID = a.VenueID
-					JOIN UserRole ur ON ur.UserRoleID = a.UserRoleID
-					JOIN User u ON u.UserID = ur.UserID
-				WHERE ur.UserRoleID = {$adminRoleID}
-					AND v.VenueID = {$venueID}
+					JOIN VenueUserRole vur ON vur.VenueUserRoleID = a.VenueUserRoleID
+				WHERE vur.UserRoleID = {$adminRoleID}
+					AND vur.VenueID = {$venueID}
 					AND a.ApprovalType = '{$type}'
 			");
 			return $approval->result_array();
 		}
 
 		public function getApprovalsForApp($appID) {
+			// $approvals = $this->CI->db->query("
+			// 	SELECT * FROM Approval appr
+			// 		JOIN Venue v ON v.VenueID = appr.VenueID
+			// 		JOIN Application a ON a.ApplicationID = v.ApplicationID
+   //                  JOIN UserRole ur ON ur.UserRoleID = appr.UserRoleID
+   //              WHERE a.ApplicationID = {$appID}
+
+			// ");
+
 			$approvals = $this->CI->db->query("
 				SELECT * FROM Approval appr
-					JOIN Venue v ON v.VenueID = appr.VenueID
+					JOIN VenueUserRole vur ON vur.VenueUserRoleID = appr.VenueUserRoleID
+					JOIN Venue v ON v.VenueID = vur.VenueID
 					JOIN Application a ON a.ApplicationID = v.ApplicationID
-                    JOIN UserRole ur ON ur.UserRoleID = appr.UserRoleID
+                    JOIN UserRole ur ON ur.UserRoleID = vur.UserRoleID
                 WHERE a.ApplicationID = {$appID}
 
 			");
@@ -191,11 +254,22 @@
 		}
 
 		public function getApprovalsByType($appID, $approvalType) {
+			// $approvals = $this->CI->db->query("
+			// 	SELECT * FROM Approval appr
+			// 		JOIN Venue v ON v.VenueID = appr.VenueID
+			// 		JOIN Application a ON a.ApplicationID = v.ApplicationID
+   //                  JOIN UserRole ur ON ur.UserRoleID = appr.UserRoleID
+   //              WHERE a.ApplicationID = {$appID}
+   //              	AND ApprovalType = '{$approvalType}'
+
+			// ");
+			// 
 			$approvals = $this->CI->db->query("
 				SELECT * FROM Approval appr
-					JOIN Venue v ON v.VenueID = appr.VenueID
+					JOIN VenueUserRole vur ON vur.VenueUserRoleID = appr.VenueUserRoleID
+					JOIN Venue v ON v.VenueID = vur.VenueID
 					JOIN Application a ON a.ApplicationID = v.ApplicationID
-                    JOIN UserRole ur ON ur.UserRoleID = appr.UserRoleID
+                    JOIN UserRole ur ON ur.UserRoleID = vur.UserRoleID
                 WHERE a.ApplicationID = {$appID}
                 	AND ApprovalType = '{$approvalType}'
 
@@ -205,11 +279,26 @@
 		}
 
 		public function getOpenApprovalsForUser($appID, $netID) {
+			// $approvals = $this->CI->db->query("
+			// 	SELECT * FROM Approval appr
+			// 		JOIN Venue v ON v.VenueID = appr.VenueID
+			// 		JOIN Application a ON a.ApplicationID = v.ApplicationID
+   //                  JOIN UserRole ur ON ur.UserRoleID = appr.UserRoleID
+   //                  JOIN User u ON u.UserID = ur.UserID
+   //              WHERE a.ApplicationID = {$appID}
+   //              	AND u.NetID = '{$netID}'
+   //              	AND appr.ApprovalEndDate is null
+
+			// ");
+			// 
+			// 
 			$approvals = $this->CI->db->query("
 				SELECT * FROM Approval appr
-					JOIN Venue v ON v.VenueID = appr.VenueID
+					JOIN VenueUserRole vur ON appr.VenueUserRoleID = vur.VenueUserRoleID
+					JOIN Venue v ON v.VenueID = vur.VenueID
 					JOIN Application a ON a.ApplicationID = v.ApplicationID
-                    JOIN UserRole ur ON ur.UserRoleID = appr.UserRoleID
+					JOIN ApplicationType at ON at.ApplicationTypeID = a.ApplicationTypeID
+                    JOIN UserRole ur ON ur.UserRoleID = vur.UserRoleID
                     JOIN User u ON u.UserID = ur.UserID
                 WHERE a.ApplicationID = {$appID}
                 	AND u.NetID = '{$netID}'

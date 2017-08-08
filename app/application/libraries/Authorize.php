@@ -19,7 +19,7 @@
 			$this->bypass = true; # uncomment this to use bypass
 
 			if($this->bypass) {
-				$_SERVER['REMOTE_USER'] = 'cmcoop';
+				$_SERVER['REMOTE_USER'] = 'jkiest';
 
 				unset($this->CI->session->roles);
 			}
@@ -32,11 +32,7 @@
 		#	$role: The required role needed to access this page.
 		#		   The default is 'Admin'
 		public function authUser() {
-			if($this->bypass) {
-				$_SERVER['REMOTE_USER'] = 'jkiest';
 
-				unset($this->CI->session->roles);
-			}
 
 			//var_dump($this->CI->session);
 
