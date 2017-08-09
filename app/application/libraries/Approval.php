@@ -49,6 +49,11 @@
 			$this->CI->mailer->performMailActionforApp($appID, 'sponsor descision');
 		}
 
+		public function updateVenueDecision($venueID, $userRoleID, $decision) {
+			# $userRoleID, $venueID, $type, $signature, $descision, $descisionRemark = ''
+			$this->updateApproval($userRoleID, $venueID, 'venue', 'default', $decision);
+		}
+
 		# UNTESTED
 		# Advances the status of an applcation if all the proper requirements have been completed
 		public function advanceApplication($appID, $toStep) {

@@ -9,6 +9,8 @@
 $(document).ready(function() {
 	$('span.glyphicon-expand').click(expand);
 
+	$('button.venueApprove').click(approveVenue);
+
 	function collapse(event) {
 		var $el = $(this);
 
@@ -31,5 +33,16 @@ $(document).ready(function() {
 		$el.addClass('glyphicon-collapse-down');
 
 		$el.click(collapse);
+	}
+
+	function approveVenue(event) {
+		console.log('click');
+		
+		var btn = $(this);
+		var venueID = btn.val();
+		var userRoleID = btn.siblings('h4').val();
+
+		console.log(venueID, userRoleID);
+
 	}
 });

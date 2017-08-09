@@ -14,12 +14,12 @@
 		<div class="col-md-8">
 		<h3><?= $openAppr['ApprovalType'] ?> Approval</h3>
 		<div class="info-box">
-			<h4><?= $openAppr['UserFname'] . ' ' . $openAppr['UserLname'] ?></h4>
+			<h4 value=<?= '"' . $openAppr['UserRoleID'] . '"' ?>><?= $openAppr['UserFname'] . ' ' . $openAppr['UserLname'] ?></h4>
 			<p><?= $openAppr['UserEmail'] ?></p>
 			<p>You are a <?= $openAppr['ApprovalType'] ?> for this application. Review the information in the 
 				following sections and select an option below:</p>
-			<button class="btn btn-success">Approve</button>
-			<button class="btn btn-danger">Deny</button>
+			<button class="btn btn-success venueApprove" value=<?= "\"{$openAppr['VenueID']}\"" ?>>Approve</button>
+			<button class="btn btn-danger venueDeny" value=<?= "\"{$openAppr['VenueID']}\"" ?>>Deny</button>
 
 			<h4>Status: <?= $openAppr['Descision'] ?></h4>
 			<h4>Category: <?= $openAppr['ApplicationTypeName'] ?></h4>
@@ -99,7 +99,7 @@
 
 		<h4>Status: <?= $details['Status'] ?></h4>
 		<h4>Category: <?= $details['ApplicationTypeName'] ?></h4>
-		<h4>Submitted <?= $details['EventStartDate'] ?></h4>
+		<h4>Submitted <?= $details['DateApplied'] ?></h4>
 	</div> <!-- end info-box -->
 	</div>
 	</div>
