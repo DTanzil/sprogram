@@ -18,12 +18,12 @@
 			<p><?= $openAppr['UserEmail'] ?></p>
 			<p>You are a <?= $openAppr['ApprovalType'] ?> for this application. Review the information in the 
 				following sections and select an option below:</p>
-			<button class="btn btn-success venueApprove" value=<?= "\"{$openAppr['VenueID']}\"" ?>>Approve</button>
-			<button class="btn btn-danger venueDeny" value=<?= "\"{$openAppr['VenueID']}\"" ?>>Deny</button>
+			<button class="btn btn-success venueApprove" value=<?= "\"{$openAppr['ApprovalID']}\"" ?>>Approve</button>
+			<button class="btn btn-danger venueDeny" value=<?= "\"{$openAppr['ApprovalID']}\"" ?>>Deny</button>
 
-			<h4>Status: <?= $openAppr['Descision'] ?></h4>
+			<h4 class="appr-status">Status: <?= $openAppr['Descision'] ?></h4>
 			<h4>Category: <?= $openAppr['ApplicationTypeName'] ?></h4>
-			<h4>Approval Process Started <?= $openAppr['ApprovalStartDate'] ?></h4>
+			<h4 class="appr-date">Approval Process Started <?= $openAppr['ApprovalStartDate'] ?></h4>
 		</div> 
 		</div> 
 		</div>

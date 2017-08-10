@@ -106,6 +106,22 @@ class Applications extends CI_Controller {
 		echo json_encode($updatedFlag->has_flag);
 	}
 
+	public function venueDecision() {
+		header('Access-Control-Allow-Origin: *');
+
+		$approvalID = $this->input->post('approvalID');
+		$decision = $this->input->post('decision');
+
+		$confirmation = $this->approval->updateVenueDecision($approvalID, $decision);
+
+		header('Content-Type: application/json');
+		echo json_encode($confirmation);
+	}
+
+	public function appDecision() {
+		
+	}
+
 	public function test() {
 		echo '<p>Creating App</p>';
 		//create app

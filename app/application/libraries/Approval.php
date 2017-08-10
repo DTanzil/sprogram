@@ -49,9 +49,27 @@
 			$this->CI->mailer->performMailActionforApp($appID, 'sponsor descision');
 		}
 
-		public function updateVenueDecision($venueID, $userRoleID, $decision) {
+		public function updateVenueDecision($approvalID, $decision) {
 			# $userRoleID, $venueID, $type, $signature, $descision, $descisionRemark = ''
-			$this->updateApproval($userRoleID, $venueID, 'venue', 'default', $decision);
+			//$this->updateApproval($userRoleID, $venueID, 'venue', 'default', $decision);
+			//
+			$params = array(
+				$decision,
+				$approvalID
+			);
+
+			$this->CI->db->query("
+				UPDATE Approval
+					SET ApprovalEndDate = NOW(),
+					Descision = ?
+				WHERE ApprovalID = ?
+					
+			", $params);
+
+			$confirm = $this->CI->db->query("
+				SELECT ApprovalID, ApprovalEndDate, Descision FROM Approval WHERE ApprovalID = {$approvalID}
+			")->result_array()[0];
+			return $confirm;
 		}
 
 		# UNTESTED

@@ -9,7 +9,8 @@
 $(document).ready(function() {
 	$('span.glyphicon-expand').click(expand);
 
-	$('button.venueApprove').click(approveVenue);
+	$('button.venueApprove').click(updateApproval);
+	$('button.venueDeny').click(updateApproval);
 
 	function collapse(event) {
 		var $el = $(this);
@@ -35,14 +36,38 @@ $(document).ready(function() {
 		$el.click(collapse);
 	}
 
-	function approveVenue(event) {
-		console.log('click');
-		
+	function updateApproval(event) {
+
+
 		var btn = $(this);
-		var venueID = btn.val();
-		var userRoleID = btn.siblings('h4').val();
+		var apprID = btn.val();
+		var decision = btn.hasClass('venueApprove') ? 'approved' : 'denied';
 
-		console.log(venueID, userRoleID);
+		$.ajax({
+			url: 'http://localhost/sprogram-app/app/applications/venueDecision',
+			method: 'post',
+			data:
+			{
+				approvalID: apprID,
+				decision: decision
+			},
+			success: success,
+			error: error
+		});
 
+	}
+
+	function success(data) {
+		var btns = $('button[value=' + data['ApprovalID'] + ']');
+		var box = btns.parent();
+		btns.remove();
+
+		box.find('h4.appr-status').text('Status: ' + data['Descision']);
+		box.find('h4.appr-date').text('Approval Process Ended ' + data['ApprovalEndDate']);
+		//$('btn[value="' + data + '"]').
+	}
+
+	function error(error) {
+		console.error(error);
 	}
 });
