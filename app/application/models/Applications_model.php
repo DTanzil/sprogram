@@ -95,17 +95,28 @@ class Applications_model extends CI_Model {
 		$appID = $this->db->escape($appID);
 
 		$venues = $this->db->query("
-			SELECT * FROM Venue v
-			JOIN Application a ON a.ApplicationID = v.ApplicationID
-			JOIN Room r ON r.RoomID = v.RoomID
-			JOIN Building b ON b.BuildingID = r.BuildingID
-			JOIN UserRoom uroom ON uroom.RoomID = r.RoomID
-			JOIN UserRole ur ON ur.UserRoleID = uroom.UserRoleID
-			JOIN User u ON u.UserID = ur.UserID
-			JOIN VenueUserRole vur ON vur.VenueID = v.VenueID
-			JOIN Approval appr ON appr.VenueUserRoleID = vur.VenueUserRoleID
+			SELECT *, GROUP_CONCAT(CONCAT(u.UserFName, ' ', u.UserLname)) AS Operators
+			FROM Venue v 
+			JOIN Application a 
+				ON a.ApplicationID = v.ApplicationID 
+			JOIN Room r 
+				ON r.RoomID = v.RoomID 
+			JOIN Building b 
+				ON b.BuildingID = r.BuildingID 
+			JOIN UserRoom uroom 
+				ON uroom.RoomID = r.RoomID 
+			JOIN UserRole ur 
+				ON ur.UserRoleID = uroom.UserRoleID 
+			JOIN User u 
+				ON u.UserID = ur.UserID 
+			JOIN VenueUserRole vur 
+				ON vur.VenueID = v.VenueID 
+			JOIN Approval appr 
+				ON appr.VenueUserRoleID = vur.VenueUserRoleID 
+
 			WHERE a.ApplicationID = {$appID}
-			AND appr.ApprovalType = 'VenueOperator'
+				AND appr.ApprovalType = 'VenueOperator'
+			GROUP BY v.VenueID
 		");
 
 
@@ -296,6 +307,8 @@ class Applications_model extends CI_Model {
 			");
 		}
 		$this->approval->createApproval($venueID, 'Sponsor');
+		$this->approval->createApproval($venueID, 'Venue');
+		$this->approval->createApproval($venueID, 'Committee');
 
 		return $venueID;
 	}

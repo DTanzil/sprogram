@@ -151,17 +151,17 @@
 	<div class="info-box">
 		<h4><?= $venue['RoomAbbr'] ?></h4>
 		<p><?= $venue['EventStartDate'] . ' - ' .  $venue['EventEndDate']?></p>
-		<p><?= 'Operated by: ' . $venue['UserFname'] . ' ' . $venue['UserLname'] ?></p>
+		<p><?= 'Operated by: ' . $venue['Operators'] ?></p>
 
 		<?php if($venue['Descision'] == 'pending' && $venue['NetID'] == $this->authorize->getNetid()) { ?>
 			<p>You are the Venue Operator for this venue. Choose whether to approve or deny this event at this location:</p>
-			<button class="btn btn-success">Approve</button>
-			<button class="btn btn-danger">Deny</button>
+			<button class="btn btn-success venueApprove" value=<?= "\"{$openAppr['ApprovalID']}\"" ?>>Approve</button>
+			<button class="btn btn-danger venueDeny" value=<?= "\"{$openAppr['ApprovalID']}\"" ?>>Deny</button>
 		<?php } ?>
 
-		<h4>Status: <?= $venue['Descision'] ?></h4>
+		<h4 class="appr-status">Status: <?= $venue['Descision'] ?></h4>
 		<h4>Category: <?= $details['ApplicationTypeName'] ?></h4>
-		<h4>Approval Process Started <?= $venue['ApprovalStartDate'] ?></h4>
+		<h4 class="appr-date">Approval Process Started <?= $venue['ApprovalStartDate'] ?></h4>
 	</div> <!-- end info-box -->
 	</div>
 	</div>
@@ -334,6 +334,9 @@
 </div>
 <?php } ?>
 
+<pre>
+<?= print_r($venues); ?>
+</pre>
 <pre>
 <?= print_r($details); ?>
 </pre>
