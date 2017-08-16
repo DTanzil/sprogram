@@ -154,7 +154,7 @@
 		<p><?= 'Operated by: ' . $venue['Operators'] ?></p>
 
 		<?php if($venue['Descision'] == 'pending' && $venue['NetID'] == $this->authorize->getNetid()) { ?>
-			<p>You are the Venue Operator for this venue. Choose whether to approve or deny this event at this location:</p>
+			<p>You are a Venue Operator for this location. Choose whether to approve or deny this event at this location:</p>
 			<button class="btn btn-success venueApprove" value=<?= "\"{$openAppr['ApprovalID']}\"" ?>>Approve</button>
 			<button class="btn btn-danger venueDeny" value=<?= "\"{$openAppr['ApprovalID']}\"" ?>>Deny</button>
 		<?php } ?>

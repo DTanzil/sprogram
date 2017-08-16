@@ -191,6 +191,39 @@
 
 		}
 
+		public function createApprovalsForOperator($venues, $userRoleID) {
+			foreach($venues as $venue) {
+
+
+				$this->CI->db->query("
+					INSERT INTO UserRoleApplication(UserRoleID, ApplicationID)
+						VALUES(
+							{$userRoleID}, (
+							SELECT a.ApplicationID FROM Application a
+							JOIN Venue v ON v.ApplicationID = a.ApplicationID
+							WHERE v.VenueID = {$venue['VenueID']}
+							)
+						)
+				");
+
+				$this->CI->db->query("
+					INSERT INTO VenueUserRole(VenueID, UserRoleID)
+					VALUES ({$venue['VenueID']}, {$userRoleID})
+				");
+
+				$vurID = $this->CI->db->query("SELECT LAST_INSERT_ID() AS id")->row()->id;
+
+				echo($vurID);
+
+				$this->CI->db->query("
+					INSERT INTO Approval
+						(ApprovalType, ApprovalStartDate, VenueUserRoleID, Descision)
+					VALUES
+						('VenueOperator', NOW(), {$vurID}, 'pending')
+				");
+			}
+		}
+
 		public function updateApproval($userRoleID, $venueID, $type, $signature, $descision, $descisionRemark = '') {
 			$params = array(
 				$signature,
@@ -275,6 +308,8 @@
 
 			return $approvals->result_array();
 		}
+
+		//public function get
 
 		public function getApprovalsByType($appID, $approvalType) {
 			// $approvals = $this->CI->db->query("

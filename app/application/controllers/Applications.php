@@ -237,51 +237,51 @@ class Applications extends CI_Controller {
 		echo print_r($approvals);
 		echo "</pre>";
 
-		//attempt advance to venue, should fail
-		echo '<p>Advancing App to Venue without approval (should fail)';
-		$error = $this->approval->advanceApplication($id, 'venue');
-		echo "<pre> Error: ";
-		print_r($error);
-		echo "</pre>";
-		echo '<p>App Status: ' . $this->approval->getStatus($id) . '</p>';
+		// //attempt advance to venue, should fail
+		// echo '<p>Advancing App to Venue without approval (should fail)';
+		// $error = $this->approval->advanceApplication($id, 'venue');
+		// echo "<pre> Error: ";
+		// print_r($error);
+		// echo "</pre>";
+		// echo '<p>App Status: ' . $this->approval->getStatus($id) . '</p>';
 
-		echo '<p>Approving Application Sponsorship and advancing';
-		//approve
-		$this->approval->updateSponsorDescision($id, 'jshill', 'approved');
-		$approvals = $this->approval->getApprovalsForApp($id);
-		echo "<p>Approvals for app</p>";
-		echo "<pre>";
-		echo print_r($approvals);
-		echo "</pre>";
+		// echo '<p>Approving Application Sponsorship and advancing';
+		// //approve
+		// $this->approval->updateSponsorDescision($id, 'jshill', 'approved');
+		// $approvals = $this->approval->getApprovalsForApp($id);
+		// echo "<p>Approvals for app</p>";
+		// echo "<pre>";
+		// echo print_r($approvals);
+		// echo "</pre>";
 
-		$error = $this->approval->advanceApplication($id, 'venue');
-		echo "<pre> Error: ";
-		print_r($error);
-		echo "</pre>";
+		// $error = $this->approval->advanceApplication($id, 'venue');
+		// echo "<pre> Error: ";
+		// print_r($error);
+		// echo "</pre>";
 
-		$venues = $this->Applications_model->getVenues($id);
+		// $venues = $this->Applications_model->getVenues($id);
 
-		echo "<pre> venues: ";
-		print_r($venues);
-		echo "</pre>";
-		foreach($venues as $venue) {
-			$this->approval->createApproval($venue['VenueID'], 'VenueOperator');
-		}
+		// echo "<pre> venues: ";
+		// print_r($venues);
+		// echo "</pre>";
+		// foreach($venues as $venue) {
+		// 	$this->approval->createApproval($venue['VenueID'], 'VenueOperator');
+		// }
 
-		echo '<p>App Status: ' . $this->approval->getStatus($id) . '</p>';
-		$approvals = $this->approval->getApprovalsForApp($id);
-		echo "<p>Approvals for app</p>";
-		echo "<pre>";
-		echo print_r($approvals);
-		echo "</pre>";
+		// echo '<p>App Status: ' . $this->approval->getStatus($id) . '</p>';
+		// $approvals = $this->approval->getApprovalsForApp($id);
+		// echo "<p>Approvals for app</p>";
+		// echo "<pre>";
+		// echo print_r($approvals);
+		// echo "</pre>";
 
-		//try to rollback
-		echo '<p>Attemping to roll back app to sponsor(should fail)</p>';
-		$error = $this->approval->advanceApplication($id, 'sponsor');
-		echo "<pre> Error: ";
-		print_r($error);
-		echo "</pre>";
-		echo '<p>App Status: ' . $this->approval->getStatus($id) . '</p>';
+		// //try to rollback
+		// echo '<p>Attemping to roll back app to sponsor(should fail)</p>';
+		// $error = $this->approval->advanceApplication($id, 'sponsor');
+		// echo "<pre> Error: ";
+		// print_r($error);
+		// echo "</pre>";
+		// echo '<p>App Status: ' . $this->approval->getStatus($id) . '</p>';
 
 	}
 

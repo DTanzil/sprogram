@@ -3,6 +3,8 @@ class Manage_locations_model extends CI_Model {
 	public function __construct() {
 		parent::__construct();
 		$this->load->database();
+
+		$this->load->library('Approval');
 	}
 
 	/**
@@ -200,6 +202,37 @@ class Manage_locations_model extends CI_Model {
 						AND ur.UserID = {$params['UserID']}),
 					{$params['RoomID']} )
 			");
+
+			$venues = $this->db->query("
+				SELECT DISTINCT v.VenueID FROM Venue v
+				JOIN Room r ON r.RoomID = v.RoomID
+				JOIN VenueUserRole vur ON vur.VenueID = v.VenueID
+				LEFT JOIN Approval appr ON appr.VenueUserRoleID = vur.VenueUserRoleID
+				WHERE r.RoomID = {$params['RoomID']}
+					AND appr.ApprovalID IS NULL
+					
+			");
+
+			echo 'venues query: ' . var_dump($venues);
+			$venues = $venues->result_array();
+			echo '<pre>Venues';
+			var_dump($venues);
+			echo '</pre>';
+
+			# Add approvals to venues affected by this change so the admin can approve/deny locations in open applications
+			# 
+
+
+
+			$userRoleID = $this->db->query("SELECT UserRoleID FROM UserRole ur
+						JOIN UserType ut ON ur.UserTypeID = ut.UserTypeID
+						JOIN User u ON u.UserID = ur.UserID
+					WHERE UserTypeName = 'VenueOperator'
+						AND ur.UserID = {$params['UserID']}")->result_array()[0]['UserRoleID'];
+
+			var_dump($userRoleID);
+
+			$this->approval->createApprovalsForOperator($venues, $userRoleID);
 		}
 	}
 
@@ -210,10 +243,70 @@ class Manage_locations_model extends CI_Model {
 	public function deleteAllOperatorsFromLocation($locationID) {
 		$locationID = $this->db->escape($locationID);
 
+		# remove pending approvals associated with venue operators at this location
+		# 
+		# 
+		$this->db->query("
+			DELETE FROM UserRoleApplication
+			WHERE UserRoleID IN (
+				SELECT ur.UserRoleID FROM UserRole ur
+				JOIN UserType ut ON ut.UserTypeID = ur.UserTypeID
+				JOIN VenueUserRole vur ON vur.UserRoleID = ur.UserRoleID
+				JOIN Venue v ON v.VenueID = vur.VenueID
+				JOIN Approval appr ON appr.VenueUserRoleID = vur.VenueUserRoleID
+				JOIN Room r ON r.RoomID = v.RoomID
+				WHERE r.RoomID = {$locationID}
+					AND appr.Descision = 'pending'
+					AND appr.ApprovalType = 'VenueOperator'
+			)
+			 AND ApplicationID IN (
+			 	SELECT a.ApplicationID FROM Application a
+					JOIN Venue v ON v.ApplicationID = a.ApplicationID
+					JOIN Room r ON r.RoomID = v.RoomID
+					WHERE r.RoomID = {$locationID}
+			 )
+		");
+
+		$this->db->query("
+			DELETE FROM Approval
+			WHERE VenueUserRoleID IN
+					(
+					SELECT vur.VenueUserRoleID FROM VenueUserRole vur
+						JOIN Venue v ON v.VenueID = vur.VenueID
+						JOIN Room r ON r.RoomID = v.RoomID
+						WHERE r.RoomID = {$locationID}
+					)
+				AND ApprovalType = 'VenueOperator'
+		");		
+		$this->db->query("
+			DELETE FROM VenueUserRole
+			WHERE VenueID IN 
+				(
+                SELECT v.VenueID 
+                FROM Venue v 
+                JOIN Room r ON r.RoomID = v.RoomID 
+                WHERE r.RoomID = {$locationID})
+			AND UserRoleID IN
+				(
+				SELECT ur.UserRoleID FROM UserRole ur
+                JOIN UserRoom uroom ON uroom.UserRoleID = ur.UserRoleID
+                JOIN Room r ON uroom.RoomID = r.RoomID
+                WHERE r.RoomID = {$locationID}
+                )
+            AND VenueUserRoleID IN
+            	(
+            	SELECT appr.VenueUserRoleID FROM Approval appr
+            	WHERE appr.descision = 'pending'
+            		AND appr.ApprovalType = 'VenueOperator'
+            	)
+		");
+
+
 		$this->db->query("
 			DELETE FROM UserRoom
 			WHERE RoomID = {$locationID}
 		");
+
 	}
 }
 ?>

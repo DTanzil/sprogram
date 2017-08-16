@@ -119,9 +119,16 @@ class Manage_locations extends CI_Controller {
 			$this->Manage_locations_model->editLocation($locationInfo);
 
 			$admins = $locationInfo['admins'];
+
+			echo '<pre>';
+			print_r($locationInfo);
+			print_r($admins);
+			echo '</pre>';
+
 			$this->Manage_locations_model->deleteAllOperatorsFromLocation($locationID);
 			$this->Manage_locations_model->addOperatorsToRoom($admins, $locationID);
 
+			die;
 			echo 'edit form submit';
 			redirect(base_url('Manage_locations'));
 		} else {

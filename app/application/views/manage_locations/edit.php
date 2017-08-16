@@ -13,7 +13,7 @@
 			</div>
 			<div class="col-lg-6">
 				<label for="comment">Description</label>
-  				<textarea class="form-control" rows="5" maxlength=500 id="comment" value=<?= '"' . $locationInfo['RoomDesc'] . '"' ?> ></textarea>
+  				<textarea class="form-control" rows="5" maxlength=500 id="comment" name="RoomDesc" value=<?= '"' . $locationInfo['RoomDesc'] . '"' ?> ></textarea>
 			</div>
 			<div class="col-lg-6">
 				<label for="email">Building</label>

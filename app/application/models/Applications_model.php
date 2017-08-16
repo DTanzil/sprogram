@@ -103,14 +103,12 @@ class Applications_model extends CI_Model {
 				ON r.RoomID = v.RoomID 
 			JOIN Building b 
 				ON b.BuildingID = r.BuildingID 
-			JOIN UserRoom uroom 
-				ON uroom.RoomID = r.RoomID 
-			JOIN UserRole ur 
-				ON ur.UserRoleID = uroom.UserRoleID 
-			JOIN User u 
-				ON u.UserID = ur.UserID 
 			JOIN VenueUserRole vur 
 				ON vur.VenueID = v.VenueID 
+			JOIN UserRole ur 
+				ON ur.UserRoleID = vur.UserRoleID 
+			JOIN User u 
+				ON u.UserID = ur.UserID 
 			JOIN Approval appr 
 				ON appr.VenueUserRoleID = vur.VenueUserRoleID 
 
@@ -262,6 +260,8 @@ class Applications_model extends CI_Model {
 				JOIN Building b ON b.BuildingID = r.BuildingID
 			WHERE r.RoomName = ? AND b.BuildingAbbr = ?", $params)->result_array();
 
+		var_dump($operators);
+
 		$sponsors = $this->getUsersForApp($appID)['Sponsor'];
 		$committees = $this->getUsersForApp($appID)['Committee'];
 		foreach($sponsors as $sponsor) {
@@ -299,6 +299,7 @@ class Applications_model extends CI_Model {
 			# 
 			if($operator['UserTypeName'] == 'VenueOperator') {
 				$this->addAdminToApp($appID, array("netid" => $operator['NetID'], "UserTypeName" => $operator['UserTypeName']));
+
 			}
 
 			$this->db->query("
@@ -306,8 +307,8 @@ class Applications_model extends CI_Model {
 				VALUES ({$venueID}, {$operator['UserRoleID']})
 			");
 		}
+		$this->approval->createApproval($venueID, 'VenueOperator');
 		$this->approval->createApproval($venueID, 'Sponsor');
-		$this->approval->createApproval($venueID, 'Venue');
 		$this->approval->createApproval($venueID, 'Committee');
 
 		return $venueID;
