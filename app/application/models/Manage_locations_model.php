@@ -277,6 +277,7 @@ class Manage_locations_model extends CI_Model {
 						WHERE r.RoomID = {$locationID}
 					)
 				AND ApprovalType = 'VenueOperator'
+				AND Descision = 'pending'
 		");		
 		$this->db->query("
 			DELETE FROM VenueUserRole

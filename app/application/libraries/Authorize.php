@@ -19,7 +19,7 @@
 			$this->bypass = true; # uncomment this to use bypass
 
 			if($this->bypass) {
-				$_SERVER['REMOTE_USER'] = 'tpa2';
+				$_SERVER['REMOTE_USER'] = 'cmcoop';
 
 				unset($this->CI->session->roles);
 			}
