@@ -233,14 +233,14 @@
 
 		}
 
-		public function resend($to, $templateID) {
+		public function resend($to, $templateID, $appID) {
 			$template = $this->CI->db->query("
 				SELECT * FROM EmailTemplate WHERE EmailTemplateID = {$templateID}
 			")->row_array();
 
 			# $to, $subject, $message, $cc = null
 			$this->sendEmail($to, $template['EmailSubject'], $template['EmailBody']);
-
+			$this->logEmail($appID, $templateID, $to);
 
 		}
 

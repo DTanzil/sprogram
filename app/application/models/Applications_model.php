@@ -421,6 +421,7 @@ class Applications_model extends CI_Model {
             JOIN User u ON ur.UserID = u.UserID
 			JOIN EmailTemplate et ON et.EmailTemplateID = er.EmailTemplateID
 			WHERE er.ApplicationID = {$appID}
+			ORDER BY EmailRecordDate DESC
 				
 		")->result_array();
 		return $emails;

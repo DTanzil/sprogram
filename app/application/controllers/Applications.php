@@ -126,8 +126,9 @@ class Applications extends CI_Controller {
 	public function sendEmail() {
 		$rec = $_POST['rec'];
 		$template = $_POST['template'];
+		$appID = $_POST['appID'];
 
-		$this->mailer->resend($rec, $template);
+		$this->mailer->resend($rec, $template, $appID);
 	}
 
 	public function test() {

@@ -62,6 +62,7 @@ $(document).ready(function() {
 		var $tr = $(this).parents('tr');
 		var rec = $tr.children('td.emailRec').text();
 		var template = $tr.children('td.emailTemplate').attr('value');
+		var appID = $('p#appID').text();
 
 		console.log(template);
 		console.log(rec);
@@ -72,7 +73,8 @@ $(document).ready(function() {
 			data:
 			{
 				rec: rec,
-				template: template
+				template: template,
+				appID: appID
 			},
 			success: success,
 			error: error

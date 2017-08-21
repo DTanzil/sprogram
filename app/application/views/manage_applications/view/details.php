@@ -1,3 +1,4 @@
+<p style="display:none" id="appID"><?= $details['ApplicationID']?></p>
 <h1><b><?=$details['EventName']?></b></h1>
 <h2><b><?= ($details['Status'] == 'expired' || $details['Status'] == 'denied' || $details['Status'] == 'approved' || $details['Status'] == 'cancelled') ? $details['Status'] : 'Awaiting ' . $details['Status'] . ' approval'?></b></h2>
 
