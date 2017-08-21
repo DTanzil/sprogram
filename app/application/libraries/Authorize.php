@@ -19,7 +19,7 @@
 			$this->bypass = true; # uncomment this to use bypass
 
 			if($this->bypass) {
-				$_SERVER['REMOTE_USER'] = 'cmcoop';
+				$_SERVER['REMOTE_USER'] = 'jshill';
 
 				unset($this->CI->session->roles);
 			}
@@ -60,6 +60,7 @@
 			if(!isset($_SESSION['roles'])) {
 				$this->authUser();
 			}
+			//var_dump($this->CI->session->roles);
 			return in_array($role, $this->CI->session->roles);
 		}
 

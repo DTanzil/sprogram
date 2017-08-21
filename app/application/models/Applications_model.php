@@ -415,18 +415,13 @@ class Applications_model extends CI_Model {
 		$appID = $this->db->escape($appID);
 
 		$emails = $this->db->query("
-			SELECT EmailRecordID, EmailRecordDate, EmailTemplateName, UserEmail
+			SELECT *
 			FROM EmailRecord er
             JOIN UserRole ur ON er.UserRoleID = ur.UserRoleID
             JOIN User u ON ur.UserID = u.UserID
 			JOIN EmailTemplate et ON et.EmailTemplateID = er.EmailTemplateID
 			WHERE er.ApplicationID = {$appID}
-				OR er.ApprovalID IN 
-					(SELECT ApprovalID FROM Approval appr
-						JOIN VenueUserRole vur ON vur.VenueUserRoleID = appr.VenueUserRoleID
-						JOIN Venue v ON v.VenueID = vur.VenueID
-						JOIN Application a ON a.ApplicationID = v.ApplicationID
-					 WHERE a.ApplicationID = {$appID})
+				
 		")->result_array();
 		return $emails;
 	}

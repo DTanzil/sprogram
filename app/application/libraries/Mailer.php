@@ -25,6 +25,10 @@
 		}
 
 		public function sendEmail($to, $subject, $message, $cc = null) {
+
+			# changing this for testing
+			$to = 'jshill@uw.edu';
+
 			$this->CI->email->from('postmaster@localhost', 'SProgram Dev');
 			$this->CI->email->reply_to('jshill@uw.edu', 'JS');
 			$this->CI->email->to($to);
@@ -33,8 +37,7 @@
 			$this->CI->email->subject($subject);
 			$this->CI->email->message($message);
 
-			//$this->CI->email->send();
-
+			$this->CI->email->send();
 				return $this->CI->email->print_debugger();
 		}
 
@@ -56,6 +59,8 @@
 						//$rec = $rec[0];
 						$this->sendEmail('jshill@uw.edu', $template['EmailSubject'], 
 							$template['EmailBody'] . 'Email would go here: ' . $rec  );
+
+						$this->logEmail($appID, $template['EmailTemplateID'], $rec);
 					}
 				}
 				//parse recipients
@@ -84,6 +89,7 @@
 					//var_dump($rec);
 					$this->sendEmail('jshill@uw.edu', $template['EmailSubject'], 
 						$template['EmailBody'] . 'Email would go here: ' . $rec );
+					$this->logEmail($appID, $template['EmailTemplateID'], $rec);
 				}
 			}
 			//parse recipients
@@ -225,6 +231,25 @@
 
 		public function createAction($data) {
 
+		}
+
+		public function resend($to, $templateID) {
+			$template = $this->CI->db->query("
+				SELECT * FROM EmailTemplate WHERE EmailTemplateID = {$templateID}
+			")->row_array();
+
+			# $to, $subject, $message, $cc = null
+			$this->sendEmail($to, $template['EmailSubject'], $template['EmailBody']);
+
+
+		}
+
+		private function logEmail($appID, $templateID, $emailAddr) {
+			echo 'inserting email record';
+			$this->CI->db->query("
+				INSERT INTO EmailRecord(ApplicationID, EmailTemplateID, UserRoleID, EmailRecordDate)
+					VALUES({$appID}, {$templateID}, (SELECT UserRoleID FROM UserRole ur JOIN User u ON u.UserID = ur.UserID WHERE u.UserEmail = '{$emailAddr}'), NOW())
+			");
 		}
 
 		private function flatten(array $array) {

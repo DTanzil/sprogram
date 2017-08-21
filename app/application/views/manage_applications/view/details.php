@@ -14,6 +14,8 @@
 		<div class="col-md-8">
 		<h3><?= $openAppr['ApprovalType'] ?> Approval</h3>
 		<div class="info-box">
+			<h4><?= $openAppr['RoomAbbr'] ?></h4>
+			<p><?=$openAppr['EventStartDate'] . ' - ' . $openAppr['EventStartDate']?>
 			<h4 value=<?= '"' . $openAppr['UserRoleID'] . '"' ?>><?= $openAppr['UserFname'] . ' ' . $openAppr['UserLname'] ?></h4>
 			<p><?= $openAppr['UserEmail'] ?></p>
 			<p>You are a <?= $openAppr['ApprovalType'] ?> for this application. Review the information in the 
@@ -243,10 +245,10 @@
 
 				<?php foreach($emails as $email) { ?>
 				<tr>
-					<td><?= $email['EmailTemplateName'] ?></td>
-					<td><?= $email['UserEmail'] ?></td>
+					<td class='emailTemplate' value=<?= '"' . $email['EmailTemplateID'] . '"' ?>><?= $email['EmailTemplateName'] ?></td>
+					<td class='emailRec'><?= $email['UserEmail'] ?></td>
 					<td><?= $email['EmailRecordDate'] ?></td>
-					<td><button class="btn btn-success btn-xs">Resend</button></td>
+					<td><button class="btn btn-success btn-xs resend">Resend</button></td>
 				</tr>
 				<?php } ?>
 			</tbody>
@@ -334,7 +336,7 @@
 </div>
 <?php } ?>
 
-<pre>
+<!-- <pre>
 <?= print_r($venues); ?>
 </pre>
 <pre>
@@ -348,7 +350,7 @@
 </pre>
 <pre>
 <?= print_r($openApprs); ?>
-</pre>
+</pre> -->
 
 <?php
 # TODO: maybe move these to the controller, you lazy git...

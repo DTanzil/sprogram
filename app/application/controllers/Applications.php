@@ -14,6 +14,7 @@ class Applications extends CI_Controller {
 		$this->load->library('authorize');
 		//$this->load->library('session');
 		$this->load->library('approval');
+		$this->load->library('Mailer');
 
 		$this->load->helper('assets');
 		$this->load->helper('html');
@@ -35,7 +36,7 @@ class Applications extends CI_Controller {
 		$css = array('views/pagination.css');
 		$head['pageDependencies'] = getPageDependencies($js, $css);
 
-		$sidebar = $this->Admin_model->getContact('jshill');
+		$sidebar = $this->Admin_model->getContact($this->authorize->getNetid());
 
 		$data['head'] = $head;
 		$data['header'] = $header;
@@ -120,6 +121,13 @@ class Applications extends CI_Controller {
 
 	public function appDecision() {
 		
+	}
+
+	public function sendEmail() {
+		$rec = $_POST['rec'];
+		$template = $_POST['template'];
+
+		$this->mailer->resend($rec, $template);
 	}
 
 	public function test() {

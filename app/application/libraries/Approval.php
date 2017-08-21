@@ -354,6 +354,7 @@
 				SELECT * FROM Approval appr
 					JOIN VenueUserRole vur ON appr.VenueUserRoleID = vur.VenueUserRoleID
 					JOIN Venue v ON v.VenueID = vur.VenueID
+					JOIN Room r ON r.RoomID = v.RoomID
 					JOIN Application a ON a.ApplicationID = v.ApplicationID
 					JOIN ApplicationType at ON at.ApplicationTypeID = a.ApplicationTypeID
                     JOIN UserRole ur ON ur.UserRoleID = vur.UserRoleID

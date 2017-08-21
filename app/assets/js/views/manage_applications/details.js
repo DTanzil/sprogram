@@ -11,6 +11,7 @@ $(document).ready(function() {
 
 	$('button.venueApprove').click(updateApproval);
 	$('button.venueDeny').click(updateApproval);
+	$('button.resend').click(resendEmail);
 
 	function collapse(event) {
 		var $el = $(this);
@@ -55,6 +56,28 @@ $(document).ready(function() {
 			error: error
 		});
 
+	}
+
+	function resendEmail(event) {
+		var $tr = $(this).parents('tr');
+		var rec = $tr.children('td.emailRec').text();
+		var template = $tr.children('td.emailTemplate').attr('value');
+
+		console.log(template);
+		console.log(rec);
+
+		$.ajax({
+			url: 'http://localhost/sprogram-app/app/applications/sendEmail',
+			method: 'post',
+			data:
+			{
+				rec: rec,
+				template: template
+			},
+			success: success,
+			error: error
+
+		})
 	}
 
 	function success(data) {
