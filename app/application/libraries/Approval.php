@@ -38,6 +38,14 @@
 			return $status->row()->Status;
 		}
 
+		public function setStatus($appID, $status, $reason = null) {
+			$this->CI->db->query("
+				UPDATE Application
+					SET Status = '{$status}', StatusReason = '{$reason}'
+				WHERE ApplicationID = {$appID}
+			");
+		}
+
 		# UNFINISHED
 		# A nice wrapper for updating the sponsor status of an app. Only sends one email
 		public function updateSponsorDescision($appID, $signature, $descision, $remark = null) {

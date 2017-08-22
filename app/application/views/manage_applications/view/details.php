@@ -1,6 +1,6 @@
 <p style="display:none" id="appID"><?= $details['ApplicationID']?></p>
 <h1><b><?=$details['EventName']?></b></h1>
-<h2><b><?= ($details['Status'] == 'expired' || $details['Status'] == 'denied' || $details['Status'] == 'approved' || $details['Status'] == 'cancelled') ? $details['Status'] : 'Awaiting ' . $details['Status'] . ' approval'?></b></h2>
+<h2><b><?= ($details['Status'] == 'expired' || $details['Status'] == 'denied' || $details['Status'] == 'approved' || $details['Status'] == 'cancelled') || $details['Status'] == 'inactive' ? $details['Status'] : 'Awaiting ' . $details['Status'] . ' approval'?></b></h2>
 
 <?php if(sizeof($openApprs) > 0) { ?>
 <div class="alert alert-warning">
@@ -304,10 +304,10 @@
 
 
 			<div style="vertical-align: bottom; display: inline-block; width: 88%">
-			<textarea class="form-control" rows="8" maxlength="500" placeholder="New Note..."></textarea>
+			<textarea id="noteText" class="form-control" rows="8" maxlength="500" placeholder="New Note..."></textarea>
 			</div>
 			<div style="vertical-align: bottom; display: inline-block; width: 10%; margin-left: 5px;">
-			<button class="btn btn-success btn-sm">Save</button>
+			<button id="createNote" class="btn btn-success btn-sm">Save</button>
 			</div>
 			
 
@@ -322,10 +322,10 @@
 	<div class="row">
 	<div class="col-md-8">
 		<div style="vertical-align: bottom; display: inline-block; width: 88%">
-		<textarea class="form-control" rows="8" maxlength="500" placeholder="Reason for expiriation..."></textarea>
+		<textarea id="expReason" class="form-control" rows="8" maxlength="500" placeholder="Reason for expiration..."></textarea>
 		</div>
 		<div style="vertical-align: bottom; display: inline-block; width: 10%; margin-left: 5px;">
-		<button class="btn btn-success btn-sm">Expire</button>
+		<button id="expire" class="btn btn-success btn-sm">Expire</button>
 		</div>
 	</div>
 	</div>
@@ -338,10 +338,10 @@
 	<div class="row">
 	<div class="col-md-8">
 		<div style="vertical-align: bottom; display: inline-block; width: 88%">
-		<textarea class="form-control" rows="8" maxlength="500" placeholder="Reason for inactivation..."></textarea>
+		<textarea id="inactiveReason" class="form-control" rows="8" maxlength="500" placeholder="Reason for inactivation..."></textarea>
 		</div>
 		<div style="vertical-align: bottom; display: inline-block; width: 10%; margin-left: 5px;">
-		<button class="btn btn-success btn-sm">Inactivate</button>
+		<button id="inactivate" class="btn btn-success btn-sm">Inactivate</button>
 		</div>
 	</div>
 	</div>

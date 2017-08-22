@@ -439,6 +439,13 @@ class Applications_model extends CI_Model {
 		return $notes;
 	}
 
+	public function createNote($appID, $noteText) {
+		$this->db->query("
+			INSERT INTO Note(ApplicationID, NoteText, NoteDate)
+				VALUES({$appID}, '{$noteText}', NOW())
+		");
+	}
+
 	private function flatten(array $array) {
 	    $return = array();
 	    array_walk_recursive($array, function($a) use (&$return) { $return[] = $a; });

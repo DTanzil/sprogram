@@ -17,6 +17,9 @@ $(document).ready(function() {
 	$('button.venueApprove').click(updateApproval);
 	$('button.venueDeny').click(updateApproval);
 	$('button.resend').click(resendEmail);
+	$('button#createNote').click(createNote);
+	$('button#expire').click(expireApp);
+	$('button#inactivate').click(inactivateApp);
 
 	$('#addressee').select2({
 		placeholder: "recipient...",
@@ -25,6 +28,7 @@ $(document).ready(function() {
 	});
 
 	$('#sendReminder').click(sendReminder);
+
 
 	function collapse(event) {
 		var $el = $(this);
@@ -137,7 +141,55 @@ $(document).ready(function() {
 			},
 			error: error
 
-		})
+		});
+	}
+
+	function createNote(event) {
+		var appID = $('#appID').text();
+		var noteText = $('textarea#noteText').val();
+
+		$.ajax({
+			url: 'http://localhost/sprogram-app/app/applications/createNote',
+			method: 'post',
+			data:
+			{
+				appID: appID,
+				noteText: noteText
+			},
+			error: error
+		});
+	}
+
+	function expireApp(event) {
+		var appID = $('#appID').text();
+		var expReason = $('textarea#expReason').val();
+
+		$.ajax({
+			url: 'http://localhost/sprogram-app/app/applications/expireApp',
+			method: 'post',
+			data:
+			{
+				appID: appID,
+				expReason: expReason
+			},
+			error: error
+		});
+	}
+
+	function inactivateApp(event) {
+		var appID = $('#appID').text();
+		var inactiveReason = $('textarea#inactiveReason').val();
+
+		$.ajax({
+			url: 'http://localhost/sprogram-app/app/applications/inactivate',
+			method: 'post',
+			data:
+			{
+				appID: appID,
+				inactiveReason: inactiveReason
+			},
+			error: error
+		});
 	}
 
 	function success(data) {

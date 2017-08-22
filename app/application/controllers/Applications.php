@@ -144,6 +144,27 @@ class Applications extends CI_Controller {
 		$this->mailer->resend($rec, $template, $appID);
 	}
 
+	public function createNote() {
+		$appID = $_POST['appID'];
+		$noteText = $_POST['noteText'];
+
+		$this->Applications_model->createNote($appID, $noteText);
+	}
+
+	public function expireApp() {
+		$appID = $_POST['appID'];
+		$expReason = $_POST['expReason'];
+
+		$this->approval->setStatus($appID, 'expired', $expReason);
+	}
+
+	public function inactivate() {
+		$appID = $_POST['appID'];
+		$inactiveReason = $_POST['inactiveReason'];
+
+		$this->approval->setStatus($appID, 'inactive', $inactiveReason);
+	}
+
 	public function test() {
 		echo '<p>Creating App</p>';
 		//create app
