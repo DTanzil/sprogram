@@ -247,7 +247,7 @@
 				<?php foreach($emails as $email) { ?>
 				<tr>
 					<td class='emailTemplate' value=<?= '"' . $email['EmailTemplateID'] . '"' ?>><?= $email['EmailTemplateName'] ?></td>
-					<td class='emailRec'><?= $email['UserEmail'] ?></td>
+					<td class='emailRec' value=<?= '"' . $email['UserRoleID'] . '"' ?>><?= $email['UserEmail'] ?></td>
 					<td><?= $email['EmailRecordDate'] ?></td>
 					<td><button class="btn btn-success btn-xs resend">Resend</button></td>
 				</tr>
@@ -264,9 +264,24 @@
 	<div class="collapse">
 	<div class="row">
 	<div class="col-md-8">
-		<label for="addressee">Addressee<input id="addressee" class="form-control" type="text" /></label>
-		<label for="template">Template<input id="template" class="form-control" type="text" /></label>
-		<button class="btn btn-success btn-sm">Send</button>
+		<!-- <label for="addressee">Addressee<input id="addressee" class="form-control" type="text" /></label>
+		<label for="template">Template<input id="template" class="form-control" type="text" /></label> -->
+
+		<label for="addressee">Addressee: </label>
+		<select id="addressee" style="width: 30%">
+			<option></option>
+			<?php foreach($users as $type) {
+				foreach($type as $user) { ?>
+					<option value=<?= '"' . $user['UserRoleID'] .'"' ?>><?= $user['UserEmail'] ?></option>
+			<?php 
+				}
+			} ?>
+		</select>
+		<label for="template">Template: </label>
+		<select id="template" style="width: 30%">
+			<option></option>
+		</select>
+		<button id="sendReminder" class="btn btn-success btn-sm">Send</button>
 	</div>
 	</div>
 	</div> <!-- end collapse/expand -->

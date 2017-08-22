@@ -131,6 +131,19 @@ class Applications extends CI_Controller {
 		$this->mailer->resend($rec, $template, $appID);
 	}
 
+	public function getTemplates() {
+		$appID = $_POST['appID'];
+		echo json_encode($this->mailer->getTemplates($appID));
+	}
+
+	public function sendReminder() {
+		$appID = $_POST['appID'];
+		$rec = $_POST['rec'];
+		$template = $_POST['template'];
+
+		$this->mailer->resend($rec, $template, $appID);
+	}
+
 	public function test() {
 		echo '<p>Creating App</p>';
 		//create app

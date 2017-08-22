@@ -161,6 +161,17 @@
 			return $templates->result_array();
 		}
 
+		public function getTemplates($appID) {
+			$templates = $this->CI->db->query("
+				SELECT DISTINCT et.EmailTemplateID, et.EmailTemplateName FROM EmailTemplate et
+					JOIN Action a ON a.EmailTemplateID = et.EmailTemplateID
+					JOIN AppEmailAction aea ON aea.ActionID = a.ActionID
+					JOIN ActionType at ON a.ActionTypeID = at.ActionTypeID
+					WHERE aea.ApplicationID = {$appID}
+			");
+			return $templates->result_array();
+		}
+
 		public function attachActionsToApproval($approvalID, $approvalType) {
 			$params = array($approvalID, $approvalType);
 			var_dump($params);
@@ -238,9 +249,11 @@
 				SELECT * FROM EmailTemplate WHERE EmailTemplateID = {$templateID}
 			")->row_array();
 
+			$email = $this->CI->db->query("SELECT UserEmail FROM User u JOIN UserRole ur ON ur.UserID = u.UserID WHERE ur.UserRoleID = {$to}")->row_array()['UserEmail'];
+
 			# $to, $subject, $message, $cc = null
 			$this->sendEmail($to, $template['EmailSubject'], $template['EmailBody']);
-			$this->logEmail($appID, $templateID, $to);
+			$this->logEmail($appID, $templateID, $email);
 
 		}
 

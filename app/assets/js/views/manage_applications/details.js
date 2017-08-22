@@ -7,11 +7,24 @@
  */
 
 $(document).ready(function() {
+	var addressees = [];
+	var templates = [];
+
+	getTemplates();
+
 	$('span.glyphicon-expand').click(expand);
 
 	$('button.venueApprove').click(updateApproval);
 	$('button.venueDeny').click(updateApproval);
 	$('button.resend').click(resendEmail);
+
+	$('#addressee').select2({
+		placeholder: "recipient...",
+		data: addressees,
+		allowClear: true
+	});
+
+	$('#sendReminder').click(sendReminder);
 
 	function collapse(event) {
 		var $el = $(this);
@@ -60,7 +73,7 @@ $(document).ready(function() {
 
 	function resendEmail(event) {
 		var $tr = $(this).parents('tr');
-		var rec = $tr.children('td.emailRec').text();
+		var rec = $tr.children('td.emailRec').attr('value');
 		var template = $tr.children('td.emailTemplate').attr('value');
 		var appID = $('p#appID').text();
 
@@ -76,7 +89,52 @@ $(document).ready(function() {
 				template: template,
 				appID: appID
 			},
-			success: success,
+			error: error
+
+		})
+	}
+
+	function getTemplates() {
+		var appID = $('#appID').text();
+		console.log(appID);
+		$.ajax({
+			url: 'http://localhost/sprogram-app/app/applications/getTemplates',
+			method: 'post',
+			data:
+			{
+				appID: appID
+			},
+			success: function(data) {
+				data = JSON.parse(data);
+				templates = data.map(function(i) {
+					return {id: i['EmailTemplateID'], text: i['EmailTemplateName']};
+				});
+
+				$('#template').select2({
+					placeholder: "template...",
+					data: templates,
+					allowClear: true
+				});
+			},
+			error: error
+		})
+	}
+
+	function sendReminder(event) {
+		var rec = $('#addressee').val();
+		var template = $('#template').val();
+		var appID = $('#appID').text();
+		console.log(appID);
+
+		$.ajax({
+			url: 'http://localhost/sprogram-app/app/applications/sendReminder',
+			method: 'post',
+			data:
+			{
+				rec: rec,
+				template: template,
+				appID: appID
+			},
 			error: error
 
 		})
