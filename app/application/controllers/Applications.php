@@ -119,6 +119,44 @@ class Applications extends CI_Controller {
 		echo json_encode($confirmation);
 	}
 
+	public function sponsorDecision() {
+		//header('Access-Control-Allow-Origin: *');
+
+		$approvalID = $this->input->post('approvalID');
+		$decision = $this->input->post('decision');
+		$appID = $this->input->post('appID');
+
+		$confirmation = $this->approval->updateSponsorDecision($appID, 'jshill', $decision);
+
+		if($decision == 'denied') {
+			$this->approval->setStatus($appID, 'denied', $expReason);
+		} else {
+			$this->approval->advanceApplication($appID, 'venue');
+		}
+
+		//header('Content-Type: application/json');
+		echo json_encode($confirmation);
+	}
+
+	public function committeeDecision() {
+		//header('Access-Control-Allow-Origin: *');
+
+		//$approvalID = $this->input->post('approvalID');
+		$decision = $this->input->post('decision');
+		$appID = $this->input->post('appID');
+
+		$confirmation = $this->approval->updateCommitteeDecision($appID, 'jshill', $decision);
+
+		if($decision == 'denied') {
+			$this->approval->setStatus($appID, 'denied', $expReason);
+		} else {
+			$this->approval->advanceApplication($appID, 'approved');
+		}
+
+		//header('Content-Type: application/json');
+		echo json_encode($confirmation);
+	}
+
 	public function appDecision() {
 		
 	}
@@ -304,12 +342,12 @@ class Applications extends CI_Controller {
 
 		// $venues = $this->Applications_model->getVenues($id);
 
-		// echo "<pre> venues: ";
-		// print_r($venues);
-		// echo "</pre>";
-		// foreach($venues as $venue) {
-		// 	$this->approval->createApproval($venue['VenueID'], 'VenueOperator');
-		// }
+		// // echo "<pre> venues: ";
+		// // print_r($venues);
+		// // echo "</pre>";
+		// // foreach($venues as $venue) {
+		// // 	$this->approval->createApproval($venue['VenueID'], 'VenueOperator');
+		// // }
 
 		// echo '<p>App Status: ' . $this->approval->getStatus($id) . '</p>';
 		// $approvals = $this->approval->getApprovalsForApp($id);

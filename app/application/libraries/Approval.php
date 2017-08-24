@@ -48,13 +48,22 @@
 
 		# UNFINISHED
 		# A nice wrapper for updating the sponsor status of an app. Only sends one email
-		public function updateSponsorDescision($appID, $signature, $descision, $remark = null) {
+		public function updateSponsorDecision($appID, $signature, $descision, $remark = null) {
 			$sponsorApprovals = $this->getApprovalsByType($appID, 'sponsor');
 			foreach($sponsorApprovals as $appr) {
 				$this->updateApproval($appr['UserRoleID'], $appr['VenueID'], 'sponsor', $signature, $descision);
 				//$this->mailer->mailActionForApproval($appr['VenueID'], $appr['UserRoleID'], $appr['ApprovalType'], 'approved');
 			}
 			$this->CI->mailer->performMailActionforApp($appID, 'sponsor descision');
+		}
+
+		public function updateCommitteeDecision($appID, $signature, $descision, $remark = null) {
+			$committeeApprovals = $this->getApprovalsByType($appID, 'committee');
+			foreach($committeeApprovals as $appr) {
+				$this->updateApproval($appr['UserRoleID'], $appr['VenueID'], 'committee', $signature, $descision);
+				//$this->mailer->mailActionForApproval($appr['VenueID'], $appr['UserRoleID'], $appr['ApprovalType'], 'approved');
+			}
+			$this->CI->mailer->performMailActionforApp($appID, 'committee decision');
 		}
 
 		public function updateVenueDecision($approvalID, $decision) {

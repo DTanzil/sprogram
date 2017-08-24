@@ -37,7 +37,7 @@
 			$this->CI->email->subject($subject);
 			$this->CI->email->message($message);
 
-			$this->CI->email->send();
+			//$this->CI->email->send();
 				return $this->CI->email->print_debugger();
 		}
 
@@ -58,9 +58,9 @@
 					foreach($recipients as $rec) {
 						//$rec = $rec[0];
 						$this->sendEmail('jshill@uw.edu', $template['EmailSubject'], 
-							$template['EmailBody'] . 'Email would go here: ' . $rec  );
+							$template['EmailBody'] . 'Email would go here: ' . $rec['UserEmail']  );
 
-						$this->logEmail($appID, $template['EmailTemplateID'], $rec);
+						$this->logEmail($appID, $template['EmailTemplateID'], $rec['UserRoleID']);
 					}
 				}
 				//parse recipients
@@ -88,8 +88,8 @@
 					//$rec = $rec[0];
 					//var_dump($rec);
 					$this->sendEmail('jshill@uw.edu', $template['EmailSubject'], 
-						$template['EmailBody'] . 'Email would go here: ' . $rec );
-					$this->logEmail($appID, $template['EmailTemplateID'], $rec);
+						$template['EmailBody'] . 'Email would go here: ' . $rec['UserEmail'] );
+					$this->logEmail($appID, $template['EmailTemplateID'], $rec['UserRoleID']);
 				}
 			}
 			//parse recipients
@@ -111,14 +111,32 @@
 					if(!$params) {
 						return 'Additional parameters required';
 					} elseif(array_key_exists('VenueID', $params)) {
-						$admins = $this->CI->approval->getApproval($params['VenueID'], $params['UserRoleID'], $params['ApprovalType']);
-						//var_dump($admins);
-						$admins = array_column($admins, 'UserEmail');
+						$admin = $this->CI->approval->getApproval($params['VenueID'], $params['UserRoleID'], $params['ApprovalType'])[0];
+						var_dump($admins);
+						$admins = array(
+							"UserRoleID" => $admin['UserRoleID'],
+							"UserEmail" => $admin['UserEmail']
+						);
 						array_push($return, $admins);
 					} else {
 						$admins = $this->CI->Applications_model->getAdminsForApp($params['ApplicationID'], $addr);
-						$admins = array_column($admins, 'UserEmail');
-						array_push($return, $admins);
+
+						// $admins = array(
+						// 	array_column($admins, 'UserRoleID'),
+						// 	array_column($admins, 'UserEmail')
+						// );
+						// echo '<pre>';
+						// var_dump($admins);
+						// echo '</pre>';
+						// die;
+						//$details = array();
+						foreach($admins as $admin) {
+							$return[] = array(
+								"UserRoleID" => $admin['UserRoleID'], 
+								"UserEmail" => $admin['UserEmail']);
+						}
+
+						//array_push($return, $details);
 					}
 
 				}
@@ -127,7 +145,7 @@
 			// foreach($return as $k=>$v) {
 			// 	array_push($new, $v);
 			// }
-			$return = $this->flatten($return);
+			//$return = $this->flattenOnce($return);
 			echo '<p>Addressees</p>';
 			echo '<pre>';
 			print_r($return);
@@ -253,15 +271,15 @@
 
 			# $to, $subject, $message, $cc = null
 			$this->sendEmail($to, $template['EmailSubject'], $template['EmailBody']);
-			$this->logEmail($appID, $templateID, $email);
+			$this->logEmail($appID, $templateID, $to);
 
 		}
 
-		private function logEmail($appID, $templateID, $emailAddr) {
+		private function logEmail($appID, $templateID, $urID) {
 			echo 'inserting email record';
 			$this->CI->db->query("
 				INSERT INTO EmailRecord(ApplicationID, EmailTemplateID, UserRoleID, EmailRecordDate)
-					VALUES({$appID}, {$templateID}, (SELECT UserRoleID FROM UserRole ur JOIN User u ON u.UserID = ur.UserID WHERE u.UserEmail = '{$emailAddr}'), NOW())
+					VALUES({$appID}, {$templateID}, {$urID}, NOW())
 			");
 		}
 
@@ -269,6 +287,14 @@
 		    $return = array();
 		    array_walk_recursive($array, function($a) use (&$return) { $return[] = $a; });
 		    return $return;
+		}
+
+		private function flattenOnce($array) {
+			$return = array();
+			foreach($array as $el) {
+				$return[] = array_keys($el);
+			}
+			return $return;
 		}
 
 

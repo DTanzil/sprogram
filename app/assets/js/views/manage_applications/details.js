@@ -14,8 +14,12 @@ $(document).ready(function() {
 
 	$('span.glyphicon-expand').click(expand);
 
-	$('button.venueApprove').click(updateApproval);
-	$('button.venueDeny').click(updateApproval);
+	//$('button.venueApprove').click(updateApproval);
+	//$('button.venueDeny').click(updateApproval);
+	$('button.VenueOperatorAction').click(updateVenueApproval);
+	$('button.SponsorAction').click(updateSponsorApproval);
+	$('button.CommitteeAction').click(updateCommiteeApproval);
+
 	$('button.resend').click(resendEmail);
 	$('button#createNote').click(createNote);
 	$('button#expire').click(expireApp);
@@ -70,6 +74,69 @@ $(document).ready(function() {
 				decision: decision
 			},
 			success: success,
+			error: error
+		});
+
+	}
+
+	function updateVenueApproval(event) {
+		var btn = $(this);
+		var apprID = btn.parent('div.info-box').attr('value');
+		var decision = btn.attr('value');
+
+		$.ajax({
+			url: 'http://localhost/sprogram-app/app/applications/venueDecision',
+			method: 'post',
+			data:
+			{
+				approvalID: apprID,
+				decision: decision
+			},
+			success: success,
+			error: error
+		});
+
+	}
+
+	function updateSponsorApproval(event) {
+		var btn = $(this);
+		var apprID = btn.parent('div.info-box').attr('value');
+		var decision = btn.attr('value');
+		var appID = $('#appID').text();
+
+		$.ajax({
+			url: 'http://localhost/sprogram-app/app/applications/sponsorDecision',
+			method: 'post',
+			data:
+			{
+				approvalID: apprID,
+				decision: decision,
+				appID: appID
+			},
+			success: success,
+			error: error
+		});
+
+	}
+
+	function updateCommiteeApproval(event) {
+		var btn = $(this);
+		//var apprID = btn.parent('div.info-box').attr('value');
+		var decision = btn.attr('value');
+		var appID = $('#appID').text();
+
+		$.ajax({
+			url: 'http://localhost/sprogram-app/app/applications/committeeDecision',
+			method: 'post',
+			data:
+			{
+				//approvalID: apprID,
+				decision: decision,
+				appID: appID
+			},
+			success: function(data) {
+				console.log(data);
+			},
 			error: error
 		});
 

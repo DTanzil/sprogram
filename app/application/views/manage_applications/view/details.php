@@ -14,15 +14,15 @@
 		<div class="row">
 		<div class="col-md-8">
 		<h3><?= $openAppr['ApprovalType'] ?> Approval</h3>
-		<div class="info-box">
+		<div class="info-box" value=<?= "\"{$openAppr['ApprovalID']}\"" ?>>
 			<h4><?= $openAppr['RoomAbbr'] ?></h4>
 			<p><?=$openAppr['EventStartDate'] . ' - ' . $openAppr['EventStartDate']?>
 			<h4 value=<?= '"' . $openAppr['UserRoleID'] . '"' ?>><?= $openAppr['UserFname'] . ' ' . $openAppr['UserLname'] ?></h4>
 			<p><?= $openAppr['UserEmail'] ?></p>
 			<p>You are a <?= $openAppr['ApprovalType'] ?> for this application. Review the information in the 
 				following sections and select an option below:</p>
-			<button class="btn btn-success venueApprove" value=<?= "\"{$openAppr['ApprovalID']}\"" ?>>Approve</button>
-			<button class="btn btn-danger venueDeny" value=<?= "\"{$openAppr['ApprovalID']}\"" ?>>Deny</button>
+			<button class=<?='"btn btn-success ' . $openAppr['ApprovalType'] . 'Action"' ?> value="approved">Approve</button>
+			<button class=<?='"btn btn-danger ' . $openAppr['ApprovalType'] . 'Action"' ?> value="denied">Deny</button>
 
 			<h4 class="appr-status">Status: <?= $openAppr['Descision'] ?></h4>
 			<h4>Category: <?= $openAppr['ApplicationTypeName'] ?></h4>
@@ -187,8 +187,8 @@
 
 		<?php if($approvals['sponsor'][0]['Descision'] == 'pending' && $users['Sponsor'][0]['NetID'] == $this->authorize->getNetid()) { ?>
 			<p>You are the Sponsor for this application. Choose whether to approve or deny it:</p>
-			<button class="btn btn-success">Approve</button>
-			<button class="btn btn-danger">Deny</button>
+			<button class="btn btn-success sponsorAction">Approve</button>
+			<button class="btn btn-danger sponsorAction">Deny</button>
 		<?php } ?>
 
 		<h4>Status: <?= $approvals['sponsor'][0]['Descision'] ?></h4>
@@ -215,8 +215,8 @@
 
 		<?php if(sizeof($approvals['committee']) > 0 && $approvals['committee'][0]['Descision'] == 'pending' && $users['Committee'][0]['NetID'] == $this->authorize->getNetid()) { ?>
 			<p>You are the Committee member assigned to this application. Choose whether to approve or deny it:</p>
-			<button class="btn btn-success">Approve</button>
-			<button class="btn btn-danger">Deny</button>
+			<button class="btn btn-success CommAction" value="approved">Approve</button>
+			<button class="btn btn-danger commAction" value="denied">Deny</button>
 		<?php } ?>
 
 		<h4>Status: <?= $committee ? $approvals['committee'][0]['Descision'] : '' ?></h4>

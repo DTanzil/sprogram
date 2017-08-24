@@ -19,7 +19,7 @@
 			$this->bypass = true; # uncomment this to use bypass
 
 			if($this->bypass) {
-				$_SERVER['REMOTE_USER'] = 'jshill';
+				$_SERVER['REMOTE_USER'] = 'com';
 
 				unset($this->CI->session->roles);
 			}
