@@ -84,3 +84,7 @@ function getPageDependencies($js, $css) {
 	}
 	return $tags;
 }
+
+function find($file) {
+	return base_url() . "assets/images/$file";
+}

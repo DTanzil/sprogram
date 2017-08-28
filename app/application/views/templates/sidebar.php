@@ -1,50 +1,71 @@
-
-
-    	<!-- <div class="col-lg-1"></div> -->
-        <div id="sidebar" class="col-lg-11">
-            <div id="user-info">
-                <h3><?= $UserFName . ' ' . $UserLName ?></h3>
-                <p><?= $UserTitle ?></p>
-                <dl>
-                    <dt>Contact Information</dt>
-                    <dd style="margin-bottom:0px"><?= $UserEmail ?></dd>
-                    <dd><?= $UserPhone ?></dd>
-                </dl>
-                <dl class="links">
-                	<dd><a href="<?php echo base_url() ?>manage_admins/edit/<?= $UserID ?>">Update Contact Information</a></dd>
-                    <dd><a href="https://depts.washington.edu/sprogram/admin/admin/logout">Logout</a></dd>
-                </dl>
-          	</div>
-            <ul id="widgets">
-                <?php
-                $controllers = array(
-                    // array("text"=>"Search", 
-                    //       "path"=>'Admin_test/search'),
-                    array("text"=>"Manage Locations", 
-                          "path"=>'Manage_locations'),
-                    // array("text"=>"Recent Sublocations", 
-                    //       "path"=>'Manage_locations/recent_sublocations'),
-                    array("text"=>"Manage Admins", 
-                          "path"=>'Manage_admins'),
-                    // array("text"=>"View Email History", 
-                    //       "path"=>'Email/history'),
-                    // array("text"=>"Email Templates", 
-                    //       "path"=>'Email/templates'),
-                    // array("text"=>"Email Actions", 
-                    //       "path"=>'Email/actions'),
-                    // array("text"=>"Edit Application", 
-                    //       "path"=>'Manage_applications/edit'),
-                    // array("text"=>"Contact Support", 
-                    //       "path"=>'Email/contact_support'),
-                    // array("text"=>"Reporting", 
-                    //       "path"=>'Reporting')
-                );
-                foreach($controllers as $controller) {
-                ?>
-                    <li><a class="gold-box-link" href="<?= base_url() . $controller['path'] ?>"><?= $controller['text'] ?></a></li>
-                <?php
-                }
-                ?>
+<div class="nav-side-menu">
+    <div class="brand">OSP Administration</div>
+    <i class="fa fa-bars fa-2x toggle-btn" data-toggle="collapse" data-target="#menu-content"></i>
+    <div class="menu-list">
+        <ul id="menu-content" class="menu-content collapse out">
+            <li>
+                <a href=<?= '"' . site_url('/') . '"' ?>>
+                    <i class="fa fa-dashboard fa-lg"></i> Dashboard
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <i class="fa fa-dashboard fa-lg"></i> Manage Applications
+                </a>
+            </li>
+            <li>
+                <a href=<?= '"' . site_url('manage_locations') . '"' ?>>
+                    <i class="fa fa-dashboard fa-lg"></i> Manage Locations
+                </a>
+            </li>
+            <li>
+                <a href=<?= '"' . site_url('manage_admins') . '"' ?>>
+                    <i class="fa fa-dashboard fa-lg"></i> Manage Administrators
+                </a>
+            </li>
+            <!-- <li data-toggle="collapse" data-target="#products" class="collapsed active">
+                <a href="#"><i class="fa fa-gift fa-lg"></i> UI Elements <span class="arrow"></span></a>
+            </li>
+            <ul class="sub-menu collapse" id="products">
+                <li class="active"><a href="#">CSS3 Animation</a></li>
+                <li><a href="#">General</a></li>
+                <li><a href="#">Buttons</a></li>
+                <li><a href="#">Tabs &amp; Accordions</a></li>
+                <li><a href="#">Typography</a></li>
+                <li><a href="#">FontAwesome</a></li>
+                <li><a href="#">Slider</a></li>
+                <li><a href="#">Panels</a></li>
+                <li><a href="#">Widgets</a></li>
+                <li><a href="#">Bootstrap Model</a></li>
             </ul>
-        </div>
- <!-- End Sidebar -->
+            <li data-toggle="collapse" data-target="#service" class="collapsed">
+                <a href="#"><i class="fa fa-globe fa-lg"></i> Services <span class="arrow"></span></a>
+            </li>
+            <ul class="sub-menu collapse" id="service">
+                <li>New Service 1</li>
+                <li>New Service 2</li>
+                <li>New Service 3</li>
+            </ul>
+
+
+            <li data-toggle="collapse" data-target="#new" class="collapsed">
+                <a href="#"><i class="fa fa-car fa-lg"></i> New <span class="arrow"></span></a>
+            </li>
+            <ul class="sub-menu collapse" id="new">
+                <li>New New 1</li>
+                <li>New New 2</li>
+                <li>New New 3</li>
+            </ul>
+            <li>
+                <a href="#">
+                    <i class="fa fa-user fa-lg"></i> Profile
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <i class="fa fa-users fa-lg"></i> Users
+                </a>
+            </li> -->
+        </ul>
+    </div>
+</div>
