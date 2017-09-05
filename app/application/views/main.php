@@ -14,9 +14,10 @@
 
 		 <?php $this->load->view('templates/sidebar', $sidebar); ?>
 
-	<div id="content" class="container">
+	<div id="content">
+	<div class="container-fluid">
 		<div class="row">
-			<div class="col-md-12">
+			<div class="col-md-10">
 				<div>
 					<h1 class="header"><?php if(isset($content['description'])) {echo $content['description'];}?></h1>
 				</div>
@@ -24,9 +25,10 @@
 			</div> <!-- end content -->
 		</div>
 	</div>
-	<div id="sidebar-wrapper" class="col-md-3">
+	</div>
+	<!-- <div id="sidebar-wrapper" class="col-md-3">
 		 <?php //$this->load->view('templates/sidebar', $sidebar); ?>
-	</div> <!-- end sidebar -->
+	</div> <!-- end sidebar --> -->
 	
 </body>
 </html>

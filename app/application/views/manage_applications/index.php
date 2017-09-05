@@ -19,11 +19,11 @@
             <th class="sort-by-first">Submit Date</th>
             <th>Event Date</th>
             <th>Event Name</th>
-            <th>Event Location</th>
             <th>Submitted By</th>
-            <th >Org/Dept Name</th>
+            <th>Org/Dept Name</th>
+            <th>Category</th>
+            <th>Status</th>
             <th>Map</th>
-            <!-- <th>Delete</th> -->
         </tr>
 	</thead>
     <tbody>
@@ -36,23 +36,24 @@
             <?= $app['DateApplied'] ?> 
         </td>
         <td>
-            <?= $app['RoomName'] ?> 
+            <?= $app['EventStartDate'] ?> 
         </td>
         <td>
-            <?= $app['BuildingAbbr'] ?> 
+            <?= $app['EventName'] ?> 
+        </td>
+        <td></td>
+        <td></td>
+        <td>
+            <?= $app['ApplicationTypeName'] ?> 
+        </td>
+
+        <td>
+            <?= $app['Status'] ?>
         </td>
         <td>
-            <?= $app['IsApproved'] ?> 
+            <!-- <a target="_blank" href=<?= "'" . $location['MapURL'] . "'" ?>>Map Link</a>  -->
         </td>
-        <td colspan="2">
-            <?= $app['Operators'] ?>
-        </td>
-        <td>
-            <a target="_blank" href=<?= "'" . $location['MapURL'] . "'" ?>>Map Link</a> 
-        </td>
-        <td>
-            <button class="btn btn-sm btn-danger delete" value=<?="{$location['RoomID']}"?>>Delete</button>
-        </td>
+
 
     </tr>
 <?php endforeach ?>

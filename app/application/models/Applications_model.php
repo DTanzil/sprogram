@@ -24,6 +24,17 @@ class Applications_model extends CI_Model {
 		return $query->num_rows() > 0 ? $query->result_array() : false;
 	}
 
+	public function getPendingApps() {
+		$apps = $this->db->query("
+			SELECT DISTINCT a.*, at.*, v.EventStartDate FROM Application a
+			JOIN ApplicationType at ON at.ApplicationTypeID = a.ApplicationTypeID
+			JOIN Venue v ON a.ApplicationID = v.ApplicationID
+			WHERE a.Status != 'denied' AND a.Status != 'approved' AND a.Status != 'inactivated'
+		")->result_array();
+
+		return $apps;
+	}
+
 	public function getAppsByStage($appStage) {
 		$appStage = $this->db->escape($appStage);
 		echo $appStage;

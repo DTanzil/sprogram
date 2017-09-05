@@ -9,18 +9,28 @@
                 </a>
             </li>
             <li>
-                <a href="#">
-                    <i class="fa fa-dashboard fa-lg"></i> Manage Applications
+                <a href=<?= '"' . site_url('applications') . '"' ?>>
+                    <i class="fa fa-dashboard fa-lg"></i> Applications
                 </a>
             </li>
             <li>
                 <a href=<?= '"' . site_url('manage_locations') . '"' ?>>
-                    <i class="fa fa-dashboard fa-lg"></i> Manage Locations
+                    <i class="fa fa-dashboard fa-lg"></i> Locations
                 </a>
             </li>
             <li>
                 <a href=<?= '"' . site_url('manage_admins') . '"' ?>>
-                    <i class="fa fa-dashboard fa-lg"></i> Manage Administrators
+                    <i class="fa fa-dashboard fa-lg"></i> Administrators
+                </a>
+            </li>
+            <li>
+                <a href=<?= '"' . site_url('email') . '"' ?>>
+                    <i class="fa fa-dashboard fa-lg"></i> Email
+                </a>
+            </li>
+            <li>
+                <a href="">
+                    <i class="fa fa-dashboard fa-lg"></i> Reporting
                 </a>
             </li>
             <!-- <li data-toggle="collapse" data-target="#products" class="collapsed active">

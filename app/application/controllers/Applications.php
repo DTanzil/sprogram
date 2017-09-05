@@ -24,13 +24,16 @@ class Applications extends CI_Controller {
 	/**
 	 * Show all apps, across all approval states
 	 */
-	public function index($viewType) {
+	public function index() {
 		$head['title'] = "Manage Applications";
 
 		$header['mode'] = 'Application';
 		$header['view'] = 'templates/header.php';
 
-		$content = $this->getContentForViewType($viewType);
+		$content['apps'] = $this->Applications_model->getPendingApps();
+		//echo "manage_applications/{$viewType}.php";
+		$content['view'] = "manage_applications/index.php";
+		$content['description'] = "Manage Applications";
 
 		$js = array('views/pagination.js');
 		$css = array('views/pagination.css');

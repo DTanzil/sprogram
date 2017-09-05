@@ -17,6 +17,8 @@ function loadCommonAssets() {
 		# '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.3.1/css/foundation.min.css">',
 		# '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/6.0.0/normalize.css">',
 		 "<link rel=\"stylesheet\" href=\"{$baseURL}assets/js/tablesorter/css/theme.default.css\" />",
+		 "<link rel=\"stylesheet\" type=\"text/css\" href=\"{$baseURL}assets/css/content-tools/content-tools.min.css\" />",
+
 
 		# fonts
 		'<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700" rel="stylesheet" type="text/css">',
@@ -55,6 +57,8 @@ function loadCommonAssets() {
   		'<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/js/bootstrap-select.min.js"></script>',
 
   		'<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>',
+
+  		"<script src=\"{$baseURL}assets/js/content-tools/content-tools.js\"></script>",
 
   		# custom scripts
   		"<script src=\"{$baseURL}assets/js/general.js\"></script>"

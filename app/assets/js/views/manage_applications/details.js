@@ -137,6 +137,7 @@ $(document).ready(function() {
 			success: function(data) {
 				console.log(data);
 			},
+			success: success,
 			error: error
 		});
 
@@ -160,6 +161,7 @@ $(document).ready(function() {
 				template: template,
 				appID: appID
 			},
+			success: success,
 			error: error
 
 		})
@@ -206,6 +208,7 @@ $(document).ready(function() {
 				template: template,
 				appID: appID
 			},
+			success: success,
 			error: error
 
 		});
@@ -223,6 +226,7 @@ $(document).ready(function() {
 				appID: appID,
 				noteText: noteText
 			},
+			success: success,
 			error: error
 		});
 	}
@@ -239,6 +243,7 @@ $(document).ready(function() {
 				appID: appID,
 				expReason: expReason
 			},
+			success: success,
 			error: error
 		});
 	}
@@ -255,6 +260,7 @@ $(document).ready(function() {
 				appID: appID,
 				inactiveReason: inactiveReason
 			},
+			success: success,
 			error: error
 		});
 	}
@@ -267,6 +273,8 @@ $(document).ready(function() {
 		box.find('h4.appr-status').text('Status: ' + data['Descision']);
 		box.find('h4.appr-date').text('Approval Process Ended ' + data['ApprovalEndDate']);
 		//$('btn[value="' + data + '"]').
+		//
+		location.reload();
 	}
 
 	function error(error) {
