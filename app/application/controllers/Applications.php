@@ -95,6 +95,13 @@ class Applications extends CI_Controller {
 		$this->load->view('main', $data);
 	}
 
+	public function create() {
+		if(isset($_POST)) {
+			$log = fopen('post_log.txt', 'w') or die('Cant open file');
+			fwrite($log, print_r($_POST) . '\r\n');
+		}
+	}
+
 	/**
 	 * AJAX endpoint
 	 * Accepts $flag and $id paramters from an AJAX call
