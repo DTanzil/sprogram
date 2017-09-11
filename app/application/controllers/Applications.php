@@ -99,6 +99,7 @@ class Applications extends CI_Controller {
 		if(isset($_POST)) {
 			$log = fopen('post_log.txt', 'w') or die('Cant open file');
 			fwrite($log, print_r($_POST) . '\r\n');
+			fclose($log);
 		}
 	}
 
