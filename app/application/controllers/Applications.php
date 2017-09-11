@@ -97,9 +97,7 @@ class Applications extends CI_Controller {
 
 	public function create() {
 		if(isset($_POST)) {
-			$log = fopen('post_log.txt', 'w') or die('Cant open file');
-			fwrite($log, print_r($_POST) . '\r\n');
-			fclose($log);
+			file_put_contents('log.txt', print_r($_POST, true));
 		}
 	}
 
