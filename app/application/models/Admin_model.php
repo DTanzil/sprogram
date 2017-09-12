@@ -6,51 +6,51 @@
 		}
 		
 		# MODIFIED 2.14.17 by JSHILL
-		# Get ID, name, NetID, status, and user type for all "admins" 
-		# 	(admins, sponsors, venueOperators) for a given application
+		# Get ID, name, NetID, status, and User type for all "admins" 
+		# 	(admins, sponsors, venueOperators) for a given Application
 		# Return FALSE if no results
-		# 	$applicationID: ID of application to search for
-		function getAdminsByApplicationID($applicationID){
-			//$this->getAdminByApplication($applicationID);
+		# 	$ApplicationID: ID of Application to search for
+		function getAdminsByApplicationID($ApplicationID){
+			//$this->getAdminByApplication($ApplicationID);
 			$query = 
 				$this->db->select(
-					'user.UserID,
-					user.UserFName,
-					user.UserLName, 
-					user.NetID,
-					userrole.AdminIsActive,
-					usertype.UserTypeName'
+					'User.UserID,
+					User.UserFName,
+					User.UserLName, 
+					User.NetID,
+					UserRole.AdminIsActive,
+					UserType.UserTypeName'
 					)->
-				from('user')->
-				join('userrole', 'user.UserID = userrole.UserID')->
-				join('userapplication', 'user.UserID = userapplication.UserID')->
-				join('usertype', 'userrole.UserTypeID = usertype.UserTypeID')->
-				join('application', 'userapplication.ApplicationID = application.ApplicationID')->
-				where('usertype.UserTypeName !=', 'Applicant')->
-				where('application.ApplicationID', $applicationID)->
+				from('User')->
+				join('UserRole', 'User.UserID = UserRole.UserID')->
+				join('UserApplication', 'User.UserID = UserApplication.UserID')->
+				join('UserType', 'UserRole.UserTypeID = UserType.UserTypeID')->
+				join('Application', 'UserApplication.ApplicationID = Application.ApplicationID')->
+				where('UserType.UserTypeName !=', 'Applicant')->
+				where('Application.ApplicationID', $ApplicationID)->
 			get();
 			return ( $query->num_rows() > 0 ) ? $query->result_array() : false; 
 		}
 		
 		# MODIFIED 2.14.17 by JSHILL
-		# Get ID, name, NetID, status, and user type for all "admins" 
+		# Get ID, name, NetID, status, and User type for all "admins" 
 		# 	(admins, sponsors, venueOperators)
 		# Return FALSE if no results
 		function getAllAdmins(){
 			$this->db->trans_start();
 			$query =
 				$this->db->distinct()->select(
-					'user.UserID,
-					user.UserFName,
-					user.UserLName, 
-					user.NetID,
-					user.AdminIsActive'
+					'User.UserID,
+					User.UserFName,
+					User.UserLName, 
+					User.NetID,
+					User.AdminIsActive'
 					)->
-				from('user')->
-				join('userrole', 'user.UserID = userrole.UserID')->
-				join('usertype', 'userrole.UserTypeID = usertype.UserTypeID')->
-				where('usertype.UserTypeName !=', 'Applicant')->
-				where("user.AdminDeletedAt IS NULL")->
+				from('User')->
+				join('UserRole', 'User.UserID = UserRole.UserID')->
+				join('UserType', 'UserRole.UserTypeID = UserType.UserTypeID')->
+				where('UserType.UserTypeName !=', 'Applicant')->
+				where("User.AdminDeletedAt IS NULL")->
 			get();
 
 			// TODO: expore using a computed column in the db for this for efficiency
@@ -59,12 +59,12 @@
 
 				$rolesFromDB = 
 					$this->db->select(
-						'usertype.UserTypeName'
+						'UserType.UserTypeName'
 					)->
 					from('UserType')->
-					join('UserRole', 'usertype.UserTypeID = userrole.UserTypeID')->
-					join('User', 'user.UserID = userrole.UserID')->
-					where("user.UserID = {$admin['UserID']}")->
+					join('UserRole', 'UserType.UserTypeID = UserRole.UserTypeID')->
+					join('User', 'User.UserID = UserRole.UserID')->
+					where("User.UserID = {$admin['UserID']}")->
 				get();
 
 				$rolesTransformed = "";
@@ -80,7 +80,7 @@
 		}
 		
 		# MODIFIED 2.14.17 by JSHILL
-		# Get ID, name, NetID, status, and user type for an "admin"
+		# Get ID, name, NetID, status, and User type for an "admin"
 		# 	(admins, sponsors, venueOperators)
 		# Return FALSE if no results
 		# $adminID: an adminID
@@ -88,36 +88,36 @@
 			//$adminID = $this->db->escape($adminID);
 			$query =
 				$this->db->select(
-					'user.UserID,
-					user.UserFname,
-					user.UserLname, 
-					user.NetID,
-					user.UserEmail,
-					user.UserPhone,
-					user.UserTitle,
-					user.UWBox,
-					user.AdminIsActive,
-					user.AdminDeletedAt,
-					usertype.UserTypeName,
-					affiliation.AffiliationName'
+					'User.UserID,
+					User.UserFname,
+					User.UserLname, 
+					User.NetID,
+					User.UserEmail,
+					User.UserPhone,
+					User.UserTitle,
+					User.UWBox,
+					User.AdminIsActive,
+					User.AdminDeletedAt,
+					UserType.UserTypeName,
+					Affiliation.AffiliationName'
 					)->
-				from('user')->
-				join('userrole', 'user.UserID = userrole.UserID')->
-				join('usertype', 'userrole.UserTypeID = usertype.UserTypeID')->
-				join('affiliation', 'affiliation.AffiliationID = user.AffiliationID')->
-				where('usertype.UserTypeName !=', 'Applicant')->
-				where('user.UserID', $adminID)->
+				from('User')->
+				join('UserRole', 'User.UserID = UserRole.UserID')->
+				join('UserType', 'UserRole.UserTypeID = UserType.UserTypeID')->
+				join('Affiliation', 'Affiliation.AffiliationID = User.AffiliationID')->
+				where('UserType.UserTypeName !=', 'Applicant')->
+				where('User.UserID', $adminID)->
 			get();
 
 
 			$rolesFromDB = 
 				$this->db->select(
-					'usertype.UserTypeName'
+					'UserType.UserTypeName'
 				)->
 				from('UserType')->
-				join('UserRole', 'usertype.UserTypeID = userrole.UserTypeID')->
-				join('User', 'user.UserID = userrole.UserID')->
-				where('user.UserID', $adminID)->
+				join('UserRole', 'UserType.UserTypeID = UserRole.UserTypeID')->
+				join('User', 'User.UserID = UserRole.UserID')->
+				where('User.UserID', $adminID)->
 			get();
 
 			$rolesTransformed = array();
@@ -135,15 +135,15 @@
 		function getContact($netid){
 			$query =
 				$this->db->select(
-					'user.UserID,
-					user.UserFName,
-					user.UserLName, 
-					user.UserTitle,
-					user.UserEmail,
-					user.UserPhone'
+					'User.UserID,
+					User.UserFName,
+					User.UserLName, 
+					User.UserTitle,
+					User.UserEmail,
+					User.UserPhone'
 					)->
-				from('user')->
-				where('user.NetID', $netid)->
+				from('User')->
+				where('User.NetID', $netid)->
 			get();
 
 			
@@ -269,25 +269,25 @@
 		public function getAdminByNetid($netid){
 			$query =
 				$this->db->select(
-					'user.UserID,
-					user.UserFName,
-					user.UserLName, 
-					user.NetID,
-					user.UserTitle,
-					user.UWBox,
-					user.UserEmail,
-					user.UserPhone,
-					user.AdminIsActive,
-					user.AdminDeletedAt,
-					affiliation.AffiliationName,
-					user.AdminIsActive,
-					usertype.UserTypeName'
+					'User.UserID,
+					User.UserFName,
+					User.UserLName, 
+					User.NetID,
+					User.UserTitle,
+					User.UWBox,
+					User.UserEmail,
+					User.UserPhone,
+					User.AdminIsActive,
+					User.AdminDeletedAt,
+					Affiliation.AffiliationName,
+					User.AdminIsActive,
+					UserType.UserTypeName'
 					)->
-				from('user')->
-				join('userrole', 'user.UserID = userrole.UserID')->
-				join('usertype', 'userrole.UserTypeID = usertype.UserTypeID')->
-				join('affiliation', 'user.AffiliationID = affiliation.AffiliationID')->
-				where('user.NetID', $netid)->
+				from('User')->
+				join('UserRole', 'User.UserID = UserRole.UserID')->
+				join('UserType', 'UserRole.UserTypeID = UserType.UserTypeID')->
+				join('Affiliation', 'User.AffiliationID = Affiliation.AffiliationID')->
+				where('User.NetID', $netid)->
 			get();
 
 			return ( $query->num_rows() > 0 ) ? $query->result_array()[0] : false;
