@@ -1,5 +1,0 @@
-Options None
-AllowOverride None
-Order allow,deny
-Allow from all
-Satisfy Any
