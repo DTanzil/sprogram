@@ -96,9 +96,11 @@ class Applications extends CI_Controller {
 	}
 
 	public function create() {
-		file_put_contents('log.txt', '******* New UUF ******\r/n', FILE_APPEND);
+		$f = file_put_contents(dirname(__FILE__) . "/log.txt', '******* New UUF ******\r\n", FILE_APPEND);
+
+		echo $f;
 		if(isset($_POST)) {
-			file_put_contents('log.txt', print_r($_POST, true), FILE_APPEND);
+			file_put_contents(dirname(__FILE__) . '/log.txt', print_r($_POST, true) . "\r\n", FILE_APPEND);
 		}
 	}
 
