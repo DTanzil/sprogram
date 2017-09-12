@@ -17,5 +17,9 @@ class Errors extends CI_Controller {
 			$this->load->view('errors/html/error_general', $data);
 	}
 
+	public function page_missing() {
+		$this->load->view('errors/cli/error_404', array("heading" => "Page Missing", "message" => "The page is missing"));
+	}
+
 }
 ?>
