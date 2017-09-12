@@ -17,11 +17,11 @@ class Applications extends CI_Controller {
 	}
 
 	public function create() {
-		$f = file_put_contents(dirname(__FILE__) . "/log.txt', '******* New UUF ******\r\n", FILE_APPEND);
-
-		echo $f;
+		$f = file_put_contents(dirname(__FILE__) . "/log.txt", "******* New UUF ******\r\n", FILE_APPEND);
+		$data = $_POST;
+		//echo $f;
 		if(isset($_POST)) {
-			file_put_contents(dirname(__FILE__) . '/log.txt', print_r($_POST, true) . "\r\n", FILE_APPEND);
+			file_put_contents(dirname(__FILE__) . '/log.txt', print_r($data, true) . "\r\n", FILE_APPEND);
 		}
 	}
 

@@ -1,3 +1,5 @@
-AuthType None
-Require all granted
+Options None
+AllowOverride None
+Order allow,deny
+Allow from all
 Satisfy Any
