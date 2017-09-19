@@ -72,6 +72,14 @@
 	 		<label class="checkbox-inline"><input type="checkbox" name="privileges[]" <?php echo in_array('Committee', $adminInfo['privileges']) != false ? 'checked ' : ''; ?> value="Committee">Committee</label>
 	 		<label class="checkbox-inline"><input type="checkbox" name="privileges[]" <?php echo in_array('Viewer', $adminInfo['privileges']) != false ? 'checked ' : ''; ?> value="Viewer">Viewer</label>
 
+	 		<div class="row">
+ 			<div class="col-lg-6">
+	 			<p>Admin Status</p>
+	 			<label class="radio-inline"><input type="radio" name="AdminIsActive" <?php echo isset($adminInfo['AdminIsActive']) && $adminInfo['AdminIsActive'] == true ? 'checked ' : ''; ?> value="1" required/> Approved</label>
+	 			<label class="radio-inline"><input type="radio" name="AdminIsActive" <?php echo isset($adminInfo['AdminIsActive']) && $adminInfo['AdminIsActive'] == false ? 'checked ' : ''; ?> value="0" /> Disapproved</label>
+	 		</div>
+	 		</div>
+
 
 		 		<div class="input-group">
 		 		<input class="btn btn-default" type="reset" name="" value="Reset">

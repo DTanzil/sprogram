@@ -213,10 +213,11 @@ class Applications_model extends CI_Model {
 		$params = array(
 			$data['AffiliationName']
 		);
-		$affiliation = $this->db->query("
+		$affExists = $this->db->query("
 			SELECT AffiliationID FROM Affiliation
 			WHERE AffiliationName = ?
-		", $params)->result_array()[0];
+		", $params);
+		$affiliation = $affExists->num_rows() > 0 ? $affExists->result_array()[0] : false;
 		if(!$affiliation) {
 			array_push($params, $data['AffTypeName']);
 			$this->db->query("
@@ -269,7 +270,7 @@ class Applications_model extends CI_Model {
 				JOIN UserType ut ON ut.UserTypeID = ur.UserTypeID
 				JOIN Room r ON r.RoomID = ro.RoomID
 				JOIN Building b ON b.BuildingID = r.BuildingID
-			WHERE r.RoomName = ? AND b.BuildingAbbr = ?", $params)->result_array();
+			WHERE r.RoomName = ? AND b.BuildingName = ?", $params)->result_array();
 
 		var_dump($operators);
 
@@ -291,13 +292,16 @@ class Applications_model extends CI_Model {
 				$data['BuildingName'],
 				$data["RoomName"],
 				$data['EventStartDate'],
-				$data['EventEndDate']
+				$data['EventEndDate'],
+				$data['AttendeesUnder21'],
+				$data['AttendeesOver21'],
+				$data['Alcohol']
 			);
 		$insert = $this->db->query("
 				INSERT INTO Venue
-					(ApplicationID, RoomID, EventStartDate, EventEndDate)
+					(ApplicationID, RoomID, EventStartDate, EventEndDate, AttendeesUnder21, AttendeesOver21, Alcohol)
 				VALUES
-					({$appID}, (SELECT RoomID FROM Room r JOIN Building b ON b.BuildingID = r.BuildingID WHERE BuildingAbbr = ? AND r.RoomName = ?), ?, ?)
+					({$appID}, (SELECT RoomID FROM Room r JOIN Building b ON b.BuildingID = r.BuildingID WHERE BuildingName = ? AND r.RoomName = ?), ?, ?, ?, ?, ?)
 			", $params);
 		if(!$insert) {
 			return $this->db->error();
@@ -326,32 +330,34 @@ class Applications_model extends CI_Model {
 	}
 
 	public function addAdminToApp($appID, $data) {
-		$params = array(
-			$data['netid'],
-			$data['UserTypeName']
-		);
+		if(!empty($data)) {
+			$params = array(
+				$data['netid'],
+				$data['UserTypeName']
+			);
 
-		$urID = $this->db->query("
-			SELECT ur.UserRoleID FROM UserRole ur 
-				JOIN User u ON u.UserID = ur.UserID 
-				JOIN UserType ut ON ur.UserTypeID = ut.UserTypeID
-		  WHERE u.NetID = ? 
-		  		AND ut.UserTypeName = ?
-  		", $params)->row();
-  		if($urID) {
-  			$urID = $urID->UserRoleID;
+			$urID = $this->db->query("
+				SELECT ur.UserRoleID FROM UserRole ur 
+					JOIN User u ON u.UserID = ur.UserID 
+					JOIN UserType ut ON ur.UserTypeID = ut.UserTypeID
+			  WHERE u.NetID = ? 
+			  		AND ut.UserTypeName = ?
+	  		", $params)->row();
+	  		if($urID) {
+	  			$urID = $urID->UserRoleID;
 
-			$insert = $this->db->query("
-				INSERT INTO UserRoleApplication
-					(UserRoleID, ApplicationID)
-				VALUES 
-					({$urID}, {$appID});
-			");
+				$insert = $this->db->query("
+					INSERT INTO UserRoleApplication
+						(UserRoleID, ApplicationID)
+					VALUES 
+						({$urID}, {$appID});
+				");
 
-			if(!$insert) {
-				return $this->db->error();
+				if(!$insert) {
+					return $this->db->error();
+				}
+				return $urID;
 			}
-			return $urID;
 		}
 	}
 

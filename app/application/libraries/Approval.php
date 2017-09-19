@@ -31,7 +31,7 @@
 		 */
 		public function getStatus($appID) {
 			$status = $this->CI->db->query(
-				"SELECT Status FROM application
+				"SELECT Status FROM Application
 				 WHERE ApplicationID = {$appID}"
 			);
 

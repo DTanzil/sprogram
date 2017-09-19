@@ -45,12 +45,23 @@
  		</div>
  		<h2>Privileges</h2>
  		<p>Check all that apply</p>
- 		<label class="checkbox-inline"><input type="checkbox" name="privileges[]" value="Admin">Admin</label>
- 		<label class="checkbox-inline"><input type="checkbox" name="privileges[]" value="VenueOperator">Venue Operator</label>
- 		<label class="checkbox-inline"><input type="checkbox" name="privileges[]" value="Sponsor">Sponsor</label>
- 		<label class="checkbox-inline"><input type="checkbox" name="privileges[]" value="Committee">Committee</label>
- 		<label class="checkbox-inline"><input type="checkbox" name="privileges[]" value="Viewer">Viewer</label>
+ 		<div class="row">
+ 		<div class="col-lg-6">
+	 		<label class="checkbox-inline"><input type="checkbox" name="privileges[]" value="Admin">Admin</label>
+	 		<label class="checkbox-inline"><input type="checkbox" name="privileges[]" value="VenueOperator">Venue Operator</label>
+	 		<label class="checkbox-inline"><input type="checkbox" name="privileges[]" value="Sponsor">Sponsor</label>
+	 		<label class="checkbox-inline"><input type="checkbox" name="privileges[]" value="Committee">Committee</label>
+	 		<label class="checkbox-inline"><input type="checkbox" name="privileges[]" value="Viewer">Viewer</label>
+ 		</div>
+ 		</div>
 
+ 		<div class="row">
+ 		<div class="col-lg-6">
+ 			<p>Admin Status</p>	
+ 			<label class="radio-inline"><input type="radio" name="AdminIsActive" value="1" required/> Approved</label>
+ 			<label class="radio-inline"><input type="radio" name="AdminIsActive" value="0" /> Disapproved</label>
+ 		</div>
+ 		</div>
 
 	 		<div class="input-group">
 	 		<input class="btn btn-default" type="reset" name="" value="Reset">

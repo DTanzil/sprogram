@@ -167,10 +167,12 @@
 				':phone' => $data['UserPhone'],
 				':affname' => $data['AffiliationName'],
 				':title' => $data['UserTitle'],
-				':box' => $data['UWBox']
+				':box' => $data['UWBox'],
+				':active' => $data['AdminIsActive']
 			);
 			$insertQuery = 
 				"CALL uspNewAdmin(
+					?,
 					?,
 					?,
 					?,
