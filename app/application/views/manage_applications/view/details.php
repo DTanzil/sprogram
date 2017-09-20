@@ -209,7 +209,7 @@
 		<p><?= $users['Sponsor'][0]['UserEmail'] ?></p>
 		<p><?= $approvals['sponsor'][0]['Descision'] ?></p>
 
-		<?php if($approvals['sponsor'][0]['Descision'] == 'pending' && ($users['Sponsor'][0]['NetID'] == $this->authorize->getNetid() || $this->authorize->getNetid() || $this->authorize->hasRole('Admin'))) { ?>
+		<?php if($approvals['sponsor'][0]['Descision'] == 'pending' && ($users['Sponsor'][0]['NetID'] == $this->authorize->getNetid() || $this->authorize->hasRole('Admin'))) { ?>
 			<p>You are the Sponsor for this application. Choose whether to approve or deny it:</p>
 			<button class="btn btn-success sponsorAction">Approve</button>
 			<button class="btn btn-danger sponsorAction">Deny</button>
@@ -237,7 +237,7 @@
 		<p><?= $users['Committee'][0]['UserEmail'] ?></p>
 		<p><?= $committee ? $approvals['committee'][0]['Descision'] : '' ?></p>
 
-		<?php if(sizeof($approvals['committee']) > 0 && $approvals['committee'][0]['Descision'] == 'pending' && ($users['Committee'][0]['NetID'] == $this->authorize->getNetid() $this->authorize->getNetid() || $this->authorize->hasRole('Admin'))) { ?>
+		<?php if(sizeof($approvals['committee']) > 0 && $approvals['committee'][0]['Descision'] == 'pending' && ($users['Committee'][0]['NetID'] == $this->authorize->getNetid() || $this->authorize->hasRole('Admin'))) { ?>
 			<p>You are the Committee member assigned to this application. Choose whether to approve or deny it:</p>
 			<button class="btn btn-success CommAction" value="approved">Approve</button>
 			<button class="btn btn-danger commAction" value="denied">Deny</button>
