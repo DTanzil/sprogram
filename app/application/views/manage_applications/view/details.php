@@ -10,7 +10,9 @@
 <?php } ?>
 <div id="actionItems">
 
-	 <?php foreach($openApprs as $openAppr) { ?>
+	 <?php foreach($openApprs as $openAppr) { 
+	 	if($openAppr['NetID'] == $this->authorize->getNetid()) {
+	 	?>
 		<div class="row">
 		<div class="col-md-8">
 		<h3><?= $openAppr['ApprovalType'] ?> Approval</h3>
@@ -30,7 +32,10 @@
 		</div> 
 		</div> 
 		</div>
-	<?php } ?>
+	<?php 
+		} 
+	}
+	?>
 
 </div>
 
@@ -180,7 +185,12 @@
 		<p><?= $venue['EventStartDate'] . ' - ' .  $venue['EventEndDate']?></p>
 		<p><?= 'Operated by: ' . $venue['Operators'] ?></p>
 
-		<?php if($venue['Descision'] == 'pending' && ($venue['NetID'] == $this->authorize->getNetid() || $this->authorize->hasRole('Admin'))) { ?>
+		<?php if
+			(
+				$venue['Descision'] == 'pending' && 
+				($venue['NetID'] == $this->authorize->getNetid() || $this->authorize->hasRole('Admin'))
+			) { 
+		?>
 			<p>You are a Venue Operator for this location. Choose whether to approve or deny this event at this location:</p>
 			<button class="btn btn-success venueApprove" value=<?= "\"{$openAppr['ApprovalID']}\"" ?>>Approve</button>
 			<button class="btn btn-danger venueDeny" value=<?= "\"{$openAppr['ApprovalID']}\"" ?>>Deny</button>

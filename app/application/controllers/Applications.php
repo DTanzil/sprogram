@@ -80,7 +80,7 @@ class Applications extends CI_Controller {
 		$content['notes'] = $this->Applications_model->getNotes($appID);
 		$content['view'] = "manage_applications/view/details.php";
 		$content['description'] = "View Application Details";
-		$content['openApprs'] = $this->approval->getOpenApprovalsForUser($content['details']['ApplicationID'], $this->authorize->getNetid());
+		$content['openApprs'] = $this->approval->getOpenApprovals($content['details']['ApplicationID']);
 
 		$js = array('views/pagination.js', 'views/manage_applications/details.js');
 		$css = array('views/pagination.css', 'views/manage_applications/details.css');

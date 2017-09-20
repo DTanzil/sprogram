@@ -353,7 +353,7 @@
 			return $approvals->result_array();
 		}
 
-		public function getOpenApprovalsForUser($appID, $netID) {
+		public function getOpenApprovals($appID) {
 			// $approvals = $this->CI->db->query("
 			// 	SELECT * FROM Approval appr
 			// 		JOIN Venue v ON v.VenueID = appr.VenueID
@@ -377,7 +377,6 @@
                     JOIN UserRole ur ON ur.UserRoleID = vur.UserRoleID
                     JOIN User u ON u.UserID = ur.UserID
                 WHERE a.ApplicationID = {$appID}
-                	AND u.NetID = '{$netID}'
                 	AND appr.ApprovalEndDate is null
 
 			");
