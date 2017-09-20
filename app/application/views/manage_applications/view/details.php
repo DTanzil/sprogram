@@ -137,7 +137,6 @@
 	</div> <!-- end info-box -->
 	</div>
 	</div> <!-- end row -->
-	</div><!--  end expand/collapse -->
 
 	<!-- Advisor details (if applicable) -->
 	<?php if(isset($users['Advisor'][0])) { ?>
@@ -157,9 +156,12 @@
 			</div>
 		</div> <!-- end info-box -->
 		</div>
-		</div> <!-- end row -->
-		</div><!--  end expand/collapse -->
+		</div> <!-- end row -->	
 	<?php } ?>
+	</div><!--  end expand/collapse -->
+
+
+
 </div>
 
 <div id="locations">
