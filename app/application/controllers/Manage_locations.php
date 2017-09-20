@@ -40,6 +40,7 @@ class Manage_locations extends CI_Controller {
 
 		$header['mode'] = 'Location';
 		$header['view'] = 'templates/header.php';
+		$header['user'] = $this->Admin_model->getContact($this->authorize->getNetid());
 
 		$content['locations'] = $this->Manage_locations_model->getAllLocations();
 		$content['view'] = 'manage_locations/index';

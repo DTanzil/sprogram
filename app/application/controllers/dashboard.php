@@ -29,6 +29,7 @@ class Dashboard extends CI_Controller {
 
 		//$header['mode'] = 'Application';
 		$header['view'] = 'templates/header.php';
+		$header['user'] = $this->Admin_model->getContact($this->authorize->getNetid());
 
 		//$content['apps'] = $this->Applications_model->getAllApps();
 		//$content['viewVal'] = 3;

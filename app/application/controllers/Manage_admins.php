@@ -40,6 +40,7 @@ class Manage_admins extends CI_Controller {
 
 		$header['mode'] = 'Admin';
 		$header['view'] = 'templates/header.php';
+		$header['user'] = $this->Admin_model->getContact($this->authorize->getNetid());
 
 		$content['admins'] = $this->Admin_model->getAllAdmins();
 		$content['view'] = 'manage_admins';
@@ -48,7 +49,8 @@ class Manage_admins extends CI_Controller {
 		$css = array('views/pagination.css');
 		$head['pageDependencies'] = getPageDependencies($js, $css);
 
-		$sidebar = $this->Admin_model->getContact('jshill');
+		$sidebar = array();
+
 
 		$data['head'] = $head;
 		$data['header'] = $header;

@@ -16,10 +16,10 @@
 			$this->CI->load->database();
 			$this->CI->load->library('session');
 
-			$this->bypass = true; # uncomment this to use bypass
+			# $this->bypass = true; # uncomment this to use bypass
 
-			if($this->bypass) {
-				$_SERVER['REMOTE_USER'] = 'cmcoop';
+			if(strpos($_SERVER['SERVER_NAME'], 'localhost') !== false) {
+				$_SERVER['REMOTE_USER'] = 'jshill';
 
 				unset($this->CI->session->roles);
 			}

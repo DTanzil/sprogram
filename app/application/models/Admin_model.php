@@ -133,18 +133,10 @@
 
 
 		function getContact($netid){
-			$query =
-				$this->db->select(
-					'User.UserID,
-					User.UserFName,
-					User.UserLName, 
-					User.UserTitle,
-					User.UserEmail,
-					User.UserPhone'
-					)->
-				from('User')->
-				where('User.NetID', $netid)->
-			get();
+			$query = $this->db->query("
+				SELECT * FROM User
+				WHERE NetID = '{$netid}'
+			");
 
 			
 			return ( $query->num_rows() > 0 ) ? $query->row_array() : false; 

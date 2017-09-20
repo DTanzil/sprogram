@@ -27,6 +27,7 @@ class Email extends CI_Controller {
 
 		$header['mode'] = 'Application';
 		$header['view'] = 'templates/header.php';
+		$header['user'] = $this->Admin_model->getContact($this->authorize->getNetid());
 
 		$content['templates'] = $this->Email_model->getTemplates();
 		$content['view'] = "email/index.php";

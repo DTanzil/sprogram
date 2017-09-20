@@ -180,7 +180,7 @@
 		<p><?= $venue['EventStartDate'] . ' - ' .  $venue['EventEndDate']?></p>
 		<p><?= 'Operated by: ' . $venue['Operators'] ?></p>
 
-		<?php if($venue['Descision'] == 'pending' && $venue['NetID'] == $this->authorize->getNetid()) { ?>
+		<?php if($venue['Descision'] == 'pending' && ($venue['NetID'] == $this->authorize->getNetid() || $this->authorize->hasRole('Admin'))) { ?>
 			<p>You are a Venue Operator for this location. Choose whether to approve or deny this event at this location:</p>
 			<button class="btn btn-success venueApprove" value=<?= "\"{$openAppr['ApprovalID']}\"" ?>>Approve</button>
 			<button class="btn btn-danger venueDeny" value=<?= "\"{$openAppr['ApprovalID']}\"" ?>>Deny</button>
@@ -209,7 +209,7 @@
 		<p><?= $users['Sponsor'][0]['UserEmail'] ?></p>
 		<p><?= $approvals['sponsor'][0]['Descision'] ?></p>
 
-		<?php if($approvals['sponsor'][0]['Descision'] == 'pending' && $users['Sponsor'][0]['NetID'] == $this->authorize->getNetid()) { ?>
+		<?php if($approvals['sponsor'][0]['Descision'] == 'pending' && ($users['Sponsor'][0]['NetID'] == $this->authorize->getNetid() || $this->authorize->getNetid() || $this->authorize->hasRole('Admin'))) { ?>
 			<p>You are the Sponsor for this application. Choose whether to approve or deny it:</p>
 			<button class="btn btn-success sponsorAction">Approve</button>
 			<button class="btn btn-danger sponsorAction">Deny</button>
@@ -237,7 +237,7 @@
 		<p><?= $users['Committee'][0]['UserEmail'] ?></p>
 		<p><?= $committee ? $approvals['committee'][0]['Descision'] : '' ?></p>
 
-		<?php if(sizeof($approvals['committee']) > 0 && $approvals['committee'][0]['Descision'] == 'pending' && $users['Committee'][0]['NetID'] == $this->authorize->getNetid()) { ?>
+		<?php if(sizeof($approvals['committee']) > 0 && $approvals['committee'][0]['Descision'] == 'pending' && ($users['Committee'][0]['NetID'] == $this->authorize->getNetid() $this->authorize->getNetid() || $this->authorize->hasRole('Admin'))) { ?>
 			<p>You are the Committee member assigned to this application. Choose whether to approve or deny it:</p>
 			<button class="btn btn-success CommAction" value="approved">Approve</button>
 			<button class="btn btn-danger commAction" value="denied">Deny</button>
