@@ -138,6 +138,28 @@
 	</div>
 	</div> <!-- end row -->
 	</div><!--  end expand/collapse -->
+
+	<!-- Advisor details (if applicable) -->
+	<?php if(isset($users['Advisor'][0])) { ?>
+		<div class="row">
+		<div class="col-md-8">
+		<h3>Advisor</h3>
+		<div class="info-box">
+			<h4><?= "{$users['Advisor'][0]['UserFname']} {$users['Advisor'][0]['UserLname']}" ?></h4>
+			<div class="row">
+				<div class="col-xs-6">
+					<p><?= $users['Advisor'][0]['UserEmail'] ?></p>
+					<p><?= $users['Advisor'][0]['UserPhone'] ?></p>
+				</div>
+				<div class="col-xs-6">
+					<p>UW Mailbox: <?= $users['Advisor'][0]['UWBox'] ?></p>
+				</div>
+			</div>
+		</div> <!-- end info-box -->
+		</div>
+		</div> <!-- end row -->
+		</div><!--  end expand/collapse -->
+	<?php } ?>
 </div>
 
 <div id="locations">

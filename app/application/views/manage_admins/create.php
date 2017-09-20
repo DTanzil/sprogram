@@ -45,15 +45,12 @@
  		</div>
  		<h2>Privileges</h2>
  		<p>Check all that apply</p>
- 		<div class="row">
- 		<div class="col-lg-6">
-	 		<label class="checkbox-inline"><input type="checkbox" name="privileges[]" value="Admin">Admin</label>
-	 		<label class="checkbox-inline"><input type="checkbox" name="privileges[]" value="VenueOperator">Venue Operator</label>
-	 		<label class="checkbox-inline"><input type="checkbox" name="privileges[]" value="Sponsor">Sponsor</label>
-	 		<label class="checkbox-inline"><input type="checkbox" name="privileges[]" value="Committee">Committee</label>
-	 		<label class="checkbox-inline"><input type="checkbox" name="privileges[]" value="Viewer">Viewer</label>
- 		</div>
- 		</div>
+
+ 		<label class="checkbox-inline"><input type="checkbox" name="privileges[]" value="Admin">Admin</label>
+ 		<label class="checkbox-inline"><input type="checkbox" name="privileges[]" value="VenueOperator">Venue Operator</label>
+ 		<label class="checkbox-inline"><input type="checkbox" name="privileges[]" value="Sponsor">Sponsor</label>
+ 		<label class="checkbox-inline"><input type="checkbox" name="privileges[]" value="Committee">Committee</label>
+ 		<label class="checkbox-inline"><input type="checkbox" name="privileges[]" value="Viewer">Viewer</label>
 
  		<div class="row">
  		<div class="col-lg-6">
