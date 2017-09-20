@@ -2,7 +2,26 @@
 <html>
 <head>
 	<title><?= $head['title'] ?></title>
+		<script type="text/javascript">
+			// Determine the base URL for ajax/api endpoints based on our environment
+			
+			var domain = window.location.hostname;
+			var protocol = window.location.protocol + '//';
 
+			// Detect if we're in the live prod environment, test environment, or dev. Set path accordingly
+			var path;
+			if(domain.includes('depts.washington.edu')) {
+				path = window.location.pathname.includes('admin') ? '/sprogram/admin' : '/sprogram/stage/sprogram/app/';
+			} else {
+				path = '/sprogram-app/app/';
+			}
+
+			window.sprogram = {
+				baseUrl : protocol + domain + path
+			}
+
+			
+		</script>
 
 	<?= loadCommonAssets(); # defined in assests_helper.php ?>
 	<?php if(isset($head['pageDependencies'])) { echo $head['pageDependencies']; } ?>

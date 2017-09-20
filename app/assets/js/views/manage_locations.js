@@ -1,10 +1,10 @@
 $(document).ready(function() {
-	var basepath = 'http://localhost/';
+	var baseUrl = window.sprogram.baseUrl;
 	var options = [];
 
 	$.ajax({
 		method: 'GET',
-		url: basepath + 'sprogram-app/app/Manage_locations/getOperators',
+		url: baseUrl + 'Manage_locations/getOperators',
 		success: populateOperators,
 		error: function(xhr) {
 			console.error(xhr);

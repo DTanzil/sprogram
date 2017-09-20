@@ -158,7 +158,6 @@
 		 * adminType can be string or int.
 		*/
 		function addAdmin($data){
-			echo 'addAdmin';
 			$params = array(
 				':fname' => $data['UserFname'],
 				':lname' => $data['UserLname'],
@@ -194,8 +193,6 @@
 					$role = "CALL uspAddRoleToAdmin({$id}, '{$privilege}')";
 					$result = $this->db->query($role);
 				}
-
-				var_dump($result);
 			$this->db->trans_complete();
 			return 'inserted';
 			
@@ -210,7 +207,6 @@
 				':active' => $adminInfo['AdminIsActive'],
 				':id' => $adminInfo['UserID']
 			);
-			echo 'editAdmin';
 			$this->db->trans_start();
 			$this->db->query(
 				"UPDATE User

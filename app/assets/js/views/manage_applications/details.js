@@ -9,6 +9,7 @@
 $(document).ready(function() {
 	var addressees = [];
 	var templates = [];
+	var baseUrl = window.sprogram.baseUrl;
 
 	getTemplates();
 
@@ -66,7 +67,7 @@ $(document).ready(function() {
 		var decision = btn.hasClass('venueApprove') ? 'approved' : 'denied';
 
 		$.ajax({
-			url: 'http://localhost/sprogram-app/app/applications/venueDecision',
+			url: baseUrl + 'applications/venueDecision',
 			method: 'post',
 			data:
 			{
@@ -85,7 +86,7 @@ $(document).ready(function() {
 		var decision = btn.attr('value');
 
 		$.ajax({
-			url: 'http://localhost/sprogram-app/app/applications/venueDecision',
+			url: baseUrl + 'applications/venueDecision',
 			method: 'post',
 			data:
 			{
@@ -105,7 +106,7 @@ $(document).ready(function() {
 		var appID = $('#appID').text();
 
 		$.ajax({
-			url: 'http://localhost/sprogram-app/app/applications/sponsorDecision',
+			url: baseUrl + 'applications/sponsorDecision',
 			method: 'post',
 			data:
 			{
@@ -126,7 +127,7 @@ $(document).ready(function() {
 		var appID = $('#appID').text();
 
 		$.ajax({
-			url: 'http://localhost/sprogram-app/app/applications/committeeDecision',
+			url: baseUrl + 'applications/committeeDecision',
 			method: 'post',
 			data:
 			{
@@ -153,7 +154,7 @@ $(document).ready(function() {
 		console.log(rec);
 
 		$.ajax({
-			url: 'http://localhost/sprogram-app/app/applications/sendEmail',
+			url: baseUrl + 'applications/sendEmail',
 			method: 'post',
 			data:
 			{
@@ -171,7 +172,7 @@ $(document).ready(function() {
 		var appID = $('#appID').text();
 		console.log(appID);
 		$.ajax({
-			url: 'http://localhost/sprogram-app/app/applications/getTemplates',
+			url: baseUrl + 'applications/getTemplates',
 			method: 'post',
 			data:
 			{
@@ -200,7 +201,7 @@ $(document).ready(function() {
 		console.log(appID);
 
 		$.ajax({
-			url: 'http://localhost/sprogram-app/app/applications/sendReminder',
+			url: baseUrl + 'applications/sendReminder',
 			method: 'post',
 			data:
 			{
@@ -219,7 +220,7 @@ $(document).ready(function() {
 		var noteText = $('textarea#noteText').val();
 
 		$.ajax({
-			url: 'http://localhost/sprogram-app/app/applications/createNote',
+			url: baseUrl + 'applications/createNote',
 			method: 'post',
 			data:
 			{
@@ -236,7 +237,7 @@ $(document).ready(function() {
 		var expReason = $('textarea#expReason').val();
 
 		$.ajax({
-			url: 'http://localhost/sprogram-app/app/applications/expireApp',
+			url: baseUrl + 'applications/expireApp',
 			method: 'post',
 			data:
 			{
@@ -253,7 +254,7 @@ $(document).ready(function() {
 		var inactiveReason = $('textarea#inactiveReason').val();
 
 		$.ajax({
-			url: 'http://localhost/sprogram-app/app/applications/inactivate',
+			url: baseUrl + 'applications/inactivate',
 			method: 'post',
 			data:
 			{

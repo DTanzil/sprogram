@@ -4,6 +4,8 @@
  * ajax request to the Applications model to update the status of the flag
  */
 $(document).ready(function() {
+    var baseUrl = window.sprogram.baseUrl;
+
     if($('thead th:contains("Flag")').length > 0) {
 
         $('tbody td.flag').click(function(event) {
@@ -22,7 +24,7 @@ $(document).ready(function() {
 
             $.ajax({
                 method:'POST',
-                url: 'http://localhost/sprogram-app/app/Applications/updateFlag',
+                url: baseUrl + 'Applications/updateFlag',
                 data:data,
                 dataType:'json',
                 success:updateFlag,
