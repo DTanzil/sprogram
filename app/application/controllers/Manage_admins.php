@@ -86,6 +86,7 @@ class Manage_admins extends CI_Controller {
 
 			$header['mode'] = 'Admin';
 			$header['view'] = 'templates/header.php';
+			$header['user'] = $this->Admin_model->getContact($this->authorize->getNetid());
 
 			$content['view'] = 'manage_admins/create';
 			$content['description'] = 'Add an Administrator';
@@ -126,6 +127,7 @@ class Manage_admins extends CI_Controller {
 
 			$header['mode'] = 'Admin';
 			$header['view'] = 'templates/header.php';
+			$header['user'] = $this->Admin_model->getContact($this->authorize->getNetid());
 
 			# Get the associated data for the given admin
 			# IF this admin already exists, overwrite this data with the data provided in $createInfo,

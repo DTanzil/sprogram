@@ -67,6 +67,7 @@ class Applications extends CI_Controller {
 
 		$header['mode'] = 'Application';
 		$header['view'] = 'templates/header.php';
+		$header['user'] = $this->Admin_model->getContact($this->authorize->getNetid());
 
 		$content['netid'] = $this->authorize->getnetid();
 		$content['details'] = $this->Applications_model->getDetailsForApp($appID);

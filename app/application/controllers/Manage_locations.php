@@ -86,6 +86,7 @@ class Manage_locations extends CI_Controller {
 
 			$header['mode'] = 'Admin';
 			$header['view'] = 'templates/header.php';
+			$header['user'] = $this->Admin_model->getContact($this->authorize->getNetid());
 
 			$content['view'] = 'manage_locations/create';
 			$content['description'] = 'Add a Location';
@@ -138,6 +139,7 @@ class Manage_locations extends CI_Controller {
 
 			$header['mode'] = 'Location';
 			$header['view'] = 'templates/header.php';
+			$header['user'] = $this->Admin_model->getContact($this->authorize->getNetid());
 
 			$content['locationInfo'] = $this->Manage_locations_model->getLocationByID($locationID);
 			$content['buildings'] = $this->Manage_locations_model->getAllBuildings();
