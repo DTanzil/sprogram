@@ -125,8 +125,16 @@ class Applications extends CI_Controller {
 
 		$approvalID = $this->input->post('approvalID');
 		$decision = $this->input->post('decision');
+		$appID = $this->input->post('appID');
+		$netID = $this->input->post('netID');
 
-		$confirmation = $this->approval->updateVenueDecision($approvalID, $decision);
+		$confirmation = $this->approval->updateVenueDecision($approvalID, $netID, $decision);
+
+		$openVenues = $this->approval->getOpenApprovalsByType($appID, 'VenueOperator');
+
+		if(sizeof($openVenues) == 0) {
+			$this->approval->advanceApplication($appID, 'committee');
+		}
 
 		header('Content-Type: application/json');
 		echo json_encode($confirmation);
@@ -138,11 +146,13 @@ class Applications extends CI_Controller {
 		$approvalID = $this->input->post('approvalID');
 		$decision = $this->input->post('decision');
 		$appID = $this->input->post('appID');
+		$netID = $this->input->post('netID');
 
-		$confirmation = $this->approval->updateSponsorDecision($appID, 'jshill', $decision);
+		$confirmation = $this->approval->updateSponsorDecision($appID, $netID, $decision);
 
 		if($decision == 'denied') {
 			$this->approval->setStatus($appID, 'denied', $expReason);
+			$this->approval->voidApprovals($appID);
 		} else {
 			$this->approval->advanceApplication($appID, 'venue');
 		}
@@ -161,9 +171,9 @@ class Applications extends CI_Controller {
 		$confirmation = $this->approval->updateCommitteeDecision($appID, 'jshill', $decision);
 
 		if($decision == 'denied') {
-			$this->approval->setStatus($appID, 'denied', $expReason);
+			$this->approval->setStatus($appID, 'denied');
 		} else {
-			$this->approval->advanceApplication($appID, 'approved');
+			$this->approval->setStatus($appID, 'approved');
 		}
 
 		//header('Content-Type: application/json');
@@ -207,6 +217,7 @@ class Applications extends CI_Controller {
 		$expReason = $_POST['expReason'];
 
 		$this->approval->setStatus($appID, 'expired', $expReason);
+		$this->approval->voidApprovals($appID);
 	}
 
 	public function inactivate() {
@@ -214,6 +225,7 @@ class Applications extends CI_Controller {
 		$inactiveReason = $_POST['inactiveReason'];
 
 		$this->approval->setStatus($appID, 'inactive', $inactiveReason);
+		$this->approval->voidApprovals($appID);
 	}
 
 	public function test() {

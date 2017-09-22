@@ -66,19 +66,22 @@
 			$this->CI->mailer->performMailActionforApp($appID, 'committee decision');
 		}
 
-		public function updateVenueDecision($approvalID, $decision) {
+		public function updateVenueDecision($approvalID, $signature, $decision) {
 			# $userRoleID, $venueID, $type, $signature, $descision, $descisionRemark = ''
 			//$this->updateApproval($userRoleID, $venueID, 'venue', 'default', $decision);
 			//
 			$params = array(
 				$decision,
+				$signature,
 				$approvalID
+				
 			);
 
 			$this->CI->db->query("
 				UPDATE Approval
 					SET ApprovalEndDate = NOW(),
-					Descision = ?
+					Descision = ?,
+					ApprovalSignature = ?
 				WHERE ApprovalID = ?
 					
 			", $params);
@@ -100,23 +103,30 @@
 			# IF any denials, return them and exit
 			# IF the app isn't exculsively trying to be advanced exactly 1 step, return
 			# ELSE perform advancement
-			$denials = $this->checkAppHasDenials($appID, $currentStatus);
+			
+			// $denials = $this->checkAppHasDenials($appID, $currentStatus);
 
-			if($denials) {
-				return $denials;
-			} elseif(array_search($toStep, $this->approvalOrder) != false && 
-					 array_search($toStep, $this->approvalOrder) - array_search($currentStatus, $this->approvalOrder) == 1) {
-				$this->CI->db->query("
-					UPDATE Application
-					SET Status = '{$toStep}'
-					WHERE ApplicationID = {$appID}
-				");
+			// if($denials) {
+				// return $denials;
+			// } elseif
+			// if(array_search($toStep, $this->approvalOrder) != false && 
+			// 		 array_search($toStep, $this->approvalOrder) - array_search($currentStatus, $this->approvalOrder) == 1) {
+			// 	$this->CI->db->query("
+			// 		UPDATE Application
+			// 		SET Status = '{$toStep}'
+			// 		WHERE ApplicationID = {$appID}
+			// 	");
 
-				//trigger email action?
-			} else {
-				return "You are attemping to advance an application more than one step or regress an application. This action is not supported";
-			}
+			// 	//trigger email action?
+			// } else {
+			// 	return "You are attemping to advance an application more than one step or regress an application. This action is not supported";
+			// }
 
+			$this->CI->db->query("
+				UPDATE Application
+				SET Status = '{$toStep}'
+				WHERE ApplicationID = {$appID}
+			");
 		}
 
 		/**
@@ -143,17 +153,6 @@
 		# UNTESTED
 		# Will create an approval for the given stage (type). Also sends an email out for each approval
 		public function createApproval($venueID, $type) {
-			//$type = $this->CI->db->escape($type);
-			//get the UserRole with UserType 'type' associated 
-			// $userRoleID = $this->CI->db->query("
-			// 	SELECT ur.UserRoleID
-			// 	FROM UserRole ur
-			// 		JOIN UserType ut ON ur.UserTypeID = ut.UserTypeID
-			// 		JOIN UserRoleApplication ura ON ura.UserRoleID = ur.UserRoleID
-			// 		JOIN Application a ON ura.ApplicationID = a.ApplicationID
-			// 		JOIN Venue v ON v.ApplicationID = a.ApplicationID
-			// 	WHERE v.VenueID = {$venueID} AND UserTypeName = '{$type}'
-			// ")->row()->UserRoleID;
 			
 			# get all user roles for this venue with type $type
 			 $vurs = $this->CI->db->query("
@@ -165,25 +164,6 @@
 				WHERE v.VenueID = {$venueID} AND UserTypeName = '{$type}'
 			")->result_array();
 
-			//insert new approval for each userrole
-			// $insert = $this->CI->db->query("
-			// 	INSERT INTO Approval
-			// 		(ApprovalType, ApprovalStartDate, VenueID, UserRoleID, Descision)
-			// 	VALUES 
-			// 		((SELECT ut.UserTypeName
-			// 		 FROM UserType ut 
-			// 		 	JOIN UserRole ur ON ur.UserTypeID = ut.UserTypeID 
-			// 	 	 WHERE UserRoleID = {$userRoleID}),
-			// 		NOW(),
-			// 		{$venueID},
-			// 		{$userRoleID},
-			// 		'pending')
-			// ");
-			// if(!$insert) {
-			// 	return $this->CI->db->error();
-			// }
-			// $approvalID = $this->CI->db->query("SELECT LAST_INSERT_ID() AS id")->row()->id;
-			// 
 			foreach($vurs as $vur) {
 				//insert new approval for each userrole
 				$insert = $this->CI->db->query("
@@ -250,20 +230,6 @@
 				$venueID,
 				$type
 			);
-
-			# TODO: 
-			// $this->CI->db->query("
-			// 	UPDATE Approval
-			// 		SET ApprovalEndDate = NOW(),
-			// 		ApprovalSignature = ?,
-			// 		Descision = ?,
-			// 		DescisionRemark = ?
-			// 	WHERE UserRoleID = ?
-			// 		AND VenueID = ?
-			// 		AND ApprovalType = ?
-					
-			// ", $params);
-			// 
 			$this->CI->db->query("
 				UPDATE Approval
 					SET ApprovalEndDate = NOW(),
@@ -279,6 +245,26 @@
 			", $params);
 
 			//send email 
+		}
+
+		public function updateApprovalByID($apprID, $signature, $decision, $decisionRemark = null) {
+			$params = array(
+				$signature,
+				$decision,
+				$decisionRemark,
+				$apprID
+			);
+
+			$this->CI->db->query("
+				UPDATE Approval
+					SET ApprovalEndDate = NOW(),
+					ApprovalSignature = ?,
+					Descision = ?,
+					DescisionRemark = ?
+				WHERE ApprovalID = ?
+					
+			", $params);
+
 		}
 
 		public function getApproval($venueID, $adminRoleID, $type) {
@@ -329,16 +315,6 @@
 		//public function get
 
 		public function getApprovalsByType($appID, $approvalType) {
-			// $approvals = $this->CI->db->query("
-			// 	SELECT * FROM Approval appr
-			// 		JOIN Venue v ON v.VenueID = appr.VenueID
-			// 		JOIN Application a ON a.ApplicationID = v.ApplicationID
-   //                  JOIN UserRole ur ON ur.UserRoleID = appr.UserRoleID
-   //              WHERE a.ApplicationID = {$appID}
-   //              	AND ApprovalType = '{$approvalType}'
-
-			// ");
-			// 
 			$approvals = $this->CI->db->query("
 				SELECT * FROM Approval appr
 					JOIN VenueUserRole vur ON vur.VenueUserRoleID = appr.VenueUserRoleID
@@ -354,34 +330,40 @@
 		}
 
 		public function getOpenApprovals($appID) {
-			// $approvals = $this->CI->db->query("
-			// 	SELECT * FROM Approval appr
-			// 		JOIN Venue v ON v.VenueID = appr.VenueID
-			// 		JOIN Application a ON a.ApplicationID = v.ApplicationID
-   //                  JOIN UserRole ur ON ur.UserRoleID = appr.UserRoleID
-   //                  JOIN User u ON u.UserID = ur.UserID
-   //              WHERE a.ApplicationID = {$appID}
-   //              	AND u.NetID = '{$netID}'
-   //              	AND appr.ApprovalEndDate is null
+		$approvals = $this->CI->db->query("
+			SELECT * FROM Approval appr
+				JOIN VenueUserRole vur ON appr.VenueUserRoleID = vur.VenueUserRoleID
+				JOIN Venue v ON v.VenueID = vur.VenueID
+				JOIN Room r ON r.RoomID = v.RoomID
+				JOIN Application a ON a.ApplicationID = v.ApplicationID
+				JOIN ApplicationType at ON at.ApplicationTypeID = a.ApplicationTypeID
+                JOIN UserRole ur ON ur.UserRoleID = vur.UserRoleID
+                JOIN User u ON u.UserID = ur.UserID
+            WHERE a.ApplicationID = {$appID}
+            	AND appr.ApprovalEndDate is null
 
-			// ");
-			// 
-			// 
-			$approvals = $this->CI->db->query("
-				SELECT * FROM Approval appr
-					JOIN VenueUserRole vur ON appr.VenueUserRoleID = vur.VenueUserRoleID
-					JOIN Venue v ON v.VenueID = vur.VenueID
-					JOIN Room r ON r.RoomID = v.RoomID
-					JOIN Application a ON a.ApplicationID = v.ApplicationID
-					JOIN ApplicationType at ON at.ApplicationTypeID = a.ApplicationTypeID
-                    JOIN UserRole ur ON ur.UserRoleID = vur.UserRoleID
-                    JOIN User u ON u.UserID = ur.UserID
-                WHERE a.ApplicationID = {$appID}
-                	AND appr.ApprovalEndDate is null
-
-			");
+		");
 
 			return $approvals->result_array();
+		}
+
+		public function getOpenApprovalsByType($appID, $type) {
+					$approvals = $this->CI->db->query("
+						SELECT * FROM Approval appr
+							JOIN VenueUserRole vur ON appr.VenueUserRoleID = vur.VenueUserRoleID
+							JOIN Venue v ON v.VenueID = vur.VenueID
+							JOIN Room r ON r.RoomID = v.RoomID
+							JOIN Application a ON a.ApplicationID = v.ApplicationID
+							JOIN ApplicationType at ON at.ApplicationTypeID = a.ApplicationTypeID
+		                    JOIN UserRole ur ON ur.UserRoleID = vur.UserRoleID
+		                    JOIN User u ON u.UserID = ur.UserID
+		                WHERE a.ApplicationID = {$appID}
+		                	AND appr.Descision = 'pending'
+		                	AND appr.ApprovalType = '{$type}'
+
+					");
+
+					return $approvals->result_array();
 		}
 
 		public function getOpenAppsForUser($netID) {
@@ -401,6 +383,15 @@
 			");
 
 			return $approvals->result_array();
+		}
+
+		public function voidApprovals($appID) {
+			$openApprs = $this->getOpenApprovals($appID);
+			foreach($openApprs as $appr) {
+				if($appr['Descision'] == 'pending') {
+					$this->updateApprovalByID($appr['ApprovalID'], 'SYSTEM ACTION', 'voided', '');
+				}
+			}
 		}
 
 	}

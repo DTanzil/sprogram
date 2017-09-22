@@ -60,7 +60,7 @@ $(document).ready(function() {
 	}
 
 	function updateApproval(event) {
-
+		console.log('updateApproval');
 
 		var btn = $(this);
 		var apprID = btn.val();
@@ -81,9 +81,12 @@ $(document).ready(function() {
 	}
 
 	function updateVenueApproval(event) {
+		console.log('updateVenue');
 		var btn = $(this);
 		var apprID = btn.parent('div.info-box').attr('value');
 		var decision = btn.attr('value');
+		var appID = $('#appID').text();
+		var netID = $('#user-id').text();
 
 		$.ajax({
 			url: baseUrl + 'applications/venueDecision',
@@ -91,7 +94,9 @@ $(document).ready(function() {
 			data:
 			{
 				approvalID: apprID,
-				decision: decision
+				decision: decision,
+				appID: appID,
+				netID: netID
 			},
 			success: success,
 			error: error
@@ -104,6 +109,7 @@ $(document).ready(function() {
 		var apprID = btn.parent('div.info-box').attr('value');
 		var decision = btn.attr('value');
 		var appID = $('#appID').text();
+		var netID = $('#user-id').text();
 
 		$.ajax({
 			url: baseUrl + 'applications/sponsorDecision',
@@ -112,7 +118,8 @@ $(document).ready(function() {
 			{
 				approvalID: apprID,
 				decision: decision,
-				appID: appID
+				appID: appID,
+				netID: netID
 			},
 			success: success,
 			error: error
@@ -267,6 +274,7 @@ $(document).ready(function() {
 	}
 
 	function success(data) {
+		console.log(data);
 		var btns = $('button[value=' + data['ApprovalID'] + ']');
 		var box = btns.parent();
 		btns.remove();

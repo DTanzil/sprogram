@@ -18,7 +18,7 @@
 		<h3><?= $openAppr['ApprovalType'] ?> Approval</h3>
 		<div class="info-box" value=<?= "\"{$openAppr['ApprovalID']}\"" ?>>
 			<h4><?= $openAppr['RoomAbbr'] ?></h4>
-			<p><?=$openAppr['EventStartDate'] . ' - ' . $openAppr['EventStartDate']?>
+			<p><?=$openAppr['EventStartDate'] . ' - ' . $openAppr['EventStartDate']?></p>
 			<h4 value=<?= '"' . $openAppr['UserRoleID'] . '"' ?>><?= $openAppr['UserFname'] . ' ' . $openAppr['UserLname'] ?></h4>
 			<p><?= $openAppr['UserEmail'] ?></p>
 			<p>You are a <?= $openAppr['ApprovalType'] ?> for this application. Review the information in the 
@@ -48,8 +48,9 @@
 	<div class="info-box">
 		<h4><?=$details['EventName']?></h4>
 		<div class="row">
-			<p><?=$details['EventStartDate']?></p>
-
+			<p class="col-xs-6"><?=$details['EventStartDate']?></p>
+		</div>
+		<div class="row">
 			<?php 
 			$splitDesc = splitDesc($details['EventDesc']);
 			foreach($splitDesc as $chunk) {
@@ -180,7 +181,7 @@
 
 	<div class="row">
 	<div class="col-md-8">
-	<div class="info-box">
+	<div class="info-box" value=<?= "\"{$venue['ApprovalID']}\""?>>
 		<h4><?= $venue['RoomAbbr'] ?></h4>
 		<p><?= $venue['EventStartDate'] . ' - ' .  $venue['EventEndDate']?></p>
 		<p><?= 'Operated by: ' . $venue['Operators'] ?></p>
@@ -192,8 +193,8 @@
 			) { 
 		?>
 			<p>You are a Venue Operator for this location. Choose whether to approve or deny this event at this location:</p>
-			<button class="btn btn-success venueApprove" value=<?= "\"{$openAppr['ApprovalID']}\"" ?>>Approve</button>
-			<button class="btn btn-danger venueDeny" value=<?= "\"{$openAppr['ApprovalID']}\"" ?>>Deny</button>
+			<button class="btn btn-success VenueOperatorAction" value="approved">Approve</button>
+			<button class="btn btn-danger VenueOperatorAction" value="denied">Deny</button>
 		<?php } ?>
 
 		<h4 class="appr-status">Status: <?= $venue['Descision'] ?></h4>
@@ -214,15 +215,15 @@
 	<div class="collapse">
 	<div class="row">
 	<div class="col-md-8">
-	<div class="info-box">
+	<div class="info-box" value=<?="\"{$approvals['sponsor'][0]['ApprovalID']}\""?>>
 		<h4><?= $users['Sponsor'][0]['UserFname'] . ' ' . $users['Sponsor'][0]['UserLname'] ?></h4>
 		<p><?= $users['Sponsor'][0]['UserEmail'] ?></p>
 		<p><?= $approvals['sponsor'][0]['Descision'] ?></p>
 
 		<?php if($approvals['sponsor'][0]['Descision'] == 'pending' && ($users['Sponsor'][0]['NetID'] == $this->authorize->getNetid() || $this->authorize->hasRole('Admin'))) { ?>
 			<p>You are the Sponsor for this application. Choose whether to approve or deny it:</p>
-			<button class="btn btn-success sponsorAction">Approve</button>
-			<button class="btn btn-danger sponsorAction">Deny</button>
+			<button class="btn btn-success SponsorAction" value="approved">Approve</button>
+			<button class="btn btn-danger SponsorAction" value="denied">Deny</button>
 		<?php } ?>
 
 		<h4>Status: <?= $approvals['sponsor'][0]['Descision'] ?></h4>
@@ -240,7 +241,7 @@
 	<div class="collapse">
 	<div class="row">
 	<div class="col-md-8">
-	<div class="info-box">
+	<div class="info-box" value=<?="\"{$approvals['committee'][0]['ApprovalID']}\""?>>
 		<!-- TODO: figure out whether or not to create all approvals when an app is submitted -->
 		<?php $committee = sizeof($approvals['committee']) != 0 ? true : false; ?>
 		<h4><?= $users['Committee'][0]['UserFname'] . ' ' . $users['Committee'][0]['UserLname'] ?></h4>
@@ -249,8 +250,8 @@
 
 		<?php if(sizeof($approvals['committee']) > 0 && $approvals['committee'][0]['Descision'] == 'pending' && ($users['Committee'][0]['NetID'] == $this->authorize->getNetid() || $this->authorize->hasRole('Admin'))) { ?>
 			<p>You are the Committee member assigned to this application. Choose whether to approve or deny it:</p>
-			<button class="btn btn-success CommAction" value="approved">Approve</button>
-			<button class="btn btn-danger commAction" value="denied">Deny</button>
+			<button class="btn btn-success CommitteeAction" value="approved">Approve</button>
+			<button class="btn btn-danger CommitteeAction" value="denied">Deny</button>
 		<?php } ?>
 
 		<h4>Status: <?= $committee ? $approvals['committee'][0]['Descision'] : '' ?></h4>
