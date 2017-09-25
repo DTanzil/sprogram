@@ -160,9 +160,7 @@ class Applications_model extends CI_Model {
 			$app['ProminantAttendees'],
 			$app['TotalAttendees'],
 			$app['IsPublic'],
-			$app['Alcohol'],
-			$app['AmpSound'],
-			$app['AmpSoundDesc'],
+
 			$app['FoodPermit'],
 			$app['IsPolitical'],
 			$app['GatehouseParking'],
@@ -175,9 +173,9 @@ class Applications_model extends CI_Model {
 		);
 		$insert = $this->db->query("
 			INSERT INTO Application
-				(ApplicationTypeID, EventName, EventDesc, ProminantAttendees, TotalAttendees, DateApplied, IsPublic, Alcohol, AmpSound, AmpSoundDesc, FoodPermit, IsPolitical, GatehouseParking, ComuterServicesParking, BusParking, RegFeeAmount, HasDonations, DonationDesc, Security)
+				(ApplicationTypeID, EventName, EventDesc, ProminantAttendees, TotalAttendees, DateApplied, IsPublic, FoodPermit, IsPolitical, GatehouseParking, ComuterServicesParking, BusParking, RegFeeAmount, HasDonations, DonationDesc, Security)
 			VALUES 
-				((SELECT ApplicationTypeID FROM ApplicationType WHERE ApplicationTypeName = ?), ?, ?, ?, ?, NOW(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+				((SELECT ApplicationTypeID FROM ApplicationType WHERE ApplicationTypeName = ?), ?, ?, ?, ?, NOW(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
 		", $params); 
 
 		$id = $this->db->insert_id();
@@ -296,13 +294,14 @@ class Applications_model extends CI_Model {
 				$data['EventEndDate'],
 				$data['AttendeesUnder21'],
 				$data['AttendeesOver21'],
-				$data['Alcohol']
+				$data['Alcohol'],
+				$data['AmplifiedSound']
 			);
 		$insert = $this->db->query("
 				INSERT INTO Venue
-					(ApplicationID, RoomID, EventStartDate, EventEndDate, AttendeesUnder21, AttendeesOver21, Alcohol)
+					(ApplicationID, RoomID, EventStartDate, EventEndDate, AttendeesUnder21, AttendeesOver21, AlcoholAtVenue, AmplifiedSound)
 				VALUES
-					({$appID}, (SELECT RoomID FROM Room r JOIN Building b ON b.BuildingID = r.BuildingID WHERE BuildingName = ? AND r.RoomName = ?), ?, ?, ?, ?, ?)
+					({$appID}, (SELECT RoomID FROM Room r JOIN Building b ON b.BuildingID = r.BuildingID WHERE BuildingName = ? AND r.RoomName = ?), ?, ?, ?, ?, ?, ?)
 			", $params);
 		var_dump($insert);
 		if(!$insert) {

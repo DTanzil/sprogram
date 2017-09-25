@@ -70,22 +70,19 @@
 						<dd><?= $users['Sponsor'][0]['UserFname'] . ' ' . $users['Sponsor'][0]['UserLname']?></dd>
 					<dt>Donations Accepted:</dt>
 						<dd><?= $details['HasDonations'] == 1 ? 'Yes' : 'No' ?></dd>
-					<dt>Parking:</dt>
-						<dd>Prepaid - <?= $details['ComuterServicesParking'] == 1 ? 'Yes' : 'No' ?></dd>
-						<dd>Gatehouse - <?= $details['GatehouseParking'] == 1 ? 'Yes' : 'No' ?></dd>
-						<dd>Bus Parking - <?= $details['BusParking'] == 1 ? 'Yes' : 'No' ?></dd>
+					<dt>Political Status:</dt>
+						<dd><?= $details['IsPolitical'] == 1 ? 'Yes' : 'No' ?></dd>
 				</dl>
 			</div>
 			<div class="col-xs-6">
 			<dl>
-				<dt>Political Status:</dt>
-					<dd><?= $details['IsPolitical'] == 1 ? 'Yes' : 'No' ?></dd>
-				<dt>Alcohol:</dt>
-					<dd><?= $details['Alcohol'] == 1 ? 'Yes' : 'No' ?></dd>
+				<dt>Parking:</dt>
+					<dd>Prepaid - <?= $details['ComuterServicesParking'] == 1 ? 'Yes' : 'No' ?></dd>
+					<dd>Gatehouse - <?= $details['GatehouseParking'] == 1 ? 'Yes' : 'No' ?></dd>
+					<dd>Bus Parking - <?= $details['BusParking'] == 1 ? 'Yes' : 'No' ?></dd>
+				
 				<dt>Registration/Admission Fees:</dt>
 					<dd><?= (is_numeric($details['RegFeeAmount']) && $details['RegFeeAmount'] > 0) ? '$' . $details['RegFeeAmount'] : 'No' ?></dd>
-				<dt>Amplified Sound:</dt>
-					<dd><?= $details['AmpSoundDesc'] == '' ? 'No' : $details['AmpSoundDesc']?></dd>
 			</dl>
 			</div>
 		</div>
@@ -185,6 +182,26 @@
 		<h4 class="venue-id" value=<?= "\"{$venue['VenueID']}\""?>><?= $venue['RoomAbbr'] ?></h4>
 		<p><?= $venue['EventStartDate'] . ' - ' .  $venue['EventEndDate']?></p>
 		<p><?= 'Operated by: ' . $venue['Operators'] ?></p>
+
+		<div class="row">
+			<div class="col-xs-6">
+				<dl>
+					<dt>Alcohol at venue:</dt>
+						<!-- TODO: This might be permit/app type -->
+						<dd><?=$venue['Alcohol'] ? 'yes' : 'no'?></dd>
+					<dt>Attendees under 21:</dt>
+						<dd><?=$venue['AttendeesUnder21']?></dd>
+					<dt>Attendees over 21:</dt>
+						<dd><?= $venue['AttendeesOver21']?></dd>
+				</dl>
+			</div>
+			<div class="col-xs-6">
+			<dl>
+				<dt>Amplified Sound:</dt>
+					<dd><?=$venue['AmplifiedSound']?></dd>
+			</dl>
+			</div>
+		</div>
 
 		<?php if
 			(
