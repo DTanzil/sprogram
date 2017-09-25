@@ -87,6 +87,8 @@ $(document).ready(function() {
 		var decision = btn.attr('value');
 		var appID = $('#appID').text();
 		var netID = $('#user-id').text();
+		var venueID = btn.siblings('h4.venue-id').attr('value');
+		console.log(venueID);
 
 		$.ajax({
 			url: baseUrl + 'applications/venueDecision',
@@ -96,7 +98,8 @@ $(document).ready(function() {
 				approvalID: apprID,
 				decision: decision,
 				appID: appID,
-				netID: netID
+				netID: netID,
+				venueID: venueID
 			},
 			success: success,
 			error: error

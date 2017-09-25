@@ -287,6 +287,7 @@ class Applications_model extends CI_Model {
 		// var_dump($operators);
 		// echo '</pre>';
 
+		unset($params);
 		# create venue
 		 $params = array (
 				$data['BuildingName'],
@@ -303,6 +304,7 @@ class Applications_model extends CI_Model {
 				VALUES
 					({$appID}, (SELECT RoomID FROM Room r JOIN Building b ON b.BuildingID = r.BuildingID WHERE BuildingName = ? AND r.RoomName = ?), ?, ?, ?, ?, ?)
 			", $params);
+		var_dump($insert);
 		if(!$insert) {
 			return $this->db->error();
 		}

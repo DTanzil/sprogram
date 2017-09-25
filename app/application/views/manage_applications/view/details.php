@@ -182,7 +182,7 @@
 	<div class="row">
 	<div class="col-md-8">
 	<div class="info-box" value=<?= "\"{$venue['ApprovalID']}\""?>>
-		<h4><?= $venue['RoomAbbr'] ?></h4>
+		<h4 class="venue-id" value=<?= "\"{$venue['VenueID']}\""?>><?= $venue['RoomAbbr'] ?></h4>
 		<p><?= $venue['EventStartDate'] . ' - ' .  $venue['EventEndDate']?></p>
 		<p><?= 'Operated by: ' . $venue['Operators'] ?></p>
 

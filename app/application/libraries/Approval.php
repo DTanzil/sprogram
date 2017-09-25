@@ -366,6 +366,25 @@
 					return $approvals->result_array();
 		}
 
+		public function getOpenApprovalsByVenue($venueID, $type) {
+						$approvals = $this->CI->db->query("
+							SELECT * FROM Approval appr
+								JOIN VenueUserRole vur ON appr.VenueUserRoleID = vur.VenueUserRoleID
+								JOIN Venue v ON v.VenueID = vur.VenueID
+								JOIN Room r ON r.RoomID = v.RoomID
+								JOIN Application a ON a.ApplicationID = v.ApplicationID
+								JOIN ApplicationType at ON at.ApplicationTypeID = a.ApplicationTypeID
+			                    JOIN UserRole ur ON ur.UserRoleID = vur.UserRoleID
+			                    JOIN User u ON u.UserID = ur.UserID
+			                WHERE v.VenueID = {$venueID}
+			                	AND appr.Descision = 'pending'
+			                	AND appr.ApprovalType = '{$type}'
+
+						");
+
+						return $approvals->result_array();
+		}
+
 		public function getOpenAppsForUser($netID) {
 			$approvals = $this->CI->db->query("
 				SELECT * FROM Approval appr

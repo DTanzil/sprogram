@@ -127,13 +127,22 @@ class Applications extends CI_Controller {
 		$decision = $this->input->post('decision');
 		$appID = $this->input->post('appID');
 		$netID = $this->input->post('netID');
+		$venueID = $this->input->post('venueID');
 
 		$confirmation = $this->approval->updateVenueDecision($approvalID, $netID, $decision);
 
-		$openVenues = $this->approval->getOpenApprovalsByType($appID, 'VenueOperator');
 
+		# In the case where multiple operators are assigned to a venue, find their approvals and update them
+		# to indicate another Venue Operator took an action on this venue
+		$openVenueApprs = $this->approval->getOpenApprovalsByVenue($venueID, 'VenueOperator');
+		foreach($openVenueApprs as $appr) {
+			$this->approval->updateVenueDecision($appr['ApprovalID'], $netID, 'decided by other operator');
+		}
+
+		# If all venues have been decided upon, one way or the other, advance to Committee
+		$openVenues = $this->approval->getOpenApprovalsByType($appID, 'VenueOperator');
 		if(sizeof($openVenues) == 0) {
-			$this->approval->advanceApplication($appID, 'committee');
+				$this->approval->advanceApplication($appID, 'committee');
 		}
 
 		header('Content-Type: application/json');
