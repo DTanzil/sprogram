@@ -198,7 +198,7 @@
 			<div class="col-xs-6">
 			<dl>
 				<dt>Amplified Sound:</dt>
-					<dd><?=$venue['AmplifiedSound']?></dd>
+					<dd><?=$venue['AmplifiedSound'] == 1 ? 'yes' : 'no'?></dd>
 			</dl>
 			</div>
 		</div>
@@ -419,6 +419,10 @@
 <pre>
 <?= print_r($openApprs); ?>
 </pre> -->
+<pre>
+<?= print_r($emails); ?>
+</pre>
+
 
 <?php
 # TODO: maybe move these to the controller, you lazy git...

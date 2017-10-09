@@ -155,6 +155,7 @@ class Applications_model extends CI_Model {
 
 		$params = array(
 			$app['ApplicationType'],
+			$app['Permit'],
 			$app['EventName'],
 			$app['EventDesc'],
 			$app['ProminantAttendees'],
@@ -173,9 +174,9 @@ class Applications_model extends CI_Model {
 		);
 		$insert = $this->db->query("
 			INSERT INTO Application
-				(ApplicationTypeID, EventName, EventDesc, ProminantAttendees, TotalAttendees, DateApplied, IsPublic, FoodPermit, IsPolitical, GatehouseParking, ComuterServicesParking, BusParking, RegFeeAmount, HasDonations, DonationDesc, Security)
+				(ApplicationTypeID, PermitID, EventName, EventDesc, ProminantAttendees, TotalAttendees, DateApplied, IsPublic, FoodPermit, IsPolitical, GatehouseParking, ComuterServicesParking, BusParking, RegFeeAmount, HasDonations, DonationDesc, Security)
 			VALUES 
-				((SELECT ApplicationTypeID FROM ApplicationType WHERE ApplicationTypeName = ?), ?, ?, ?, ?, NOW(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+				((SELECT ApplicationTypeID FROM ApplicationType WHERE ApplicationTypeName = ?), ?, ?, ?, ?, ?, NOW(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
 		", $params); 
 
 		$id = $this->db->insert_id();

@@ -15,6 +15,7 @@
 			$this->CI->load->library('email');
 			$this->CI->load->database();
 			$this->CI->load->model('Applications_model');
+			$this->CI->load->model('Admin_model');
 
 			$config['protocol'] = 'sendmail';
 			$config['mailpath'] = '/usr/sbin/sendmail';
@@ -98,6 +99,17 @@
 		}
 
 		private function parseAddressees($data, $params = null) {
+			# Quick hack that allows the admins to send emails directly to individual sponsors.
+			if($strpost('@', $data)) {
+				return array(
+					# Get the user role id for this email
+					$admin = $this->CI->Admin_model->getAdminByNetid(explode('@', $data)[0]);
+
+					"UserRoleID" => $admin['UserRoleID'],
+					"UserEmail" => $data
+				)
+			}
+
 			$addressees = explode(',', $data);
 			$return = array();
 			foreach($addressees as $addr) {
@@ -121,22 +133,12 @@
 					} else {
 						$admins = $this->CI->Applications_model->getAdminsForApp($params['ApplicationID'], $addr);
 
-						// $admins = array(
-						// 	array_column($admins, 'UserRoleID'),
-						// 	array_column($admins, 'UserEmail')
-						// );
-						// echo '<pre>';
-						// var_dump($admins);
-						// echo '</pre>';
-						// die;
-						//$details = array();
 						foreach($admins as $admin) {
 							$return[] = array(
 								"UserRoleID" => $admin['UserRoleID'], 
 								"UserEmail" => $admin['UserEmail']);
 						}
 
-						//array_push($return, $details);
 					}
 
 				}
@@ -192,7 +194,6 @@
 
 		public function attachActionsToApproval($approvalID, $approvalType) {
 			$params = array($approvalID, $approvalType);
-			var_dump($params);
 
 			//get actions for the app type and approval type
 			// ACTIONS WILL NEED TO SPECIFY WHICH ADMINS ARE AFFECTED OR SPECIFY SYSTEM -- could be its own table --
@@ -206,6 +207,20 @@
 				WHERE appr.ApprovalID = ?
 					AND ac.Category = ?
 			", $params);
+
+			# Get any emails that are specific to the permit type
+			$permits = $this->CI->db->query("
+				SELECT ac.ActionID FROM Action ac
+					JOIN Permit p ON p.PermitID = a.PermitID
+					JOIN Application a ON at.ApplicationTypeID = a.ApplicationTypeID
+					JOIN Venue v ON v.ApplicationID = a.ApplicationID
+					JOIN VenueUserRole vur ON vur.VenueID = v.VenueID 
+					JOIN Approval appr ON appr.VenueUserRoleID = vur.VenueUserRoleID
+				WHERE appr.ApprovalID = ?
+					AND ac.Category = ?
+			", $params);
+			$actions = array_merge($actions, $permits);
+
 			echo "<p>Actions attached to this approval of type {$approvalType}</p>";
 			echo '<pre>';
 			//var_dump($actions);
@@ -223,7 +238,9 @@
 			}
 		}
 
-		public function attachActionstoApp($appID) {
+		public function attachActionstoApp($appID, $rene = null) {
+
+			# Get for the general application type (UUF or ASR)
 			$params = array($appID, 'application');
 			$actions = $this->CI->db->query("
 				SELECT ac.ActionID FROM Action ac
@@ -232,6 +249,28 @@
 				WHERE a.ApplicationID = ?
 					AND ac.Category = ?
 			", $params)->result_array();
+
+			# Get for the specific permit type (SOL, BANQ, etc)
+			$permits = $this->CI->db->query("
+				SELECT ac.ActionID FROM Action ac
+					JOIN Permit p ON p.PermitID = p.PermitID
+					JOIN Application a ON a.PermitID = p.PermitID
+				WHERE a.ApplicationID = ?
+					AND ac.Category = ?
+			", $params)->result_array();
+			$actions = array_merge($actions, $permits);
+
+			# If Rene is the sponsor, include any special emails she gets
+			if($rene) {
+				$reneAction = $this->CI->db->query("
+					SELECT ac.ActionID FROM Action ac
+						JOIN ApplicationType at ON at.ApplicationTypeID = ac.ApplicationTypeID
+						JOIN Application a ON at.ApplicationTypeID = a.ApplicationTypeID
+					WHERE a.ApplicationID = ?
+						AND ac.Category = ?
+				", $params)->result_array();
+				$actions = array_merge($actions, $rene);
+			}
 
 			foreach($actions as $action) {
 				$insert = $this->CI->db->query("
