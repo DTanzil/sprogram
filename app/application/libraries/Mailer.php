@@ -158,7 +158,8 @@
 		public function getTemplatesForApp($id, $actionType) {
 			$templates = $this->CI->db->query("
 				SELECT * FROM EmailTemplate et
-					JOIN Action a ON a.EmailTemplateID = et.EmailTemplateID
+					JOIN ActionEmailTemplate aet ON aet.EmailTemplateID = et.EmailTemplateID
+					JOIN Action a ON a.ActionID = aet.ActionID
 					JOIN AppEmailAction aea ON aea.ActionID = a.ActionID
 					JOIN ActionType at ON a.ActionTypeID = at.ActionTypeID
 					WHERE aea.ApplicationID = {$id}
