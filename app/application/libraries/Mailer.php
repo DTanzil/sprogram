@@ -206,7 +206,7 @@
 					JOIN Approval appr ON appr.VenueUserRoleID = vur.VenueUserRoleID
 				WHERE appr.ApprovalID = ?
 					AND ac.Category = ?
-			", $params);
+			", $params)->result_array();
 
 			# Get any emails that are specific to the permit type
 			$permits = $this->CI->db->query("
@@ -218,14 +218,13 @@
 					JOIN Approval appr ON appr.VenueUserRoleID = vur.VenueUserRoleID
 				WHERE appr.ApprovalID = ?
 					AND ac.Category = ?
-			", $params);
+			", $params)->result_array();
 			$actions = array_merge($actions, $permits);
 
 			echo "<p>Actions attached to this approval of type {$approvalType}</p>";
 			echo '<pre>';
-			//var_dump($actions);
+			var_dump($actions);
 			echo '</pre>';
-			$actions = $actions->result_array();
 
 			foreach($actions as $action) {
 				$insert = $this->CI->db->query("
