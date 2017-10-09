@@ -101,13 +101,12 @@
 		private function parseAddressees($data, $params = null) {
 			# Quick hack that allows the admins to send emails directly to individual sponsors.
 			if($strpost('@', $data)) {
+				# Get the user role id for this email
+				$admin = $this->CI->Admin_model->getAdminByNetid(explode('@', $data))[0];
 				return array(
-					# Get the user role id for this email
-					$admin = $this->CI->Admin_model->getAdminByNetid(explode('@', $data)[0]);
-
 					"UserRoleID" => $admin['UserRoleID'],
 					"UserEmail" => $data
-				)
+				);
 			}
 
 			$addressees = explode(',', $data);
@@ -212,8 +211,8 @@
 			# Get any emails that are specific to the permit type
 			$permits = $this->CI->db->query("
 				SELECT ac.ActionID FROM Action ac
-					JOIN Permit p ON p.PermitID = a.PermitID
-					JOIN Application a ON at.ApplicationTypeID = a.ApplicationTypeID
+					JOIN Permit p ON p.PermitID = ac.PermitID
+					JOIN Application a ON p.PermitID = a.PermitID
 					JOIN Venue v ON v.ApplicationID = a.ApplicationID
 					JOIN VenueUserRole vur ON vur.VenueID = v.VenueID 
 					JOIN Approval appr ON appr.VenueUserRoleID = vur.VenueUserRoleID
