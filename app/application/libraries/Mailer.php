@@ -56,7 +56,14 @@
 					$recipients = $this->parseAddressees($template['Recipients'], $params);
 					$cc = $this->parseAddressees($template['CC'], $params);
 
+
+				var_dump($recipients);
+				var_dump($cc);
+
+
 					foreach($recipients as $rec) {
+						echo 'rec\r\n';
+						var_dump($rec);
 						//$rec = $rec[0];
 						$this->sendEmail('jshill@uw.edu', $template['EmailSubject'], 
 							$template['EmailBody'] . 'Email would go here: ' . $rec['UserEmail']  );
@@ -85,6 +92,10 @@
 				//var_dump($recipients);
 				$cc = $this->parseAddressees($template['CC'], $params);
 
+				var_dump($recipients);
+				var_dump($cc);
+
+
 				foreach($recipients as $rec) {
 					//$rec = $rec[0];
 					//var_dump($rec);
@@ -100,12 +111,16 @@
 
 		private function parseAddressees($data, $params = null) {
 			# Quick hack that allows the admins to send emails directly to individual sponsors.
-			if($strpost('@', $data)) {
+			if(strpos($data, '@') !== false) {
 				# Get the user role id for this email
-				$admin = $this->CI->Admin_model->getAdminByNetid(explode('@', $data))[0];
+				$netid = explode('@', $data)[0];
+				echo $netid;
+				$admin = $this->CI->Admin_model->getAdminByNetid($netid);
 				return array(
-					"UserRoleID" => $admin['UserRoleID'],
-					"UserEmail" => $data
+					array(
+						"UserRoleID" => $admin['UserRoleID'],
+						"UserEmail" => $data
+					)
 				);
 			}
 
@@ -113,11 +128,30 @@
 			$return = array();
 			foreach($addressees as $addr) {
 				# we need all the admins of this type
-				if(strpos('all', $addr) !== false) {
+				if(strpos($addr, 'all') !== false) {
 					$addr = str_replace('-all', '', $addr);
-					$admins = $this->CI->Applications_model->getAdminsForApp($params, $addr);
-					//var_dump($admins);
-					array_push($return, $admins);
+
+					if($params['ApplicationID']) {
+						$admins = $this->CI->Applications_model->getAdminsForApp($params['ApplicationID'], $addr);
+
+						foreach($admins as $admin) {
+							array_push($return, array(
+								"UserRoleID" => $admin['UserRoleID'],
+								"UserEmail" => $admin['UserEmail']
+							));
+						}
+					} elseif($params['VenueID']) {
+						$appr = $this->CI->approval->getApproval($params['VenueID'], $params['UserRoleID'], $params['ApprovalType'])[0];
+
+						$admins = $this->CI->Applications_model->getAdminsForApp($appr['ApplicationID'], $addr);
+
+						foreach($admins as $admin) {
+							array_push($return, array(
+								"UserRoleID" => $admin['UserRoleID'],
+								"UserEmail" => $admin['UserEmail']
+							));
+						}
+					}
 				} else {
 					if(!$params) {
 						return 'Additional parameters required';
@@ -156,7 +190,7 @@
 
 		public function getTemplatesForApp($id, $actionType) {
 			$templates = $this->CI->db->query("
-				SELECT * FROM EmailTemplate et
+				SELECT DISTINCT et.* FROM EmailTemplate et
 					JOIN ActionEmailTemplate aet ON aet.EmailTemplateID = et.EmailTemplateID
 					JOIN Action a ON a.ActionID = aet.ActionID
 					JOIN AppEmailAction aea ON aea.ActionID = a.ActionID
@@ -164,14 +198,14 @@
 					WHERE aea.ApplicationID = {$id}
 					AND at.ActionTypeID = (SELECT ActionTypeID FROM ActionType WHERE ActionTypeName = '{$actionType}')
 			");
-			echo '<p>templates</p>';
-			var_dump($templates->result_array());
+			// echo '<p>templates</p>';
+			// var_dump($templates->result_array());
 			return $templates->result_array();
 		}
 
 		public function getTemplatesForApproval($id, $actionType) {
 			$templates = $this->CI->db->query("
-				SELECT * FROM EmailTemplate et
+				SELECT DISTINCT et.EmailTemplateID, et.EmailTemplateName FROM EmailTemplate et
 					JOIN Action a ON a.EmailTemplateID = et.EmailTemplateID
 					JOIN AppEmailAction aea ON aea.ActionID = a.ActionID
 					JOIN ActionType at ON a.ActionTypeID = at.ActionTypeID
@@ -196,7 +230,6 @@
 			$params = array($approvalID, $approvalType);
 
 			//get actions for the app type and approval type
-			// ACTIONS WILL NEED TO SPECIFY WHICH ADMINS ARE AFFECTED OR SPECIFY SYSTEM -- could be its own table --
 			$actions = $this->CI->db->query("
 				SELECT ac.ActionID FROM Action ac
 					JOIN ApplicationType at ON at.ApplicationTypeID = ac.ApplicationTypeID
@@ -221,10 +254,10 @@
 			", $params)->result_array();
 			$actions = array_merge($actions, $permits);
 
-			echo "<p>Actions attached to this approval of type {$approvalType}</p>";
-			echo '<pre>';
-			var_dump($actions);
-			echo '</pre>';
+			// echo "<p>Actions attached to this approval of type {$approvalType}</p>";
+			// echo '<pre>';
+			// var_dump($actions);
+			// echo '</pre>';
 
 			foreach($actions as $action) {
 				$insert = $this->CI->db->query("
@@ -242,34 +275,48 @@
 			# Get for the general application type (UUF or ASR)
 			$params = array($appID, 'application');
 			$actions = $this->CI->db->query("
-				SELECT ac.ActionID FROM Action ac
+				SELECT * FROM Action ac
 					JOIN ApplicationType at ON at.ApplicationTypeID = ac.ApplicationTypeID
 					JOIN Application a ON at.ApplicationTypeID = a.ApplicationTypeID
 				WHERE a.ApplicationID = ?
-					AND ac.Category = ?
+                AND ac.Category = ?
+                AND ac.PermitID IS NULL
+                AND ac.ActionName NOT LIKE '%Submit%'
 			", $params)->result_array();
 
 			# Get for the specific permit type (SOL, BANQ, etc)
 			$permits = $this->CI->db->query("
-				SELECT ac.ActionID FROM Action ac
-					JOIN Permit p ON p.PermitID = p.PermitID
+				SELECT * FROM Action ac
+					JOIN Permit p ON p.PermitID = ac.PermitID
 					JOIN Application a ON a.PermitID = p.PermitID
 				WHERE a.ApplicationID = ?
 					AND ac.Category = ?
+                    AND ac.ApplicationTypeID IS NULL
 			", $params)->result_array();
 			$actions = array_merge($actions, $permits);
 
 			# If Rene is the sponsor, include any special emails she gets
-			if($rene) {
-				$reneAction = $this->CI->db->query("
-					SELECT ac.ActionID FROM Action ac
+			if($rene === null) {
+				$submitAction = $this->CI->db->query("
+				SELECT * FROM Action ac
 						JOIN ApplicationType at ON at.ApplicationTypeID = ac.ApplicationTypeID
 						JOIN Application a ON at.ApplicationTypeID = a.ApplicationTypeID
 					WHERE a.ApplicationID = ?
 						AND ac.Category = ?
+						AND ac.ActionName NOT LIKE '%Rene%'
+						AND ac.ActionName LIKE '%submit%'
 				", $params)->result_array();
-				$actions = array_merge($actions, $rene);
+			} else {
+				$submitAction = $this->CI->db->query("
+					SELECT * FROM Action ac
+						JOIN ApplicationType at ON at.ApplicationTypeID = ac.ApplicationTypeID
+						JOIN Application a ON at.ApplicationTypeID = a.ApplicationTypeID
+					WHERE a.ApplicationID = ?
+						AND ac.Category = ?
+						AND ac.ActionName LIKE '%Rene%'
+				", $params)->result_array();
 			}
+			$actions = array_merge($actions, $submitAction);
 
 			foreach($actions as $action) {
 				$insert = $this->CI->db->query("

@@ -65,7 +65,7 @@
 				<dl>
 					<dt>Permit Type:</dt>
 						<!-- TODO: This might be permit/app type -->
-						<dd><?=$details['Category']?></dd>
+						<dd><?=$details['PermitName']?></dd>
 					<dt>Sponsor Assigned:</dt>
 						<dd><?= $users['Sponsor'][0]['UserFname'] . ' ' . $users['Sponsor'][0]['UserLname']?></dd>
 					<dt>Donations Accepted:</dt>

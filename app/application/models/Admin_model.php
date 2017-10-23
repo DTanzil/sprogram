@@ -271,6 +271,7 @@
 					User.AdminDeletedAt,
 					Affiliation.AffiliationName,
 					User.AdminIsActive,
+					UserRole.UserRoleID,
 					UserType.UserTypeName'
 					)->
 				from('User')->

@@ -173,10 +173,44 @@ class Applications_model extends CI_Model {
 			$app['Security'],
 		);
 		$insert = $this->db->query("
-			INSERT INTO Application
-				(ApplicationTypeID, PermitID, EventName, EventDesc, ProminantAttendees, TotalAttendees, DateApplied, IsPublic, FoodPermit, IsPolitical, GatehouseParking, ComuterServicesParking, BusParking, RegFeeAmount, HasDonations, DonationDesc, Security)
-			VALUES 
-				((SELECT ApplicationTypeID FROM ApplicationType WHERE ApplicationTypeName = ?), ?, ?, ?, ?, ?, NOW(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+			INSERT INTO Application (
+				ApplicationTypeID, 
+				PermitID, 
+				EventName, 
+				EventDesc, 
+				ProminantAttendees, 
+				TotalAttendees, 
+				IsPublic, 
+				DateApplied, 
+				FoodPermit, 
+				IsPolitical, 
+				GatehouseParking, 
+				ComuterServicesParking, 
+				BusParking, 
+				RegFeeAmount, 
+				HasDonations, 
+				DonationDesc, 
+				Security
+			)
+			VALUES (
+				(SELECT ApplicationTypeID FROM ApplicationType WHERE ApplicationTypeName = ?), 
+				(SELECT PermitID FROM Permit WHERE PermitAbbr = ?), -- permit
+				?, -- event name
+				?, -- event desc
+				?, -- prom attendees
+				?, -- total attendees
+				?, -- ispublic
+				NOW(), -- date applied
+				?, -- food permit
+				?, -- is political
+				?, -- gatehouse
+				?, -- commuter
+				?, -- bus
+				?, -- regfee
+				?, -- donations
+				?, -- donation desc
+				? -- security
+			);
 		", $params); 
 
 		$id = $this->db->insert_id();
@@ -185,7 +219,8 @@ class Applications_model extends CI_Model {
 			return $this->db->error();
 		}
 
-		$this->mailer->attachActionsToApp($id);
+		$rene = in_array(array("UserTypeName" => 'Sponsor', 'netid' => 'sniglet'), $admins) ? 1 : null;
+		$this->mailer->attachActionsToApp($id, $rene);
 
 		
 		# to attach to venues
