@@ -459,6 +459,7 @@ class Applications_model extends CI_Model {
 			FROM Application a
 			JOIN Venue v ON a.ApplicationID = v.ApplicationID
 			JOIN ApplicationType at ON at.ApplicationTypeID = a.ApplicationTypeID
+			JOIN Permit p ON a.PermitID = p.PermitID
 			WHERE a.ApplicationID = {$appID}
 			LIMIT 1
 		")->result_array()[0];
