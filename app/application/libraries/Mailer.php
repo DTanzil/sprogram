@@ -291,7 +291,6 @@
 					JOIN Application a ON a.PermitID = p.PermitID
 				WHERE a.ApplicationID = ?
 					AND ac.Category = ?
-                    AND ac.ApplicationTypeID IS NULL
 			", $params)->result_array();
 			$actions = array_merge($actions, $permits);
 
@@ -305,6 +304,7 @@
 						AND ac.Category = ?
 						AND ac.ActionName NOT LIKE '%Rene%'
 						AND ac.ActionName LIKE '%submit%'
+						AND ac.PermitID IS NULL
 				", $params)->result_array();
 			} else {
 				$submitAction = $this->CI->db->query("
@@ -314,6 +314,7 @@
 					WHERE a.ApplicationID = ?
 						AND ac.Category = ?
 						AND ac.ActionName LIKE '%Rene%'
+						AND ac.PermitID IS NULL
 				", $params)->result_array();
 			}
 			$actions = array_merge($actions, $submitAction);

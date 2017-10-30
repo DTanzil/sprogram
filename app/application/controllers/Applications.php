@@ -162,6 +162,8 @@ class Applications extends CI_Controller {
 		if($decision == 'denied') {
 			$this->approval->setStatus($appID, 'denied', $expReason);
 			$this->approval->voidApprovals($appID);
+
+			$this->mailer->performMailActionForApp($appID, 'denied at sponsor');
 		} else {
 			$this->approval->advanceApplication($appID, 'venue');
 		}
