@@ -117,7 +117,7 @@
 						JOIN AppEmailAction aea ON aea.ActionID = a.ActionID
 						JOIN ActionType at ON a.ActionTypeID = at.ActionTypeID
 						WHERE aea.ApplicationID = {$appID}
-						AND a.ActionName = {$actionName}
+						AND a.ActionName LIKE '%{$actionName}%'
 				")->result_array();
 			$params = array(
 				"ApplicationID" => $appID,
