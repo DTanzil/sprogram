@@ -109,6 +109,43 @@
 			//send email
 		}
 
+		public function doMailAction($appID, $actionName) {
+			$templates = $this->CI->db->query("
+					SELECT DISTINCT et.* FROM EmailTemplate et
+						JOIN ActionEmailTemplate aet ON aet.EmailTemplateID = et.EmailTemplateID
+						JOIN Action a ON a.ActionID = aet.ActionID
+						JOIN AppEmailAction aea ON aea.ActionID = a.ActionID
+						JOIN ActionType at ON a.ActionTypeID = at.ActionTypeID
+						WHERE aea.ApplicationID = {$appID}
+						AND a.ActionName = {$actionName}
+				")->result_array();
+			$params = array(
+				"ApplicationID" => $appID,
+			);
+			foreach($templates as $template) {
+				$recipients = $this->parseAddressees($template['Recipients'], $params);
+				$cc = $this->parseAddressees($template['CC'], $params);
+
+
+			var_dump($recipients);
+			var_dump($cc);
+
+
+				foreach($recipients as $rec) {
+					echo 'rec\r\n';
+					var_dump($rec);
+					//$rec = $rec[0];
+					$this->sendEmail('jshill@uw.edu', $template['EmailSubject'], 
+						$template['EmailBody'] . 'Email would go here: ' . $rec['UserEmail']  );
+
+					$this->logEmail($appID, $template['EmailTemplateID'], $rec['UserRoleID']);
+				}
+			}
+			//parse recipients
+
+			//send email
+		}
+
 		private function parseAddressees($data, $params = null) {
 			# Quick hack that allows the admins to send emails directly to individual sponsors.
 			if(strpos($data, '@') !== false) {

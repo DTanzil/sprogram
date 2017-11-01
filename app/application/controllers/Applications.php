@@ -166,6 +166,8 @@ class Applications extends CI_Controller {
 			$this->mailer->performMailActionForApp($appID, 'denied at sponsor');
 		} else {
 			$this->approval->advanceApplication($appID, 'venue');
+
+			$this->mailer->doMailAction($appID, 'Sponsor Approved');		
 		}
 
 		//header('Content-Type: application/json');
