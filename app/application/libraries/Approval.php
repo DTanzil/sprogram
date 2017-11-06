@@ -92,11 +92,8 @@
 			return $confirm;
 
 			# Venue Decision
-			if($descision == 'approved') {
-				$this->mailer->doVenueAction($approvalID, 'Venue Decision');
-			} else {
+			$this->CI->mailer->doVenueAction($approvalID, 'Venue Decision');
 
-			}
 		}
 
 		# UNTESTED

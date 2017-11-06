@@ -297,7 +297,8 @@
 		public function getTemplates($appID) {
 			$templates = $this->CI->db->query("
 				SELECT DISTINCT et.EmailTemplateID, et.EmailTemplateName FROM EmailTemplate et
-					JOIN Action a ON a.EmailTemplateID = et.EmailTemplateID
+					JOIN ActionEmailTemplate aet ON et.EmailTemplateID = aet.EmailTemplateID
+					JOIN Action a ON a.ActionID = aet.ActionID
 					JOIN AppEmailAction aea ON aea.ActionID = a.ActionID
 					JOIN ActionType at ON a.ActionTypeID = at.ActionTypeID
 					WHERE aea.ApplicationID = {$appID}
