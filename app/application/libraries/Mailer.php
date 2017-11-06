@@ -156,7 +156,7 @@
 			")->result_array();
 
 			$venue = $this->CI->db->query("
-					SELECT VenueID FROM Venue v
+					SELECT v.VenueID FROM Venue v
 					JOIN VenueUserRole vur ON vur.VenueID = v.VenueID
 					JOIN Approval appr ON appr.VenueUserRoleID = vur.VenueUserRoleID
 					WHERE appr.ApprovalID = {$approvalID}
