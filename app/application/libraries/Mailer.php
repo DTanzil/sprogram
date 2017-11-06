@@ -141,9 +141,47 @@
 					$this->logEmail($appID, $template['EmailTemplateID'], $rec['UserRoleID']);
 				}
 			}
-			//parse recipients
+		}
 
-			//send email
+		public function doVenueAction($approvalID, $actionName) {
+			# $templates = $this->getTemplatesForApproval($approvalID, $actionType);
+			$templates = $this->CI->db->query("
+				SELECT DISTINCT et.* FROM EmailTemplate et
+					JOIN ActionEmailTemplate aet ON aet.EmailTemplateID = et.EmailTemplateID
+					JOIN Action a ON a.ActionID = aet.ActionID
+					JOIN AppEmailAction aea ON aea.ActionID = a.ActionID
+					JOIN ActionType at ON a.ActionTypeID = at.ActionTypeID
+					WHERE aea.ApprovalID = {$approvalID}
+					AND a.ActionName LIKE '%{$actionName}%'
+			")->result_array();
+
+			$venue = $this->CI->db->query("
+					SELECT VenueID FROM Venue v
+					JOIN VenueUserRole vur ON vur.VenueID = v.VenueID
+					JOIN Approval appr ON appr.VenueUserRoleID = vur.VenueUserRoleID
+					WHERE appr.ApprovalID = {$approvalID}
+			")->row_array();
+
+			$params = array(
+				"VenueID" => $venue
+			);
+			foreach($templates as $template) {
+				$recipients = $this->parseAddressees($template['Recipients'], $params);
+				//var_dump($recipients);
+				$cc = $this->parseAddressees($template['CC'], $params);
+
+				var_dump($recipients);
+				var_dump($cc);
+
+
+				foreach($recipients as $rec) {
+					//$rec = $rec[0];
+					//var_dump($rec);
+					$this->sendEmail('jshill@uw.edu', $template['EmailSubject'], 
+						$template['EmailBody'] . 'Email would go here: ' . $rec['UserEmail'] );
+					$this->logEmail($appID, $template['EmailTemplateID'], $rec['UserRoleID']);
+				}
+			}
 		}
 
 		private function parseAddressees($data, $params = null) {
@@ -159,6 +197,10 @@
 						"UserEmail" => $data
 					)
 				);
+			}
+
+			if($data == 'single venue') {
+				return $this->CI->Admin_model->getOperatorsForVenue($venueID);
 			}
 
 			$addressees = explode(',', $data);

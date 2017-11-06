@@ -90,6 +90,13 @@
 				SELECT ApprovalID, ApprovalEndDate, Descision FROM Approval WHERE ApprovalID = {$approvalID}
 			")->result_array()[0];
 			return $confirm;
+
+			# Venue Decision
+			if($descision == 'approved') {
+				$this->mailer->doVenueAction($approvalID, 'Venue Decision');
+			} else {
+
+			}
 		}
 
 		# UNTESTED

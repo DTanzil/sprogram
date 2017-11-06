@@ -285,37 +285,16 @@
 		
 		}		
 		
-		public function addType($idType, $idAdmin){
-
-		}
-		
-		public function removeType($idType, $idAdmin){
-
-		}
-		
-		public function updateType($idTypeRelation, $idNewType){
-
-		}
-		
-		public function getTypesForAdmin($idAdmin){
-
-		}
-		
-		public function getAdminTypes(){
-
-		}
-		
-		
-		public function getAdminTypeId($name){
-
-		}
-		
-		public function getAdminsByType($idType, $order = "netid"){
-
-		}
-		
-		public function getAdvisors(){
-
+		public function getOperatorsForVenue($venueID) {
+			return $this->db->query("
+				SELECT ur.UserRoleID, u.UserEmail FROM User u
+					JOIN UserRole ur ON u.UserID = ur.UserID
+					JOIN UserType ut ON ut.UserTypeID = ur.UserTypeID
+					JOIN VenueUserRole vur ON vur.UserRoleID = ur.UserRoleID
+					JOIN Venue v ON v.VenueID = vur.VenueID
+				WHERE v.VenueID = {$venueID}
+					AND ut.UserTypeName = 'VenueOperator'
+			")->result_array();
 		}
 		
 
