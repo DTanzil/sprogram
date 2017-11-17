@@ -137,15 +137,24 @@ class Applications extends CI_Controller {
 		$openVenueApprs = $this->approval->getOpenApprovalsByVenue($venueID, 'VenueOperator');
 		foreach($openVenueApprs as $appr) {
 			$this->approval->updateVenueDecision($appr['ApprovalID'], $netID, 'decided by other operator');
-		}
 
-		# If all venues have been decided upon, one way or the other, advance to Committee
+		}
+		$this->mailer->mailAction($appID, 'Venue Decision', array('VenueID' => $venueID));
+
+		# If all venues have been decided upon, one way or the other, approve or denied
 		$openVenues = $this->approval->getOpenApprovalsByType($appID, 'VenueOperator');
-		if(sizeof($openVenues) == 0) {
+		$denied = $this->approval->checkAllVenuesDenied($appID);
+		if(sizeof($openVenues) == 0 && !$denied) {
 				$this->approval->advanceApplication($appID, 'committee');
+				$this->mailer->mailAction($appID, 'Venue Approved');
+		} elseif(sizeof($openVenues) == 0 && $denied) {
+			$this->approval->setStatus($appID, 'denied');
+			$this->approval->voidApprovals($appID);
+
+			$this->mailer->mailAction($appID, 'Venue Denied');
 		}
 
-		header('Content-Type: application/json');
+
 		echo json_encode($confirmation);
 	}
 
@@ -163,11 +172,12 @@ class Applications extends CI_Controller {
 			$this->approval->setStatus($appID, 'denied', $expReason);
 			$this->approval->voidApprovals($appID);
 
-			$this->mailer->performMailActionForApp($appID, 'denied at sponsor');
+			# $this->mailer->performMailActionForApp($appID, 'denied at sponsor');
+			$this->mailer->mailAction($appID, 'Sponsor Denied');
 		} else {
 			$this->approval->advanceApplication($appID, 'venue');
 
-			$this->mailer->doMailAction($appID, 'Sponsor Approved');		
+			$this->mailer->mailAction($appID, 'Sponsor Approved');		
 		}
 
 		//header('Content-Type: application/json');
@@ -175,18 +185,18 @@ class Applications extends CI_Controller {
 	}
 
 	public function committeeDecision() {
-		//header('Access-Control-Allow-Origin: *');
-
-		//$approvalID = $this->input->post('approvalID');
 		$decision = $this->input->post('decision');
 		$appID = $this->input->post('appID');
+		$netID = $this->input->post('netID');
 
-		$confirmation = $this->approval->updateCommitteeDecision($appID, 'jshill', $decision);
+		$confirmation = $this->approval->updateCommitteeDecision($appID, $netID, $decision);
 
 		if($decision == 'denied') {
 			$this->approval->setStatus($appID, 'denied');
+			$this->mailer->mailAction($appID, 'Committee Denied');
 		} else {
 			$this->approval->setStatus($appID, 'approved');
+			$this->mailer->mailAction($appID, 'Committee Approved');
 		}
 
 		//header('Content-Type: application/json');

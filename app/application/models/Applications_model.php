@@ -77,21 +77,6 @@ class Applications_model extends CI_Model {
 	public function getVenues($appID) {
 		$appID = $this->db->escape($appID);
 
-		// $venues = $this->db->query("
-		// 	SELECT * FROM Venue v
-		// 	JOIN Application a ON a.ApplicationID = v.ApplicationID
-		// 	JOIN Room r ON r.RoomID = v.RoomID
-		// 	JOIN Building b ON b.BuildingID = r.BuildingID
-		// 	JOIN UserRoom uroom ON uroom.RoomID = r.RoomID
-		// 	JOIN UserRole ur ON ur.UserRoleID = uroom.UserRoleID
-		// 	JOIN User u ON u.UserID = ur.UserID
-		// 	JOIN VenueUserRole vur ON vur.VenueID = v.VenueID
-		// 	JOIN Approval appr ON appr.VenueUserRoleID = vur.VenueUserRoleID
-		// 	WHERE a.ApplicationID = {$appID}
-		// 	AND appr.ApprovalType = 'VenueOperator'
-		// ");
-		// 
-		// 
 		# Fairly certain this is going to break stuff on the details end...
 		$venues = $this->db->query("
 			SELECT * FROM Venue v
@@ -108,21 +93,13 @@ class Applications_model extends CI_Model {
 		$venues = $this->db->query("
 			SELECT *, GROUP_CONCAT(CONCAT(u.UserFName, ' ', u.UserLname)) AS Operators
 			FROM Venue v 
-			JOIN Application a 
-				ON a.ApplicationID = v.ApplicationID 
-			JOIN Room r 
-				ON r.RoomID = v.RoomID 
-			JOIN Building b 
-				ON b.BuildingID = r.BuildingID 
-			JOIN VenueUserRole vur 
-				ON vur.VenueID = v.VenueID 
-			JOIN UserRole ur 
-				ON ur.UserRoleID = vur.UserRoleID 
-			JOIN User u 
-				ON u.UserID = ur.UserID 
-			JOIN Approval appr 
-				ON appr.VenueUserRoleID = vur.VenueUserRoleID 
-
+				JOIN Application a ON a.ApplicationID = v.ApplicationID 
+				JOIN Room r ON r.RoomID = v.RoomID 
+				JOIN Building b ON b.BuildingID = r.BuildingID 
+				JOIN VenueUserRole vur ON vur.VenueID = v.VenueID 
+				JOIN UserRole ur ON ur.UserRoleID = vur.UserRoleID 
+				JOIN User u ON u.UserID = ur.UserID 
+				JOIN Approval appr ON appr.VenueUserRoleID = vur.VenueUserRoleID 
 			WHERE a.ApplicationID = {$appID}
 				AND appr.ApprovalType = 'VenueOperator'
 			GROUP BY v.VenueID
@@ -220,7 +197,8 @@ class Applications_model extends CI_Model {
 		}
 
 		$rene = in_array(array("UserTypeName" => 'Sponsor', 'netid' => 'sniglet'), $admins) ? 1 : null;
-		$this->mailer->attachActionsToApp($id, $rene);
+
+		# $this->mailer->attachActionsToApp($id, $rene);
 
 		
 		# to attach to venues
@@ -413,26 +391,17 @@ class Applications_model extends CI_Model {
 
 	public function getUsersForApp($appID) {
 		$admins = $this->db->query("
-			SELECT ut.UserTypeName, ur.UserRoleID, u.UserFname, u.UserLname, u.UserEmail, u.NetID, a.AffiliationName, a.Street, a.City, a.StateProvince, a.Country, a.Zip, at.AffiliationTypeName, u.UserPhone, u.UWBox FROM User u
-			JOIN UserRole ur ON ur.UserID = u.UserID
-			JOIN UserRoleApplication ura ON ura.UserRoleID = ur.UserRoleID
-			JOIN UserType ut ON ut.UserTypeID = ur.UserTypeID
-			JOIN Affiliation a ON a.AffiliationID = u.AffiliationID
-			JOIN AffiliationType at ON a.AffiliationTypeID = at.AffiliationTypeID
+			SELECT ut.UserTypeName, ur.UserRoleID, u.UserFname, u.UserLname, u.UserEmail, 
+					u.NetID, a.AffiliationName, a.Street, a.City, a.StateProvince, a.Country, 
+					a.Zip, at.AffiliationTypeName, u.UserPhone, u.UWBox 
+			FROM User u
+				JOIN UserRole ur ON ur.UserID = u.UserID
+				JOIN UserRoleApplication ura ON ura.UserRoleID = ur.UserRoleID
+				JOIN UserType ut ON ut.UserTypeID = ur.UserTypeID
+				JOIN Affiliation a ON a.AffiliationID = u.AffiliationID
+				JOIN AffiliationType at ON a.AffiliationTypeID = at.AffiliationTypeID
 			WHERE ura.ApplicationID = {$appID};
 		")->result_array();
-
-		//Assign each results array key as the user type and flatten
-		// $admins = array_map(function($user) {
-		// 	return array(
-		// 		$user['UserTypeName'] => $user
-		// 	);
-		// }, $admins);
-		// $flattened = array();
-		// foreach($admins as $key => $value) {
-		// 	$nkey = array_keys($value)[0];
-		// 	$flattened[$nkey] = $value[$nkey];
-		// }
 		 
 		$transformed = array(
 			"Sponsor" => array(),
@@ -457,9 +426,9 @@ class Applications_model extends CI_Model {
 		$app = $this->db->query("
 			SELECT *
 			FROM Application a
-			JOIN Venue v ON a.ApplicationID = v.ApplicationID
-			JOIN ApplicationType at ON at.ApplicationTypeID = a.ApplicationTypeID
-			JOIN Permit p ON a.PermitID = p.PermitID
+				JOIN Venue v ON a.ApplicationID = v.ApplicationID
+				JOIN ApplicationType at ON at.ApplicationTypeID = a.ApplicationTypeID
+				JOIN Permit p ON a.PermitID = p.PermitID
 			WHERE a.ApplicationID = {$appID}
 			LIMIT 1
 		")->result_array()[0];

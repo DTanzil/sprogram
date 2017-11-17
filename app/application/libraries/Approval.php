@@ -63,7 +63,7 @@
 				$this->updateApproval($appr['UserRoleID'], $appr['VenueID'], 'committee', $signature, $descision);
 				//$this->mailer->mailActionForApproval($appr['VenueID'], $appr['UserRoleID'], $appr['ApprovalType'], 'approved');
 			}
-			$this->CI->mailer->performMailActionforApp($appID, 'committee decision');
+
 		}
 
 		public function updateVenueDecision($approvalID, $signature, $decision) {
@@ -89,10 +89,10 @@
 			$confirm = $this->CI->db->query("
 				SELECT ApprovalID, ApprovalEndDate, Descision FROM Approval WHERE ApprovalID = {$approvalID}
 			")->result_array()[0];
+			
 			return $confirm;
 
-			# Venue Decision
-			$this->CI->mailer->doVenueAction($approvalID, 'Venue Decision');
+			
 
 		}
 
@@ -186,7 +186,9 @@
 					return $this->CI->db->error();
 				}
 				$approvalID = $this->CI->db->query("SELECT LAST_INSERT_ID() AS id")->row()->id;
-				$this->CI->mailer->attachActionsToApproval($approvalID, $type);
+
+				//$this->CI->mailer->attachActionsToApproval($approvalID, $type);
+				
 			//send email
 			}
 
@@ -387,6 +389,25 @@
 						");
 
 						return $approvals->result_array();
+		}
+
+		public function checkAllVenuesDenied($appID) {
+			$numVenues = $this->CI->db->query("
+				SELECT count(*) FROM Venue v
+					JOIN Application a ON v.ApplicationID = a.ApplicationID
+					WHERE a.ApplicationID = {$appID}
+			")->row_array();
+
+			$numDenied = $this->CI->db->query("
+				SELECT DISTINCT count(*) FROM Venue v
+					JOIN Application a ON v.ApplicationID = a.ApplicationID
+					JOIN VenueUserRole vur ON vur.VenueID = v.VenueID
+					JOIN Approval appr ON appr.VenueUserRoleID = vur.VenueUserRoleID
+					WHERE a.ApplicationID = {$appID}
+					AND appr.Descision = 'Denied'
+			")->row_array();
+
+			return $numVenues == $numDenied;
 		}
 
 		public function getOpenAppsForUser($netID) {

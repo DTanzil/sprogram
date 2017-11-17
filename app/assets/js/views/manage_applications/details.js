@@ -135,6 +135,7 @@ $(document).ready(function() {
 		//var apprID = btn.parent('div.info-box').attr('value');
 		var decision = btn.attr('value');
 		var appID = $('#appID').text();
+		var netID = $('#user-id').text();
 
 		$.ajax({
 			url: baseUrl + 'applications/committeeDecision',
@@ -143,7 +144,8 @@ $(document).ready(function() {
 			{
 				//approvalID: apprID,
 				decision: decision,
-				appID: appID
+				appID: appID,
+				netID: netID
 			},
 			success: function(data) {
 				console.log(data);
