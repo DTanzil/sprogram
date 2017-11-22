@@ -57,7 +57,7 @@
 				")->row_array();
 			} else {
 				$details['Venues'] = $this->CI->Applications_model->getVenueDetails($appID);
-				$details['EventStartDate'] = $venues[0]['EventStartDate'];
+				$details['EventStartDate'] = $details['Venues'][0]['EventStartDate'];
 			}
 
 			$templates = $this->getActionTemplates($actionName, $details['PermitID'], $details['ApplicationTypeID']);
