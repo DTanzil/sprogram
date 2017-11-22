@@ -103,6 +103,7 @@ class Applications_model extends CI_Model {
 			WHERE a.ApplicationID = {$appID}
 				AND appr.ApprovalType = 'VenueOperator'
 			GROUP BY v.VenueID
+			ORDER BY v.EventStartDate ASC
 		");
 
 
@@ -148,6 +149,7 @@ class Applications_model extends CI_Model {
 			$app['HasDonations'],
 			$app['DonationDesc'],
 			$app['Security'],
+			$app['EventName'] . $app['TotalAttendees'] #for random hash
 		);
 		$insert = $this->db->query("
 			INSERT INTO Application (
@@ -167,7 +169,8 @@ class Applications_model extends CI_Model {
 				RegFeeAmount, 
 				HasDonations, 
 				DonationDesc, 
-				Security
+				Security,
+				ViewKey
 			)
 			VALUES (
 				(SELECT ApplicationTypeID FROM ApplicationType WHERE ApplicationTypeName = ?), 
@@ -186,7 +189,8 @@ class Applications_model extends CI_Model {
 				?, -- regfee
 				?, -- donations
 				?, -- donation desc
-				? -- security
+				?, -- security
+				md5(CONCAT(?, RAND() * 10000))
 			);
 		", $params); 
 

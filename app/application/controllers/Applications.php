@@ -166,7 +166,11 @@ class Applications extends CI_Controller {
 		$appID = $this->input->post('appID');
 		$netID = $this->input->post('netID');
 
+		$mailParams = array(
+			"Decision" => $decision,
+		);
 		$confirmation = $this->approval->updateSponsorDecision($appID, $netID, $decision);
+		$this->mailer->mailAction($appID, 'sponsor decision', $mailParams);
 
 		if($decision == 'denied') {
 			$this->approval->setStatus($appID, 'denied', $expReason);

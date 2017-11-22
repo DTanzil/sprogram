@@ -52,9 +52,9 @@
 			$sponsorApprovals = $this->getApprovalsByType($appID, 'sponsor');
 			foreach($sponsorApprovals as $appr) {
 				$this->updateApproval($appr['UserRoleID'], $appr['VenueID'], 'sponsor', $signature, $descision);
-				//$this->mailer->mailActionForApproval($appr['VenueID'], $appr['UserRoleID'], $appr['ApprovalType'], 'approved');
+				
 			}
-			//$this->CI->mailer->performMailActionforApp($appID, 'sponsor descision');
+			
 		}
 
 		public function updateCommitteeDecision($appID, $signature, $descision, $remark = null) {

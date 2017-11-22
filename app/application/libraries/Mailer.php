@@ -16,6 +16,7 @@
 			$this->CI->load->database();
 			$this->CI->load->model('Applications_model');
 			$this->CI->load->model('Admin_model');
+			$this->CI->load->library('parser');
 
 			$config['protocol'] = 'sendmail';
 			$config['mailpath'] = '/usr/sbin/sendmail';
@@ -39,12 +40,25 @@
 			$this->CI->email->subject($subject);
 			$this->CI->email->message($message);
 
-			//$this->CI->email->send();
+			$this->CI->email->send();
 				return $this->CI->email->print_debugger();
 		}
 
 		public function mailAction($appID, $actionName, $params = null) {
 			$details = $this->CI->Applications_model->getDetailsForApp($appID);
+			$details = array_merge($details, $this->CI->Applications_model->getUsersForApp($appID));
+			if(isset($params)) {array_merge($details, $params); }
+			if(isset($params['VenueID'])) {
+				$details['Venue'] = $this->CI->db->query("
+					SELECT * FROM Venue v
+						JOIN Room r ON v.RoomID = r.RoomID
+						JOIN Building b ON b.BuildingID = r.RoomID
+					WHERE v.VenueID = {$params['VenueID']}
+				")->row_array();
+			} else {
+				$details['Venues'] = $this->CI->Applications_model->getVenueDetails($appID);
+				$details['EventStartDate'] = $venues[0]['EventStartDate'];
+			}
 
 			$templates = $this->getActionTemplates($actionName, $details['PermitID'], $details['ApplicationTypeID']);
 
@@ -54,6 +68,9 @@
 				$params = array("ApplicationID" => $appID);
 			}
 			foreach($templates as $template) {
+				$parsedTitle = $this->CI->parser->parse_string($template['EmailSubject'], $details, TRUE);
+				$parsedTemplate = $this->CI->parser->parse_string($template['EmailBody'], $details, TRUE);
+
 				$recipients = $this->parseAddressees($template['Recipients'], $params);
 				$cc = $this->parseAddressees($template['CC'], $params);
 				$cc_recs = array();
@@ -66,7 +83,7 @@
 					echo 'rec\r\n';
 					var_dump($rec);
 					//$rec = $rec[0];
-					$this->sendEmail('jshill@uw.edu', $template['EmailSubject'], $template['EmailBody'], $cc_recs);
+					$this->sendEmail('jshill@uw.edu', $parsedTitle, $parsedTemplate, $cc_recs);
 
 					$this->logEmail($appID, $template['EmailTemplateID'], $rec['UserRoleID']);
 				}

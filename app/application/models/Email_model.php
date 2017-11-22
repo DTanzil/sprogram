@@ -8,7 +8,8 @@ class Email_model extends CI_Model {
 	public function getTemplates() {
 		$templates = $this->db->query("
 			SELECT * FROM EmailTemplate et
-			JOIN Action a ON a.EmailTemplateID = et.EmailTemplateID
+			JOIN ActionEmailTemplate aet ON aet.EmailTemplateID = et.EmailTemplateID
+			JOIN Action a ON a.ActionID = aet.ActionID
 		")->result_array();
 
 		return $templates;
@@ -20,6 +21,50 @@ class Email_model extends CI_Model {
 		")->result_array();
 
 		return $actions;
+	}
+
+	public function getTemplate($id) {
+		return $this->db->query("
+			SELECT * FROM EmailTemplate WHERE EmailTemplateID = {$id}
+		")->row_array();
+	}
+
+	public function editTemplate($id, $subject, $body) {
+		$subject = $this->security->xss_clean($subject);
+		$body = $this->security->xss_clean($body);
+
+			echo 'subject';
+		#var_dump($subject);
+		// echo 'body';
+		// var_dump($body);
+
+		$update = $this->db->query("
+			UPDATE EmailTemplate
+				SET EmailSubject = ?,
+				EmailBody = ?
+			WHERE EmailTemplateID = ?
+		", array($subject, $body, $id));
+
+		#var_dump($update);
+	}
+
+	public function getJustTemplates() {
+		$templates = $this->db->query("
+			SELECT * FROM EmailTemplate et
+		")->result_array();
+
+		return $templates;
+	}
+
+	public function updateTemplates($templates) {
+		foreach($templates as $template) {
+			$template['EmailBody'] = $this->db->escape($template['EmailBody']);
+			$this->db->query("
+			UPDATE EmailTemplate
+				SET EmailBody = {$template['EmailBody']}
+			WHERE EmailTemplateID = {$template['EmailTemplateID']}
+		");
+		}
 	}
 }
 ?>
