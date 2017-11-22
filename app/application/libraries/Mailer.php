@@ -40,7 +40,7 @@
 			$this->CI->email->subject($subject);
 			$this->CI->email->message($message);
 
-			$this->CI->email->send();
+			# $this->CI->email->send();
 				return $this->CI->email->print_debugger();
 		}
 
