@@ -33,7 +33,7 @@ class Email_model extends CI_Model {
 		$subject = $this->security->xss_clean($subject);
 		$body = $this->security->xss_clean($body);
 
-			echo 'subject';
+		//echo 'subject';
 		#var_dump($subject);
 		// echo 'body';
 		// var_dump($body);
