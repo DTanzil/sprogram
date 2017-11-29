@@ -58,6 +58,7 @@
 			} else {
 				$details['Venues'] = $this->CI->Applications_model->getVenueDetails($appID);
 				$details['EventStartDate'] = $details['Venues'][0]['EventStartDate'];
+				$details['Approvals'] = $this->CI->Approval->summarizeApprovalStages($appID);
 			}
 
 			$templates = $this->getActionTemplates($actionName, $details['PermitID'], $details['ApplicationTypeID']);

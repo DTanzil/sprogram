@@ -318,7 +318,56 @@
 			return $approvals->result_array();
 		}
 
-		//public function get
+		# Summarize the decision made for each stage of an application
+		public function summarizeApprovalStages($appID) {
+			$statuses['Sponsor'] = $this->CI->db->query("
+				SELECT * FROM Approval appr
+					JOIN VenueUserRole vur ON vur.VenueUserRoleID = appr.VenueUserRoleID
+					JOIN Venue v ON v.VenueID = vur.VenueID
+					JOIN Application a ON a.ApplicationID = v.ApplicationID
+					JOIN UserRole ur ON ur.UserRoleID = vur.UserRoleID
+				WHERE a.ApplicationID = {$appID}
+					AND ApprovalType = 'Sponsor'
+			")->result_array();
+			$statuses['Venue'] = $this->CI->db->query("
+			SELECT * FROM Approval appr
+				JOIN VenueUserRole vur ON vur.VenueUserRoleID = appr.VenueUserRoleID
+				JOIN Venue v ON v.VenueID = vur.VenueID
+				JOIN Application a ON a.ApplicationID = v.ApplicationID
+				JOIN UserRole ur ON ur.UserRoleID = vur.UserRoleID
+			WHERE a.ApplicationID = {$appID}
+				AND ApprovalType = 'VenueOperator'
+			")->result_array();
+			$statuses['Committee'] = $this->CI->db->query("
+				SELECT * FROM Approval appr
+					JOIN VenueUserRole vur ON vur.VenueUserRoleID = appr.VenueUserRoleID
+					JOIN Venue v ON v.VenueID = vur.VenueID
+					JOIN Application a ON a.ApplicationID = v.ApplicationID
+					JOIN UserRole ur ON ur.UserRoleID = vur.UserRoleID
+				WHERE a.ApplicationID = {$appID}
+					AND ApprovalType = 'Committee'
+			")->result_array();
+
+			foreach($statuses as $status) {
+				# For all stages there can be a mix of approvals and denials
+				# Search for both and summarize the status accordingly
+				$column = array_column($status, 'Decision');
+				$approved = array_search('Approved', $column);
+				$denied = array_search('Denied', $column);
+
+				# If we see at least one approval, assume the status is approved
+				# Else if we see no approvals and at least one denial, status is denied
+				# Pending otherwise
+				if($approved !== false) {
+					$status = array("Decision" => $status[$approved]['Decision'], "DecisionRemark" => $status[$approved]['DecisionRemark']);
+				} else if ($denied !== false) {
+					$status = array("Decision" => $status[$denied]['Decision'], "DecisionRemark" => $status[$denied]['DecisionRemark']);
+				} else {
+					$status = array("Decision" => 'Pending', "DecisionRemark" => null);
+				}
+			}
+			return $statuses;
+		}
 
 		public function getApprovalsByType($appID, $approvalType) {
 			$approvals = $this->CI->db->query("

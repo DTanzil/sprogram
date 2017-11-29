@@ -1,4 +1,4 @@
-<?php $sortMethod = '[[3, 0]]'; ?>
+<?php $sortMethod = '[[0, 0]]'; ?>
 
 <div class="row" style="margin-bottom:10px;">
     <div class="container">
@@ -15,6 +15,7 @@
 <table class="paginated tablesorter" style="visibility: hidden;" >
 	<thead>
 		<tr>
+            <th></th>
         	<th>Edit</th>
             <th>Template Name</th>
             <th>Recipients</th>
@@ -26,6 +27,7 @@
     <tbody>
 <?php foreach($templates as $template): ?>
     <tr>
+        <td><?= $template['EmailTemplateID'] ?></td>
         <td>
             <a class="btn btn-sm btn-primary" href=<?= '"' . base_url("Email/edit/{$template['EmailTemplateID']}") . '"' ?> >Edit</a>
         </td>
