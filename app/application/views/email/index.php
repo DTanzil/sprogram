@@ -20,7 +20,7 @@
             <th>Template Name</th>
             <th>Recipients</th>
             <th>CC</th>
-            <th>Action Name</th>
+            <th>Actions</th>
 
         </tr>
 	</thead>
@@ -34,7 +34,7 @@
         <td><?= $template['EmailTemplateName'] ?></td>
         <td><?= $template['Recipients'] ?></td>
         <td><?= $template['CC'] ?></td>
-        <td><?= $template['ActionName'] ?></td>
+        <td><?= $template['Actions'] ?></td>
     </tr>
 <?php endforeach ?>
 

@@ -7,7 +7,7 @@ class Email_model extends CI_Model {
 
 	public function getTemplates() {
 		$templates = $this->db->query("
-			SELECT et.*, GROUP_CONCAT(a.ActionName) FROM EmailTemplate et
+			SELECT et.*, GROUP_CONCAT(a.ActionName) AS Actions FROM EmailTemplate et
 				JOIN ActionEmailTemplate aet ON et.EmailTemplateID = aet.EmailTemplateID
 				JOIN Action a ON aet.ActionID = a.ActionID
 			GROUP BY et.EmailTemplateID

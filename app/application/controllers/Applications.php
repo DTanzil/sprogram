@@ -181,7 +181,8 @@ class Applications extends CI_Controller {
 		} else {
 			$this->approval->advanceApplication($appID, 'venue');
 
-			$this->mailer->mailAction($appID, 'Sponsor Approved');		
+			$this->mailer->mailAction($appID, 'Sponsor Approved');
+			$this->mailer->venueMailAction($appID, 'Venue Started');	
 		}
 
 		//header('Content-Type: application/json');
