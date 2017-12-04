@@ -135,16 +135,20 @@
 					}
 					$cc_recs = implode(',', $cc_recs);
 					foreach($recipients as $rec) {
+						# Reparse the template to add details for each individual recipient
+						$details['Operator'] = $rec;
+						$parsedTemplateRec = $this->CI->parser->parse_string($template['EmailBody'], $detials, TRUE);
 						echo 'rec\r\n';
 						var_dump($rec);
 						//$rec = $rec[0];
-						$this->sendEmail('jshill@uw.edu', $parsedTitle, $parsedTemplate, $cc_recs);
+						$this->sendEmail('jshill@uw.edu', $parsedTitle, $parsedTemplateRec, $cc_recs);
 	
 						$this->logEmail($appID, $template['EmailTemplateID'], $rec['UserRoleID']);
 					}
 				}
 			}
 		}
+		
 
 		public function getActionTemplates($actionName, $permitID, $apptypeID) {
 			return $this->CI->db->query("
@@ -185,6 +189,8 @@
 					
 					$addresses[] = array(
 						"UserRoleID" => $admin['UserRoleID'],
+						"UserFname" => $admin['UserFname'],
+						"UserLname" => $admin['UserLname'],
 						"UserEmail" => $data
 					);
 				} else {

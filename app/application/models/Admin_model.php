@@ -287,7 +287,7 @@
 		
 		public function getOperatorsForVenue($venueID) {
 			return $this->db->query("
-				SELECT ur.UserRoleID, u.UserEmail FROM User u
+				SELECT ur.UserRoleID, u.* FROM User u
 					JOIN UserRole ur ON u.UserID = ur.UserID
 					JOIN UserType ut ON ut.UserTypeID = ur.UserTypeID
 					JOIN VenueUserRole vur ON vur.UserRoleID = ur.UserRoleID
