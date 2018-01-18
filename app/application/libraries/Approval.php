@@ -51,7 +51,7 @@
 		public function updateSponsorDecision($appID, $signature, $descision, $remark = null) {
 			$sponsorApprovals = $this->getApprovalsByType($appID, 'sponsor');
 			foreach($sponsorApprovals as $appr) {
-				$this->updateApproval($appr['UserRoleID'], $appr['VenueID'], 'sponsor', $signature, $descision);
+				$this->updateApproval($appr['UserRoleID'], $appr['VenueID'], 'sponsor', $signature, $descision, $remark);
 				
 			}
 			
@@ -348,24 +348,40 @@
 					AND ApprovalType = 'Committee'
 			")->result_array();
 
-			foreach($statuses as $status) {
+			foreach($statuses as $key => $status) {
+				//echo 'status: ';
+				//var_dump($status);
 				# For all stages there can be a mix of approvals and denials
 				# Search for both and summarize the status accordingly
-				$column = array_column($status, 'Decision');
-				$approved = array_search('Approved', $column);
-				$denied = array_search('Denied', $column);
+				$column = array_column($status, 'Descision');
+				$approved = array_search('approved', $column);
+				$denied = array_search('denied', $column);
 
 				# If we see at least one approval, assume the status is approved
 				# Else if we see no approvals and at least one denial, status is denied
 				# Pending otherwise
 				if($approved !== false) {
-					$status = array("Decision" => $status[$approved]['Decision'], "DecisionRemark" => $status[$approved]['DecisionRemark']);
+					$statuses[$key] = array(
+										$key . "Decision" => $status[$approved]['Descision'], 
+										$key . "DecisionRemark" => $status[$approved]['DescisionRemark'],
+										$key . "ApprovalDate" => $status[$approved]['ApprovalEndDate']
+									);
 				} else if ($denied !== false) {
-					$status = array("Decision" => $status[$denied]['Decision'], "DecisionRemark" => $status[$denied]['DecisionRemark']);
+					$statuses[$key] = array(
+										$key . "Decision" => $status[$denied]['Descision'], 
+										$key . "DecisionRemark" => $status[$denied]['DescisionRemark'],
+										$key . "ApprovalDate" => $status[$denied]['ApprovalEndDate']
+									);
 				} else {
-					$status = array("Decision" => 'Pending', "DecisionRemark" => null);
+					$statuses[$key] = array(
+										$key . "Decision" => 'Pending', 
+										$key . "DecisionRemark" => null,
+										$key . "ApprovalDate" => 'Pending'
+									);
 				}
+				//var_dump($status);
 			}
+			# var_dump($statuses);
 			return $statuses;
 		}
 

@@ -41,28 +41,42 @@
 			$this->CI->email->subject($subject);
 			$this->CI->email->message($message);
 
-			# $this->CI->email->send();
+			 $this->CI->email->send();
 				return $this->CI->email->print_debugger();
 		}
 
 		public function mailAction($appID, $actionName, $params = null) {
 			echo 'mailAction ';
+			echo 'params:\r\n';
+			var_dump($params);
 			$details = $this->CI->Applications_model->getDetailsForApp($appID);
 			$details = array_merge($details, $this->CI->Applications_model->getUsersForApp($appID));
 			if(isset($params)) {array_merge($details, $params); }
 			if(isset($params['VenueID'])) {
 				$details['Venue'] = $this->CI->db->query("
-					SELECT * FROM Venue v
+					SELECT v.*, r.RoomName, r.RoomAbbr, b.BuildingName, 
+								b.BuildingAbbr, appr.ApprovalEndDate, appr.Descision AS Decision, 
+								appr.DescisionRemark AS DecisionRemark 
+					FROM Venue v
 						JOIN Room r ON v.RoomID = r.RoomID
-						JOIN Building b ON b.BuildingID = r.RoomID
+						JOIN Building b ON b.BuildingID = r.BuildingID
+						JOIN VenueUserRole vur ON v.VenueID = vur.VenueID
+						JOIN Approval appr ON appr.VenueUserRoleID = vur.VenueUserRoleID
 					WHERE v.VenueID = {$params['VenueID']}
-				")->row_array();
+						AND appr.ApprovalType = 'VenueOperator'
+						AND (appr.Descision = 'denied' OR appr.Descision = 'approved')
+				")->result_array();
 			} else {
 				$details['Venues'] = $this->CI->Applications_model->getVenueDetails($appID);
 				$details['EventStartDate'] = $details['Venues'][0]['EventStartDate'];
 				$details['EventEndDate'] = $details['Venues'][0]['EventEndDate'];
-				$details['Approvals'] = $this->CI->approval->summarizeApprovalStages($appID);
+				$approvals = $this->CI->approval->summarizeApprovalStages($appID);
+				foreach($approvals as $appr) {
+					$details = array_merge($details, $appr);
+				}
+
 			}
+			var_dump($details);
 
 			$templates = $this->getActionTemplates($actionName, $details['PermitID'], $details['ApplicationTypeID']);
 
@@ -72,14 +86,17 @@
 				$params = array("ApplicationID" => $appID);
 			}
 			foreach($templates as $template) {
-				echo 'template: ';
-				var_dump($template['EmailTemplateName']);
+				//echo 'template: ';
+				//var_dump($template['EmailTemplateName']);
+
+				//var_dump($details);
+				 
 				$parsedTitle = $this->CI->parser->parse_string($template['EmailSubject'], $details, TRUE);
 				$parsedTemplate = $this->CI->parser->parse_string($template['EmailBody'], $details, TRUE);
 
-				echo 'get recs';
+				//echo 'get recs';
 				$recipients = $this->parseAddressees($template['Recipients'], $params);
-				echo 'get ccs';
+				//echo 'get ccs';
 				$cc = $this->parseAddressees($template['CC'], $params);
 				$cc_recs = array();
 				foreach($cc as $addresses) {
@@ -87,8 +104,8 @@
 				}
 				$cc_recs = implode(',', $cc_recs);
 				foreach($recipients as $rec) {
-					echo 'rec\r\n';
-					var_dump($rec);
+					//echo 'rec\r\n';
+					//var_dump($rec);
 					//$rec = $rec[0];
 					$this->sendEmail('jshill@uw.edu', $parsedTitle, $parsedTemplate, $cc_recs);
 
@@ -120,7 +137,11 @@
 				echo 'template: ';
 				var_dump($template['EmailTemplateName']);
 				foreach($venues as $venue) {
-					$details['Venue'] = $venue;
+					$details['Venue'] = array($venue);
+
+					echo 'DETAILS ';
+					var_dump($details);
+
 					$parsedTitle = $this->CI->parser->parse_string($template['EmailSubject'], $details, TRUE);
 					$parsedTemplate = $this->CI->parser->parse_string($template['EmailBody'], $details, TRUE);
 	
@@ -137,7 +158,7 @@
 					foreach($recipients as $rec) {
 						# Reparse the template to add details for each individual recipient
 						$details['Operator'] = $rec;
-						$parsedTemplateRec = $this->CI->parser->parse_string($template['EmailBody'], $detials, TRUE);
+						$parsedTemplateRec = $this->CI->parser->parse_string($template['EmailBody'], $details, TRUE);
 						echo 'rec\r\n';
 						var_dump($rec);
 						//$rec = $rec[0];
@@ -164,18 +185,18 @@
 
 		private function parseAddressees($groups, $params = null) {
 			$rec_groups = explode(',', $groups);
-			echo 'recipient groups: ';
-			var_dump($rec_groups);
+			//echo 'recipient groups: ';
+			//var_dump($rec_groups);
 
 			$addresses = array();
 			foreach($rec_groups as $group) {
-				echo 'strpos of singlevenue: ';
-				var_dump(strpos($group, 'SingleVenue' !== false));
+				//echo 'strpos of singlevenue: ';
+				//var_dump(strpos($group, 'SingleVenue' !== false));
 				if($group == 'SingleVenue') {
-					echo 'single venue\r\n';
-					echo 'params: ';
-					var_dump($params);
-					echo '\r\n';
+					//echo 'single venue\r\n';
+					//echo 'params: ';
+					//var_dump($params);
+					//echo '\r\n';
 					# recipients will be operators of a single venue
 					if($params['VenueID']) { 
 						$addresses = array_merge($addresses, $this->CI->Admin_model->getOperatorsForVenue($params['VenueID']));
@@ -199,10 +220,10 @@
 					$addresses = array_merge($addresses, $admins);
 				}
 			}
-			echo '<p>Addressees</p>';
-			echo '<pre>';
-			print_r($addresses);
-			echo '</pre>';
+			//echo '<p>Addressees</p>';
+			//echo '<pre>';
+			//print_r($addresses);
+			//echo '</pre>';
 			return $addresses;
 		}
 

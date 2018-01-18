@@ -139,14 +139,18 @@ class Applications extends CI_Controller {
 			$this->approval->updateVenueDecision($appr['ApprovalID'], $netID, 'decided by other operator');
 
 		}
-		$this->mailer->mailAction($appID, 'Venue Decision', array('VenueID' => $venueID));
+		if($decision  == 'denied') {
+			$this->mailer->mailAction($appID, 'Single Venue Denied', array('VenueID' => $venueID));
+		} elseif ($decision == 'approved') {
+			$this->mailer->mailAction($appID, 'Single Venue Approved', array('VenueID' => $venueID));
+		}
 
 		# If all venues have been decided upon, one way or the other, approve or denied
 		$openVenues = $this->approval->getOpenApprovalsByType($appID, 'VenueOperator');
 		$denied = $this->approval->checkAllVenuesDenied($appID);
 		if(sizeof($openVenues) == 0 && !$denied) {
-				$this->approval->advanceApplication($appID, 'committee');
-				$this->mailer->mailAction($appID, 'Venue Approved');
+			$this->approval->advanceApplication($appID, 'committee');
+			$this->mailer->mailAction($appID, 'Venue Approved');
 		} elseif(sizeof($openVenues) == 0 && $denied) {
 			$this->approval->setStatus($appID, 'denied');
 			$this->approval->voidApprovals($appID);
@@ -173,7 +177,7 @@ class Applications extends CI_Controller {
 		$this->mailer->mailAction($appID, 'sponsor decision', $mailParams);
 
 		if($decision == 'denied') {
-			$this->approval->setStatus($appID, 'denied', $expReason);
+			$this->approval->setStatus($appID, 'denied', 'denied');
 			$this->approval->voidApprovals($appID);
 
 			# $this->mailer->performMailActionForApp($appID, 'denied at sponsor');
